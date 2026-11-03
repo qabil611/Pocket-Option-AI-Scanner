@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Trading Scanner</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 15px;
+    background: #101827;
+    color: white;
+    font-family: Arial;
+}
+h1 {
+    text-align: center;
+    color: #00e5a0;
+}
+.box {
+    background: #1d293b;
+    padding: 18px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+select, button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+button {
+    background: #00c98b;
+    color: white;
+    font-weight: bold;
+}
+.result {
+    text-align: center;
+    font-size: 20px;
+    padding: 20px;
+}
+.green { color: #00e5a0; }
+.red { color: #ff5252; }
+.small { color: #aab5c5; font-size: 13px; }
+</style>
+</head>
+
+<body>
+
+<h1>AI TRADING SCANNER</h1>
+
+<div class="box">
+<h3>Trading Settings</h3>
+
+<label>Currency Pair</label>
+<select id="pair">
+<option>EUR/USD</option>
+<option>GBP/USD</option>
+<option>USD/JPY</option>
+<option>USD/CHF</option>
+<option>AUD/USD</option>
+<option>EUR/JPY</option>
+<option>GBP/JPY</option>
+</select>
+
+<label>Timeframe</label>
+<select id="time">
+<option>1 Minute</option>
+<option>5 Minutes</option>
+<option>15 Minutes</option>
+</select>
+
+<button onclick="scan()">START SCAN</button>
+</div>
+
+<div class="box result">
+<h3>SCAN RESULT</h3>
+<div id="result">Waiting for market data...</div>
+</div>
+
+<div class="box">
+<h3>AI Analysis</h3>
+<p id="analysis">Market data source not connected.</p>
+</div>
+
+<div class="box">
+<h3>Scanner Status</h3>
+<p class="green">Interface: ONLINE</p>
+<p class="red">Live market data: NOT CONNECTED</p>
+<p class="small">Signals will be available after connecting a market data source.</p>
+</div>
+
+<script>
+function scan() {
+    document.getElementById("result").innerHTML =
+    "NO SIGNAL";
+
+    document.getElementById("analysis").innerHTML =
+    "Market data is not connected. No real trading signal can be generated yet.";
+}
+</script>
+
+</body>
+</html>
