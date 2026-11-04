@@ -657,34 +657,27 @@ async function autoScan() {
 
             card.className = "signal-card";
 
-            card.innerHTML =
+            card.innerHTML = `
+<b>#${index+1} ${item.pair}</b><br><br>
 
-            `<b>#${index+1} ${item.pair}</b><br>
+<span class="${color}">${item.direction}</span><br><br>
 
-            <span class="${color}">
-            ${item.direction}
-            </span><br>
+Signal Type: ${item.signalType}<br>
+Signal Quality: ${item.quality}<br>
+Technical Score: ${item.strength}%<br><br>
 
-            Technical Score: ${item.strength}%<br>
-            Entry: ${formatPrice(item.levels.entry)}<br>
+Price: ${item.price}<br>
+Entry: ${item.entry}<br>
+Stop Loss: ${item.stopLoss}<br>
+TP1: ${item.tp1}<br>
+TP2: ${item.tp2}<br><br>
 
-            <span class="red">
-            Stop Loss: ${formatPrice(item.levels.stopLoss)}
-            </span><br>
+RSI: ${item.rsi}<br>
+ATR: ${item.atr}<br>
+Risk/Reward: ${item.rr}<br><br>
 
-            <span class="green">
-            TP1: ${formatPrice(item.levels.takeProfit1)}<br>
-            TP2: ${formatPrice(item.levels.takeProfit2)}
-            </span><br>
-
-            RSI: ${item.rsi.toFixed(2)}<br>
-            ATR: ${formatPrice(item.atr)}<br>
-
-            Risk/Reward: ${item.levels.riskReward}<br>
-
-            <span class="yellow">
-            ${item.warning}
-            </span>`;
+${item.warning}
+`;
 
             document.getElementById("top5").appendChild(card);
         });
