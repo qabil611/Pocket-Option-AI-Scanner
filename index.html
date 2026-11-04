@@ -52,54 +52,252 @@ button {
 <h1>AI TRADING SCANNER</h1>
 
 <div class="box">
+
 <h3>Trading Settings</h3>
 
-<label>Currency Pair</label>
-<select id="pair">
-<option>EUR/USD</option>
-<option>GBP/USD</option>
-<option>USD/JPY</option>
-<option>USD/CHF</option>
-<option>AUD/USD</option>
-<option>EUR/JPY</option>
-<option>GBP/JPY</option>
+<label>Market</label>
+<select id="market" onchange="changeMarket()">
+<option value="forex">FOREX</option>
+<option value="crypto">CRYPTO</option>
 </select>
+
+<label>Trading Pair</label>
+<select id="pair"></select>
 
 <label>Timeframe</label>
 <select id="time">
-<option>1 Minute</option>
-<option>5 Minutes</option>
-<option>15 Minutes</option>
+<option value="1m">1 Minute</option>
+<option value="5m">5 Minutes</option>
+<option value="15m">15 Minutes</option>
 </select>
 
-<button onclick="scan()">START SCAN</button>
+<button onclick="scan()">START SCANNER</button>
+
 </div>
 
 <div class="box result">
+
 <h3>SCAN RESULT</h3>
 <div id="result">Waiting for market data...</div>
+
 </div>
 
 <div class="box">
+
 <h3>AI Analysis</h3>
-<p id="analysis">Market data source not connected.</p>
+<p id="analysis">Select market and start scanner.</p>
+
 </div>
 
 <div class="box">
+
 <h3>Scanner Status</h3>
 <p class="green">Interface: ONLINE</p>
-<p class="red">Live market data: NOT CONNECTED</p>
-<p class="small">Signals will be available after connecting a market data source.</p>
+<p id="status" class="red">Market data: WAITING</p>
+<p class="small">Signals are technical indicators, not guaranteed predictions.</p>
+
 </div>
 
 <script>
-function scan() {
+
+const forexPairs = [
+"EUR/USD",
+"GBP/USD",
+"USD/JPY",
+"USD/CHF",
+"AUD/USD",
+"EUR/JPY",
+"GBP/JPY"
+];
+
+const cryptoPairs = [
+"BTC/USDT",
+"ETH/USDT",
+"SOL/USDT",
+"BNB/USDT",
+"XRP/USDT",
+"DOGE/USDT",
+"ADA/USDT",
+"SUI/USDT",
+"LINK/USDT",
+"ONDO/USDT",
+"ICP/USDT"
+];
+
+function changeMarket() {
+
+    let market = document.getElementById("market").value;
+
+    let pair = document.getElementById("pair");
+
+    pair.innerHTML = "";
+
+    let list = market === "crypto"
+        ? cryptoPairs
+        : forexPairs;
+
+    list.forEach(p => {
+        let option = document.createElement("option");
+        option.value = p;
+        option.textContent = p;
+        pair.appendChild(option);
+    });
+
     document.getElementById("result").innerHTML =
-    "NO SIGNAL";
+        "READY TO SCAN";
 
     document.getElementById("analysis").innerHTML =
-    "Market data is not connected. No real trading signal can be generated yet.";
+        "Select trading pair and timeframe.";
+
+    document.getElementById("status").innerHTML =
+        "Market data: WAITING";
 }
+
+function EMA(data, period) {
+
+    let multiplier = 2 / (period + 1);
+
+    let ema = data[0];
+
+    for(let i = 1; i < data.length; i++) {
+        ema = (data[i] - ema) * multiplier + ema;
+    }
+
+    return ema;
+}
+
+function RSI(data, period = 14) {
+
+    let gains = 0;
+    let losses = 0;
+
+    for(let i = data.length-period; i < data.length; i++) {
+
+        let change = data[i] - data[i-1];
+
+        if(change > 0) gains += change;
+        else losses -= change;
+
+    }
+
+    if(losses === 0) return 100;
+
+    return 100 - (100 / (1 + gains/losses));
+}
+
+async function scan() {
+
+    let market = document.getElementById("market").value;
+    let pair = document.getElementById("pair").value;
+    let timeframe = document.getElementById("time").value;
+
+    if(market === "forex") {
+
+        document.getElementById("result").innerHTML =
+            "NO SIGNAL";
+
+        document.getElementById("analysis").innerHTML =
+            "Forex live data provider is not connected yet.";
+
+        return;
+    }
+
+    document.getElementById("result").innerHTML =
+        "SCANNING...";
+
+    document.getElementById("status").innerHTML =
+        "Connecting to Binance...";
+
+    try {
+
+        let symbol = pair.replace("/", "");
+
+        let url =
+        `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${timeframe}&limit=100`;
+
+        let response = await fetch(url);
+
+        if(!response.ok) {
+            throw new Error("Market data unavailable");
+        }
+
+        let candles = await response.json();
+
+        let prices = candles.map(c => Number(c[4]));
+
+        let price = prices[prices.length-1];
+
+        let ema20 = EMA(prices.slice(-40), 20);
+
+        let ema50 = EMA(prices, 50);
+
+        let rsi = RSI(prices);
+
+        let fast = EMA(prices.slice(-30), 12);
+
+        let slow = EMA(prices.slice(-30), 26);
+
+        let macd = fast - slow;
+
+        let signal = "NO SIGNAL";
+
+        let strength = 0;
+
+        if(price > ema20 && ema20 > ema50 && rsi > 50 && rsi < 70 && macd > 0) {
+
+            signal = "LONG";
+            strength = 80;
+
+        }
+
+        else if(price < ema20 && ema20 < ema50 && rsi < 50 && rsi > 30 && macd < 0) {
+
+            signal = "SHORT";
+            strength = 80;
+
+        }
+
+        let color = signal === "LONG"
+            ? "green"
+            : signal === "SHORT"
+            ? "red"
+            : "";
+
+        document.getElementById("result").innerHTML =
+        `<span class="${color}">${signal}</span>`;
+
+        document.getElementById("analysis").innerHTML =
+
+        `Pair: ${pair}<br><br>
+        Price: ${price}<br>
+        RSI: ${rsi.toFixed(2)}<br>
+        EMA 20: ${ema20.toFixed(5)}<br>
+        EMA 50: ${ema50.toFixed(5)}<br>
+        MACD: ${macd.toFixed(5)}<br><br>
+        Signal Strength: ${strength}%`;
+
+        document.getElementById("status").innerHTML =
+            "LIVE CRYPTO DATA: CONNECTED";
+
+    }
+
+    catch(error) {
+
+        document.getElementById("result").innerHTML =
+            "DATA ERROR";
+
+        document.getElementById("analysis").innerHTML =
+            error.message;
+
+        document.getElementById("status").innerHTML =
+            "MARKET DATA: ERROR";
+
+    }
+
+}
+
+changeMarket();
+
 </script>
 
 </body>
