@@ -383,14 +383,26 @@ async function getAnalysis(pair, timeframe) {
 
     let direction = "WAIT";
 
-    if(bullish >= 60 && bullish >= bearish + 10)
-        direction = "LONG";
+// RSI FILTER
+if (
+    rsi > 50 &&
+    rsi < 70 &&
+    bullish >= 60 &&
+    bullish >= bearish + 10
+) {
+    direction = "LONG";
+}
 
-    else if(bearish >= 60 && bearish >= bullish + 10)
-        direction = "SHORT";
+else if (
+    rsi > 30 &&
+    rsi < 50 &&
+    bearish >= 60 &&
+    bearish >= bullish + 10
+) {
+    direction = "SHORT";
+}
 
-    let strength = Math.max(bullish,bearish);
-
+let strength = Math.max(bullish,bearish);
     let warning = "";
 
     if(rsi >= 70)
