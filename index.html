@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>AI Trading Scanner V2</title>
+<title>AI Trading Scanner V3</title>
 
 <style>
 body {
@@ -59,6 +58,7 @@ button {
 .small {
     color:#aab5c5;
     font-size:13px;
+    line-height:1.5;
 }
 
 .signal-card {
@@ -67,6 +67,7 @@ button {
     border-radius:8px;
     margin-top:10px;
     border-left:4px solid #00e5a0;
+    line-height:1.8;
 }
 
 hr {
@@ -77,7 +78,7 @@ hr {
 
 <body>
 
-<h1>AI TRADING SCANNER V2</h1>
+<h1>AI TRADING SCANNER V3</h1>
 
 <div class="box">
 
@@ -91,7 +92,6 @@ hr {
 </select>
 
 <label>Trading Pair</label>
-
 <select id="pair"></select>
 
 <label>Timeframe</label>
@@ -111,35 +111,25 @@ AUTO SCAN TOP 5
 </div>
 
 <div class="box result">
-
 <h3>SCAN RESULT</h3>
-
 <div id="result">READY</div>
-
 </div>
 
 <div class="box">
-
 <h3>AI Analysis</h3>
-
 <div id="analysis">
 Waiting for market data...
 </div>
-
 </div>
 
 <div class="box">
-
 <h3>TOP 5 SIGNALS</h3>
-
 <div id="top5">
 Press AUTO SCAN to find signals.
 </div>
-
 </div>
 
 <div class="box">
-
 <h3>Scanner Status</h3>
 
 <p class="green">Interface: ONLINE</p>
@@ -149,9 +139,9 @@ Market data: WAITING
 </p>
 
 <p class="small">
+SL and TP are ATR-based estimates, not guaranteed prices.
 Technical signals are not guaranteed trading results.
 </p>
-
 </div>
 
 <script>
@@ -182,47 +172,44 @@ const cryptoPairs = [
 
 function changeMarket() {
 
-    let market =
-    document.getElementById("market").value;
-
-    let pair =
-    document.getElementById("pair");
+    let market = document.getElementById("market").value;
+    let pair = document.getElementById("pair");
 
     pair.innerHTML = "";
 
-    let list =
-    market === "crypto" ? cryptoPairs : forexPairs;
+    let list = market === "crypto" ? cryptoPairs : forexPairs;
 
     list.forEach(p => {
-
         let option = document.createElement("option");
-
         option.value = p;
         option.textContent = p;
-
         pair.appendChild(option);
-
     });
 
-    document.getElementById("result").innerHTML =
-    "READY";
-
+    document.getElementById("result").innerHTML = "READY";
     document.getElementById("analysis").innerHTML =
     "Select pair and start scanner.";
 
+    document.getElementById("top5").innerHTML =
+    "Press AUTO SCAN to find signals.";
+}
+
+function formatPrice(value) {
+
+    if(value >= 100) return value.toFixed(2);
+    if(value >= 1) return value.toFixed(4);
+    if(value >= 0.01) return value.toFixed(5);
+
+    return value.toFixed(8);
 }
 
 function EMA(data, period) {
 
     let multiplier = 2 / (period + 1);
-
     let ema = data[0];
 
     for(let i = 1; i < data.length; i++) {
-
-        ema =
-        (data[i] - ema) * multiplier + ema;
-
+        ema = (data[i] - ema) * multiplier + ema;
     }
 
     return ema;
@@ -231,20 +218,15 @@ function EMA(data, period) {
 function EMAseries(data, period) {
 
     let multiplier = 2 / (period + 1);
-
     let ema = data[0];
 
     return data.map((value, index) => {
 
         if(index > 0) {
-
-            ema =
-            (value - ema) * multiplier + ema;
-
+            ema = (value - ema) * multiplier + ema;
         }
 
         return ema;
-
     });
 }
 
@@ -259,15 +241,70 @@ function RSI(data, period = 14) {
 
         if(change > 0) gains += change;
         else losses -= change;
-
     }
 
     if(losses === 0) return 100;
+    if(gains === 0) return 0;
 
-    return 100 / (1 + losses/gains + 0) === 0
-        ? 0
-        : 100 - (100 / (1 + gains/losses));
+    return 100 - (100 / (1 + gains/losses));
+}
 
+// ATR calculation
+function ATR(candles, period = 14) {
+
+    let ranges = [];
+
+    for(let i = candles.length-period; i < candles.length; i++) {
+
+        let high = Number(candles[i][2]);
+        let low = Number(candles[i][3]);
+        let previousClose = Number(candles[i-1][4]);
+
+        let range = Math.max(
+            high - low,
+            Math.abs(high - previousClose),
+            Math.abs(low - previousClose)
+        );
+
+        ranges.push(range);
+    }
+
+    return ranges.reduce((a,b) => a+b,0) / period;
+}
+
+// Stop Loss and Take Profit
+function calculateLevels(direction, entry, atr) {
+
+    if(direction === "WAIT") {
+        return {
+            entry: null,
+            stopLoss: null,
+            takeProfit1: null,
+            takeProfit2: null,
+            riskReward: "N/A"
+        };
+    }
+
+    let risk = atr * 1.5;
+
+    if(direction === "LONG") {
+
+        return {
+            entry: entry,
+            stopLoss: entry - risk,
+            takeProfit1: entry + risk * 1.5,
+            takeProfit2: entry + risk * 2.5,
+            riskReward: "1:1.5 / 1:2.5"
+        };
+    }
+
+    return {
+        entry: entry,
+        stopLoss: entry + risk,
+        takeProfit1: entry - risk * 1.5,
+        takeProfit2: entry - risk * 2.5,
+        riskReward: "1:1.5 / 1:2.5"
+    };
 }
 
 async function getAnalysis(pair, timeframe) {
@@ -280,9 +317,7 @@ async function getAnalysis(pair, timeframe) {
     let response = await fetch(url);
 
     if(!response.ok) {
-
         throw new Error(pair + " data unavailable");
-
     }
 
     let candles = await response.json();
@@ -290,22 +325,17 @@ async function getAnalysis(pair, timeframe) {
     // Yalnız bağlanmış şamları analiz et
     candles = candles.slice(0,-1);
 
-    let prices =
-    candles.map(c => Number(c[4]));
-
-    let volumes =
-    candles.map(c => Number(c[5]));
+    let prices = candles.map(c => Number(c[4]));
+    let volumes = candles.map(c => Number(c[5]));
 
     let price = prices[prices.length-1];
 
     let ema20 = EMA(prices.slice(-40),20);
-
     let ema50 = EMA(prices,50);
 
     let rsi = RSI(prices);
 
     let ema12 = EMAseries(prices,12);
-
     let ema26 = EMAseries(prices,26);
 
     let macdLine = prices.map((p,i) =>
@@ -315,9 +345,7 @@ async function getAnalysis(pair, timeframe) {
     let signalLine = EMAseries(macdLine,9);
 
     let macd = macdLine[macdLine.length-1];
-
-    let signal =
-    signalLine[signalLine.length-1];
+    let signal = signalLine[signalLine.length-1];
 
     let histogram = macd - signal;
 
@@ -330,79 +358,67 @@ async function getAnalysis(pair, timeframe) {
     let bearish = 0;
 
     // EMA trend
-
     if(ema20 > ema50) bullish += 25;
-
     if(ema20 < ema50) bearish += 25;
 
     // Price position
-
     if(price > ema20) bullish += 20;
-
     if(price < ema20) bearish += 20;
 
     // MACD
-
     if(macd > signal && macd > 0)
         bullish += 25;
-
     else if(macd > signal)
         bullish += 15;
 
     if(macd < signal && macd < 0)
         bearish += 25;
-
     else if(macd < signal)
         bearish += 15;
 
     // RSI
-
     if(rsi >= 50 && rsi <= 68)
         bullish += 15;
-
     else if(rsi >= 45 && rsi < 50)
         bullish += 5;
 
     if(rsi <= 50 && rsi >= 32)
         bearish += 15;
-
     else if(rsi > 50 && rsi <= 55)
         bearish += 5;
 
     // Volume
-
     if(lastVolume > avgVolume * 1.2) {
 
         if(price > Number(candles[candles.length-1][1]))
             bullish += 15;
-
         else
             bearish += 15;
-
     }
 
     let direction = "WAIT";
 
-// RSI FILTER
-if (
-    rsi > 50 &&
-    rsi < 70 &&
-    bullish >= 60 &&
-    bullish >= bearish + 10
-) {
-    direction = "LONG";
-}
+    // RSI FILTER
+    if (
+        rsi > 50 &&
+        rsi < 70 &&
+        bullish >= 60 &&
+        bullish >= bearish + 10
+    ) {
+        direction = "LONG";
+    }
 
-else if (
-    rsi > 30 &&
-    rsi < 50 &&
-    bearish >= 60 &&
-    bearish >= bullish + 10
-) {
-    direction = "SHORT";
-}
+    else if (
+        rsi > 30 &&
+        rsi < 50 &&
+        bearish >= 60 &&
+        bearish >= bullish + 10
+    ) {
+        direction = "SHORT";
+    }
 
-let strength = Math.max(bullish,bearish);
+    let strength = Math.max(bullish,bearish);
+
     let warning = "";
 
     if(rsi >= 70)
@@ -411,8 +427,13 @@ let strength = Math.max(bullish,bearish);
     else if(rsi <= 30)
         warning = "OVERSOLD";
 
-    return {
+    // ATR
+    let atr = ATR(candles);
 
+    // Calculate SL and TP
+    let levels = calculateLevels(direction,price,atr);
+
+    return {
         pair,
         price,
         rsi,
@@ -424,10 +445,10 @@ let strength = Math.max(bullish,bearish);
         bearish,
         direction,
         strength,
-        warning
-
+        warning,
+        atr,
+        levels
     };
-
 }
 
 function displayAnalysis(data) {
@@ -439,63 +460,84 @@ function displayAnalysis(data) {
     ? "red"
     : "yellow";
 
-    document.getElementById("result").innerHTML =
+    let tradingLevels = "";
 
-    `<span class="${color}">
-    ${data.direction}
-    </span>`;
+    if(data.direction !== "WAIT") {
+
+        tradingLevels = `
+
+        <hr>
+        <h3>TRADE LEVELS</h3>
+
+        <span class="green">
+        ENTRY PRICE: ${formatPrice(data.levels.entry)}
+        </span><br><br>
+
+        <span class="red">
+        STOP LOSS: ${formatPrice(data.levels.stopLoss)}
+        </span><br><br>
+
+        <span class="green">
+        TAKE PROFIT 1: ${formatPrice(data.levels.takeProfit1)}
+        </span><br><br>
+
+        <span class="green">
+        TAKE PROFIT 2: ${formatPrice(data.levels.takeProfit2)}
+        </span><br><br>
+
+        RISK / REWARD: ${data.levels.riskReward}<br>
+        ATR: ${formatPrice(data.atr)}
+
+        `;
+    }
+
+    document.getElementById("result").innerHTML =
+    `<span class="${color}">${data.direction}</span>`;
 
     document.getElementById("analysis").innerHTML =
 
     `Pair: ${data.pair}<hr>
-    Price: ${data.price.toFixed(5)}<br><br>
+    Price: ${formatPrice(data.price)}<br><br>
     RSI: ${data.rsi.toFixed(2)}<br>
-    EMA 20: ${data.ema20.toFixed(5)}<br>
-    EMA 50: ${data.ema50.toFixed(5)}<br>
+    EMA 20: ${formatPrice(data.ema20)}<br>
+    EMA 50: ${formatPrice(data.ema50)}<br>
     MACD: ${data.macd.toFixed(5)}<br>
     MACD Histogram: ${data.histogram.toFixed(5)}<br><br>
+
     LONG Score: ${data.bullish}/100<br>
     SHORT Score: ${data.bearish}/100<br>
-    Signal Strength: ${data.strength}%<br><br>
+    Technical Score: ${data.strength}%<br>
+
     <span class="yellow">
     ${data.warning || "No RSI warning"}
-    </span>`;
+    </span>
 
+    ${tradingLevels}`;
 }
 
 async function scan() {
 
-    let market =
-    document.getElementById("market").value;
-
-    let pair =
-    document.getElementById("pair").value;
-
-    let timeframe =
-    document.getElementById("time").value;
+    let market = document.getElementById("market").value;
+    let pair = document.getElementById("pair").value;
+    let timeframe = document.getElementById("time").value;
 
     if(market === "forex") {
 
-        document.getElementById("result").innerHTML =
-        "NO DATA";
+        document.getElementById("result").innerHTML = "NO DATA";
 
         document.getElementById("analysis").innerHTML =
         "Forex live data provider is not connected yet.";
 
         return;
-
     }
 
-    document.getElementById("result").innerHTML =
-    "SCANNING...";
-
+    document.getElementById("result").innerHTML = "SCANNING...";
     document.getElementById("status").innerHTML =
     "Connecting to Binance...";
 
     try {
 
-        let data =
-        await getAnalysis(pair,timeframe);
+        let data = await getAnalysis(pair,timeframe);
 
         displayAnalysis(data);
 
@@ -506,17 +548,12 @@ async function scan() {
 
     catch(error) {
 
-        document.getElementById("result").innerHTML =
-        "DATA ERROR";
-
-        document.getElementById("analysis").innerHTML =
-        error.message;
+        document.getElementById("result").innerHTML = "DATA ERROR";
+        document.getElementById("analysis").innerHTML = error.message;
 
         document.getElementById("status").innerHTML =
         "MARKET DATA: ERROR";
-
     }
-
 }
 
 async function autoScan() {
@@ -524,13 +561,10 @@ async function autoScan() {
     if(document.getElementById("market").value !== "crypto") {
 
         alert("AUTO SCAN is available for CRYPTO.");
-
         return;
-
     }
 
-    let timeframe =
-    document.getElementById("time").value;
+    let timeframe = document.getElementById("time").value;
 
     document.getElementById("top5").innerHTML =
     "Scanning 11 cryptocurrencies...";
@@ -542,39 +576,25 @@ async function autoScan() {
     "SCANNING ALL COINS...";
 
     let results = [];
-
     let errors = 0;
 
     let scans = await Promise.allSettled(
-
-        cryptoPairs.map(pair =>
-            getAnalysis(pair,timeframe)
-        )
-
+        cryptoPairs.map(pair => getAnalysis(pair,timeframe))
     );
 
     scans.forEach(item => {
 
         if(item.status === "fulfilled") {
-
             results.push(item.value);
-
         } else {
-
             errors++;
-
         }
-
     });
 
-    results.sort((a,b) =>
-        b.strength - a.strength
-    );
+    results.sort((a,b) => b.strength - a.strength);
 
     let top = results
-        .filter(x =>
-            x.direction !== "WAIT"
-        )
+        .filter(x => x.direction !== "WAIT")
         .slice(0,5);
 
     if(top.length === 0) {
@@ -589,40 +609,50 @@ async function autoScan() {
         top.forEach((item,index) => {
 
             let color =
-            item.direction === "LONG"
-            ? "green"
-            : "red";
+            item.direction === "LONG" ? "green" : "red";
 
-            let card =
-            document.createElement("div");
+            let card = document.createElement("div");
 
             card.className = "signal-card";
 
             card.innerHTML =
 
-            `<b>#${index+1} ${item.pair}</b><br><br>
+            `<b>#${index+1} ${item.pair}</b><br>
+
             <span class="${color}">
             ${item.direction}
             </span><br>
-            Strength: ${item.strength}%<br>
-            Price: ${item.price}<br>
+
+            Technical Score: ${item.strength}%<br>
+            Entry: ${formatPrice(item.levels.entry)}<br>
+
+            <span class="red">
+            Stop Loss: ${formatPrice(item.levels.stopLoss)}
+            </span><br>
+
+            <span class="green">
+            TP1: ${formatPrice(item.levels.takeProfit1)}<br>
+            TP2: ${formatPrice(item.levels.takeProfit2)}
+            </span><br>
+
             RSI: ${item.rsi.toFixed(2)}<br>
-            ${item.warning}`;
+            ATR: ${formatPrice(item.atr)}<br>
 
-            document.getElementById("top5")
-            .appendChild(card);
+            Risk/Reward: ${item.levels.riskReward}<br>
 
+            <span class="yellow">
+            ${item.warning}
+            </span>`;
+
+            document.getElementById("top5").appendChild(card);
         });
-
     }
 
     document.getElementById("result").innerHTML =
-    `SCAN COMPLETE<br>
-    ${top.length} SIGNALS FOUND`;
+    `SCAN COMPLETE<br>${top.length} SIGNALS FOUND`;
 
     document.getElementById("status").innerHTML =
     `SCAN COMPLETE: ${results.length} coins checked, ${errors} errors`;
-
 }
 
 changeMarket();
