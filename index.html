@@ -3,878 +3,709 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Trading Scanner V6</title>
+<title>AI Trading Scanner V7</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+    margin:0;padding:12px;background:#0b1220;
+    color:#e5e7eb;font-family:Arial,sans-serif
 }
-
-body {
-    margin: 0;
-    padding: 15px;
-    background: #0b1220;
-    color: #e5e7eb;
-    font-family: Arial, sans-serif;
+.container{max-width:1000px;margin:auto}
+h1{text-align:center;color:#38bdf8;font-size:25px}
+.subtitle{text-align:center;color:#94a3b8;font-size:13px}
+.panel,.signal{
+    background:#172235;border:1px solid #334155;
+    border-radius:12px;padding:14px;margin:14px 0
 }
-
-.container {
-    max-width: 1000px;
-    margin: auto;
+label{display:block;margin-bottom:8px}
+select,button{
+    width:100%;padding:13px;border:0;
+    border-radius:8px;font-size:15px
 }
-
-h1 {
-    text-align: center;
-    color: #38bdf8;
-    font-size: 25px;
+select{
+    background:#0f172a;color:white;
+    border:1px solid #334155;margin-bottom:12px
 }
-
-.subtitle {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 13px;
-    margin-bottom: 20px;
+button{
+    background:#0284c7;color:white;
+    font-weight:bold;cursor:pointer
 }
-
-.panel {
-    background: #172235;
-    border: 1px solid #29384e;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+button:disabled{background:#475569}
+.secondary{background:#475569;margin-top:8px}
+.danger{background:#991b1b;margin-top:8px}
+.status{text-align:center;color:#38bdf8;margin-top:12px;font-size:13px}
+.progress{height:8px;background:#334155;border-radius:10px;overflow:hidden;margin-top:12px}
+.progress-bar{height:100%;width:0;background:#22c55e}
+.stats{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:7px;text-align:center
 }
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #cbd5e1;
+.stat{background:#0f172a;padding:12px 4px;border-radius:8px}
+.stat strong{display:block;color:#38bdf8;font-size:21px}
+.stat span{font-size:11px;color:#94a3b8}
+.section-title{font-size:19px;margin-top:22px}
+.long-title{color:#22c55e}
+.short-title{color:#ef4444}
+.signal-head{
+    display:flex;justify-content:space-between;
+    align-items:center;margin-bottom:12px
 }
-
-select, button {
-    width: 100%;
-    padding: 13px;
-    border-radius: 8px;
-    border: none;
-    font-size: 15px;
-}
-
-select {
-    background: #0f172a;
-    color: white;
-    border: 1px solid #334155;
-    margin-bottom: 12px;
-}
-
-button {
-    background: #0284c7;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:disabled {
-    background: #475569;
-    cursor: not-allowed;
-}
-
-.status {
-    text-align: center;
-    color: #38bdf8;
-    margin-top: 12px;
-    font-size: 14px;
-}
-
-.progress {
-    width: 100%;
-    height: 9px;
-    background: #334155;
-    border-radius: 10px;
-    margin-top: 12px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    width: 0%;
-    height: 100%;
-    background: #22c55e;
-    transition: width 0.2s;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    text-align: center;
-}
-
-.stat {
-    background: #0f172a;
-    padding: 12px 5px;
-    border-radius: 8px;
-}
-
-.stat strong {
-    display: block;
-    color: #38bdf8;
-    font-size: 21px;
-    margin-bottom: 5px;
-}
-
-.stat span {
-    color: #94a3b8;
-    font-size: 11px;
-}
-
-.section-title {
-    font-size: 19px;
-    margin: 20px 0 12px;
-}
-
-.long-title {
-    color: #22c55e;
-}
-
-.short-title {
-    color: #ef4444;
-}
-
-.signal {
-    background: #172235;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 12px;
-}
-
-.signal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.coin {
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.direction {
-    font-weight: bold;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-}
-
-.direction.long {
-    background: #14532d;
-    color: #4ade80;
-}
-
-.direction.short {
-    background: #7f1d1d;
-    color: #fca5a5;
-}
-
-.score {
-    color: #facc15;
-    font-weight: bold;
-    font-size: 17px;
-}
-
-.signal-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 9px;
-}
-
-.data {
-    background: #0f172a;
-    padding: 9px;
-    border-radius: 7px;
-}
-
-.data span {
-    display: block;
-    color: #94a3b8;
-    font-size: 11px;
-    margin-bottom: 5px;
-}
-
-.data strong {
-    font-size: 13px;
-    overflow-wrap: anywhere;
-}
-
-.confirm {
-    color: #38bdf8;
-    font-size: 12px;
-    margin-top: 12px;
-}
-
-.empty {
-    text-align: center;
-    padding: 20px;
-    color: #94a3b8;
-    background: #172235;
-    border-radius: 10px;
-}
-
-.footer {
-    text-align: center;
-    color: #64748b;
-    font-size: 11px;
-    margin: 20px 0;
-}
-
-.warning {
-    color: #fbbf24;
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-@media (max-width: 450px) {
-    body {
-        padding: 10px;
-    }
-
-    .stats {
-        gap: 5px;
-    }
-
-    .stat strong {
-        font-size: 18px;
-    }
+.coin{font-size:19px;font-weight:bold}
+.direction{padding:6px 10px;border-radius:6px;font-size:12px;font-weight:bold}
+.long{background:#14532d;color:#4ade80}
+.short{background:#7f1d1d;color:#fca5a5}
+.score{color:#facc15;font-weight:bold;margin-top:5px}
+.signal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.data{background:#0f172a;padding:9px;border-radius:7px;overflow-wrap:anywhere}
+.data span{display:block;color:#94a3b8;font-size:11px;margin-bottom:5px}
+.data strong{font-size:13px}
+.confirm{color:#38bdf8;font-size:12px;margin-top:12px;line-height:1.6}
+.empty{text-align:center;padding:18px;color:#94a3b8;background:#172235;border-radius:10px}
+.history-item{border-bottom:1px solid #334155;padding:10px 0;font-size:13px;line-height:1.6}
+.good{color:#4ade80}
+.bad{color:#f87171}
+.warning{color:#fbbf24;font-size:12px;line-height:1.5}
+.footer{text-align:center;color:#64748b;font-size:11px;margin:20px 0}
+@media(max-width:450px){
+    body{padding:9px}
+    .stat strong{font-size:18px}
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-<h1>AI TRADING SCANNER V6</h1>
-
-<div class="subtitle">
-Multi-Timeframe Crypto Signal Scanner
-</div>
+<h1>AI TRADING SCANNER V7</h1>
+<div class="subtitle">Multi-Timeframe Scanner + Live Signal Tracking</div>
 
 <div class="panel">
 
-<label>Timeframe seç:</label>
+<label>Əsas timeframe:</label>
 
 <select id="timeframe">
-    <option value="5m">5 Minutes</option>
-    <option value="15m" selected>15 Minutes</option>
-    <option value="1h">1 Hour</option>
-    <option value="4h">4 Hours</option>
+<option value="5m">5 Minutes</option>
+<option value="15m" selected>15 Minutes</option>
+<option value="1h">1 Hour</option>
+<option value="4h">4 Hours</option>
 </select>
 
-<button id="scanButton" onclick="startScanner()">
-START SCANNER
-</button>
+<button id="scanButton" onclick="startScanner()">START SCANNER</button>
 
-<div class="status" id="status">
-Scanner hazırdır
-</div>
-
+<div class="status" id="status">Scanner hazırdır</div>
 <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
+<div class="progress-bar" id="progressBar"></div>
 </div>
 
 </div>
 
 <div class="panel">
-
 <div class="stats">
-
-    <div class="stat">
-        <strong id="checked">0</strong>
-        <span>Yoxlanılan coin</span>
-    </div>
-
-    <div class="stat">
-        <strong id="longCount">0</strong>
-        <span>LONG siqnal</span>
-    </div>
-
-    <div class="stat">
-        <strong id="shortCount">0</strong>
-        <span>SHORT siqnal</span>
-    </div>
-
+<div class="stat">
+<strong id="checked">0</strong>
+<span>Yoxlanılan coin</span>
+</div>
+<div class="stat">
+<strong id="longCount">0</strong>
+<span>LONG</span>
+</div>
+<div class="stat">
+<strong id="shortCount">0</strong>
+<span>SHORT</span>
+</div>
+</div>
 </div>
 
+<h2 class="section-title long-title">TOP 5 LONG SIGNALS</h2>
+<div id="longResults" class="empty">Hələ siqnal yoxdur</div>
+
+<h2 class="section-title short-title">TOP 5 SHORT SIGNALS</h2>
+<div id="shortResults" class="empty">Hələ siqnal yoxdur</div>
+
+<h2 class="section-title">LIVE SIGNAL TRACKING</h2>
+<div class="panel">
+<div class="stats">
+<div class="stat">
+<strong id="activeCount">0</strong>
+<span>Aktiv</span>
+</div>
+<div class="stat">
+<strong id="tp1Count">0</strong>
+<span>TP1</span>
+</div>
+<div class="stat">
+<strong id="tp2Count">0</strong>
+<span>TP2</span>
+</div>
+</div>
+<div id="activeSignals" style="margin-top:12px">
+<div class="empty">Aktiv siqnal yoxdur</div>
+</div>
 </div>
 
-<h2 class="section-title long-title">
-TOP 5 LONG SIGNALS
-</h2>
-
-<div id="longResults">
-    <div class="empty">Hələ siqnal yoxdur</div>
+<h2 class="section-title">SIGNAL STATISTICS</h2>
+<div class="panel">
+<div class="stats">
+<div class="stat">
+<strong id="wins">0</strong>
+<span>TP2 nəticəsi</span>
+</div>
+<div class="stat">
+<strong id="losses">0</strong>
+<span>SL nəticəsi</span>
+</div>
+<div class="stat">
+<strong id="winRate">0%</strong>
+<span>TP2 faizi</span>
+</div>
 </div>
 
-<h2 class="section-title short-title">
-TOP 5 SHORT SIGNALS
-</h2>
+<div id="history" style="margin-top:12px">
+<div class="empty">Tarixçə boşdur</div>
+</div>
 
-<div id="shortResults">
-    <div class="empty">Hələ siqnal yoxdur</div>
+<button class="secondary" onclick="clearHistory()">
+Tarixçəni sil
+</button>
 </div>
 
 <div class="panel">
-    <div class="warning">
-        Diqqət: Bu proqram texniki indikatorlara əsaslanan analiz vasitəsidir.
-        Göstərilən bal qazanc ehtimalı deyil. Siqnallar zəmanətli deyil.
-        Real əməliyyatdan əvvəl öz risk idarəetməni tətbiq et.
-    </div>
+<div class="warning">
+Qeyd: Texniki bal qazanc ehtimalı deyil. Siqnallar zəmanətli deyil.
+Canlı izləmə 15 saniyəlik qiymət yoxlaması aparır.
+Brauzer bağlandıqda izləmə dayanır. Tarixçə telefonda saxlanılır.
+</div>
 </div>
 
 <div class="footer">
-AI Trading Scanner V6 | Binance Public Market Data
+AI Trading Scanner V7 | Binance Public Market Data
 </div>
 
 </div>
 
 <script>
+const API="https://api.binance.com/api/v3";
 
-const API = "https://api.binance.com/api/v3";
+let isScanning=false;
+let activeSignals=JSON.parse(localStorage.getItem("v7_active")||"[]");
+let historyData=JSON.parse(localStorage.getItem("v7_history")||"[]");
+let longSignals=[];
+let shortSignals=[];
 
-let isScanning = false;
-
-const confirmationTimeframes = ["5m", "15m", "1h"];
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function sleep(ms){
+    return new Promise(resolve=>setTimeout(resolve,ms));
 }
 
-function average(values) {
-    if (!values.length) return 0;
-    return values.reduce((a,b) => a+b, 0) / values.length;
+function saveData(){
+    localStorage.setItem("v7_active",JSON.stringify(activeSignals));
+    localStorage.setItem("v7_history",JSON.stringify(historyData));
 }
 
-function calculateEMA(values, period) {
-    if (values.length < period) return null;
-
-    const multiplier = 2 / (period + 1);
-
-    let ema = average(values.slice(0, period));
-
-    for (let i = period; i < values.length; i++) {
-        ema = (values[i] - ema) * multiplier + ema;
-    }
-
-    return ema;
+function average(a){
+    return a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
 }
 
-function calculateRSI(values, period = 14) {
-    if (values.length <= period) return 50;
+function ema(values,period){
+    if(values.length<period)return null;
+    let result=average(values.slice(0,period));
+    let multiplier=2/(period+1);
 
-    let gains = 0;
-    let losses = 0;
-
-    for (let i = values.length - period; i < values.length; i++) {
-        const change = values[i] - values[i - 1];
-
-        if (change > 0) gains += change;
-        else losses += Math.abs(change);
+    for(let i=period;i<values.length;i++){
+        result=(values[i]-result)*multiplier+result;
     }
-
-    const avgGain = gains / period;
-    const avgLoss = losses / period;
-
-    if (avgLoss === 0) return 100;
-
-    const rs = avgGain / avgLoss;
-
-    return 100 - (100 / (1 + rs));
+    return result;
 }
 
-function calculateMACD(values) {
-    const fast = calculateEMA(values, 12);
-    const slow = calculateEMA(values, 26);
+function rsi(values,period=14){
+    if(values.length<=period)return 50;
+    let gains=0,losses=0;
 
-    if (fast === null || slow === null) {
-        return { value: 0, signal: 0 };
+    for(let i=values.length-period;i<values.length;i++){
+        let change=values[i]-values[i-1];
+        if(change>0)gains+=change;
+        else losses+=Math.abs(change);
     }
 
-    const macdValues = [];
+    if(losses===0)return 100;
+    let rs=(gains/period)/(losses/period);
+    return 100-(100/(1+rs));
+}
 
-    for (let i = 35; i < values.length; i++) {
-        const part = values.slice(0, i + 1);
+function macd(values){
+    let fast=ema(values,12);
+    let slow=ema(values,26);
 
-        macdValues.push(
-            calculateEMA(part, 12) - calculateEMA(part, 26)
-        );
+    if(fast===null||slow===null)return {value:0,signal:0};
+
+    let series=[];
+
+    for(let i=35;i<values.length;i++){
+        let part=values.slice(0,i+1);
+        series.push(ema(part,12)-ema(part,26));
     }
-
-    const signal = calculateEMA(macdValues, 9);
 
     return {
-        value: fast - slow,
-        signal: signal || 0
+        value:fast-slow,
+        signal:ema(series,9)||0
     };
 }
 
-function calculateATR(candles, period = 14) {
-    if (candles.length < period + 1) return 0;
+function atr(candles,period=14){
+    let ranges=[];
 
-    const ranges = [];
-
-    for (let i = 1; i < candles.length; i++) {
-        const current = candles[i];
-        const previous = candles[i - 1];
-
-        const high = current.high;
-        const low = current.low;
-        const close = previous.close;
-
-        ranges.push(
-            Math.max(
-                high - low,
-                Math.abs(high - close),
-                Math.abs(low - close)
-            )
-        );
+    for(let i=1;i<candles.length;i++){
+        let c=candles[i],p=candles[i-1];
+        ranges.push(Math.max(
+            c.high-c.low,
+            Math.abs(c.high-p.close),
+            Math.abs(c.low-p.close)
+        ));
     }
 
     return average(ranges.slice(-period));
 }
 
-async function getCandles(symbol, timeframe) {
+async function getCandles(symbol,timeframe){
+    let url=`${API}/klines?symbol=${symbol}&interval=${timeframe}&limit=250`;
+    let response=await fetch(url);
 
-    const url =
-        `${API}/klines?symbol=${symbol}&interval=${timeframe}&limit=250`;
+    if(!response.ok)throw new Error("API error");
 
-    const response = await fetch(url);
+    let raw=await response.json();
 
-    if (!response.ok) {
-        throw new Error("Binance API error");
-    }
-
-    const raw = await response.json();
-
-    if (!Array.isArray(raw) || raw.length < 210) {
+    if(!Array.isArray(raw)||raw.length<210){
         throw new Error("Insufficient candles");
     }
 
-    // Son şam hələ bağlanmamış ola bilər.
-    const closed = raw.slice(0, -1);
-
-    return closed.map(c => ({
-        time: c[0],
-        open: Number(c[1]),
-        high: Number(c[2]),
-        low: Number(c[3]),
-        close: Number(c[4]),
-        volume: Number(c[5])
+    return raw.slice(0,-1).map(c=>({
+        open:Number(c[1]),
+        high:Number(c[2]),
+        low:Number(c[3]),
+        close:Number(c[4]),
+        volume:Number(c[5])
     }));
 }
 
-function analyzeCandles(candles) {
+function analyze(candles){
+    let closes=candles.map(c=>c.close);
+    let volumes=candles.map(c=>c.volume);
 
-    const closes = candles.map(c => c.close);
-    const volumes = candles.map(c => c.volume);
+    let price=closes.at(-1);
+    let e20=ema(closes,20);
+    let e50=ema(closes,50);
+    let e200=ema(closes,200);
+    let r=rsi(closes);
+    let m=macd(closes);
+    let a=atr(candles);
 
-    const price = closes[closes.length - 1];
+    let current=candles.at(-1);
+    let previous=candles.at(-2);
 
-    const ema20 = calculateEMA(closes, 20);
-    const ema50 = calculateEMA(closes, 50);
-    const ema200 = calculateEMA(closes, 200);
+    let volRatio=volumes.at(-1)/average(volumes.slice(-21,-1));
 
-    const rsi = calculateRSI(closes, 14);
-    const macd = calculateMACD(closes);
-    const atr = calculateATR(candles);
+    let candleBull=current.close>current.open &&
+                    current.close>previous.close;
 
-    const volumeNow = volumes[volumes.length - 1];
-    const volumeAverage = average(volumes.slice(-21, -1));
+    let candleBear=current.close<current.open &&
+                    current.close<previous.close;
 
-    const volumeRatio = volumeAverage > 0
-        ? volumeNow / volumeAverage
-        : 0;
+    let bullish=e20>e50 &&
+        price>e200 &&
+        m.value>m.signal &&
+        r>=50 && r<=70 &&
+        candleBull;
 
-    const bullish =
-        ema20 > ema50 &&
-        price > ema200 &&
-        macd.value > macd.signal &&
-        rsi >= 50 &&
-        rsi <= 72;
-
-    const bearish =
-        ema20 < ema50 &&
-        price < ema200 &&
-        macd.value < macd.signal &&
-        rsi >= 28 &&
-        rsi <= 50;
+    let bearish=e20<e50 &&
+        price<e200 &&
+        m.value<m.signal &&
+        r>=30 && r<=50 &&
+        candleBear;
 
     return {
-        price,
-        ema20,
-        ema50,
-        ema200,
-        rsi,
-        macd,
-        atr,
-        volumeRatio,
-        bullish,
-        bearish
+        price,e20,e50,e200,r,m,a,volRatio,
+        candleBull,candleBear,bullish,bearish
     };
 }
 
-async function analyzeTimeframe(symbol, timeframe) {
-
-    const candles = await getCandles(symbol, timeframe);
-
-    return analyzeCandles(candles);
+async function analyzeTF(symbol,tf){
+    return analyze(await getCandles(symbol,tf));
 }
 
-function makeSignal(symbol, direction, main, confirmations) {
+function buildSignal(symbol,direction,main,confirmations){
+    let score=0;
 
-    let score = 0;
+    if(direction==="LONG"){
+        if(main.e20>main.e50)score+=20;
+        if(main.price>main.e200)score+=15;
+        if(main.m.value>main.m.signal)score+=15;
+        if(main.r>=50&&main.r<=70)score+=15;
+        if(main.volRatio>=1.2)score+=10;
+        if(main.candleBull)score+=10;
+        score+=confirmations.filter(x=>x.bullish).length*5;
+    }else{
+        if(main.e20<main.e50)score+=20;
+        if(main.price<main.e200)score+=15;
+        if(main.m.value<main.m.signal)score+=15;
+        if(main.r>=30&&main.r<=50)score+=15;
+        if(main.volRatio>=1.2)score+=10;
+        if(main.candleBear)score+=10;
+        score+=confirmations.filter(x=>x.bearish).length*5;
+    }
 
-    const aligned = confirmations.filter(x =>
-        direction === "LONG" ? x.bullish : x.bearish
+    let aligned=confirmations.filter(x=>
+        direction==="LONG"?x.bullish:x.bearish
     ).length;
 
-    if (direction === "LONG") {
+    if(score<70||aligned<2||main.volRatio<1.2)return null;
 
-        if (main.ema20 > main.ema50) score += 20;
-        if (main.price > main.ema200) score += 20;
-        if (main.macd.value > main.macd.signal) score += 20;
-        if (main.rsi >= 50 && main.rsi <= 72) score += 15;
+    let entry=main.price;
+    let risk=Math.max(main.a*1.5,entry*0.003);
 
-    } else {
+    let stop,tp1,tp2;
 
-        if (main.ema20 < main.ema50) score += 20;
-        if (main.price < main.ema200) score += 20;
-        if (main.macd.value < main.macd.signal) score += 20;
-        if (main.rsi >= 28 && main.rsi <= 50) score += 15;
-    }
-
-    if (main.volumeRatio >= 1.2) {
-        score += 10;
-    }
-
-    score += aligned * 5;
-
-    if (score < 70) return null;
-
-    if (aligned < 2) return null;
-
-    const entry = main.price;
-    const risk = Math.max(main.atr * 1.5, entry * 0.003);
-
-    let stopLoss;
-    let tp1;
-    let tp2;
-
-    if (direction === "LONG") {
-
-        stopLoss = entry - risk;
-        tp1 = entry + risk * 1.5;
-        tp2 = entry + risk * 2.5;
-
-    } else {
-
-        stopLoss = entry + risk;
-        tp1 = entry - risk * 1.5;
-        tp2 = entry - risk * 2.5;
+    if(direction==="LONG"){
+        stop=entry-risk;
+        tp1=entry+risk*1.5;
+        tp2=entry+risk*2.5;
+    }else{
+        stop=entry+risk;
+        tp1=entry-risk*1.5;
+        tp2=entry-risk*2.5;
     }
 
     return {
-        symbol,
-        direction,
-        score,
-        entry,
-        stopLoss,
-        tp1,
-        tp2,
-        rsi: main.rsi,
-        volumeRatio: main.volumeRatio,
+        id:symbol+"_"+direction+"_"+Date.now(),
+        symbol,direction,score,entry,stop,tp1,tp2,
+        rsi:main.r,
+        volume:main.volRatio,
         aligned,
-        timestamp: new Date().toLocaleString()
+        created:Date.now(),
+        tp1Hit:false,
+        status:"ACTIVE"
     };
 }
 
-async function analyzeCoin(symbol, selectedTimeframe) {
+async function analyzeCoin(symbol,selectedTF){
+    let frames=[...new Set([selectedTF,"5m","15m","1h"])];
+    let results=await Promise.all(frames.map(tf=>analyzeTF(symbol,tf)));
 
-    const frames = [...new Set([
-        selectedTimeframe,
-        ...confirmationTimeframes
-    ])];
+    let map={};
+    frames.forEach((tf,i)=>map[tf]=results[i]);
 
-    const results = await Promise.all(
-        frames.map(tf => analyzeTimeframe(symbol, tf))
-    );
-
-    const data = {};
-
-    frames.forEach((tf, index) => {
-        data[tf] = results[index];
-    });
-
-    const main = data[selectedTimeframe];
-
-    const confirmations = confirmationTimeframes.map(tf => data[tf]);
-
-    const longSignal = main.bullish
-        ? makeSignal(symbol, "LONG", main, confirmations)
-        : null;
-
-    const shortSignal = main.bearish
-        ? makeSignal(symbol, "SHORT", main, confirmations)
-        : null;
+    let main=map[selectedTF];
+    let confirmations=["5m","15m","1h"].map(tf=>map[tf]);
 
     return {
-        longSignal,
-        shortSignal
+        long:main.bullish?buildSignal(symbol,"LONG",main,confirmations):null,
+        short:main.bearish?buildSignal(symbol,"SHORT",main,confirmations):null
     };
 }
 
-async function getTopCoins() {
+async function getTopCoins(){
+    let response=await fetch(`${API}/ticker/24hr`);
+    if(!response.ok)throw new Error("Coin siyahısı alınmadı");
 
-    const response = await fetch(`${API}/ticker/24hr`);
+    let tickers=await response.json();
 
-    if (!response.ok) {
-        throw new Error("Coin siyahısı alınmadı");
-    }
+    let excluded=["USDCUSDT","BUSDUSDT","TUSDUSDT","FDUSDUSDT","USDPUSDT","DAIUSDT"];
 
-    const tickers = await response.json();
-
-    const excluded = [
-        "USDCUSDT",
-        "BUSDUSDT",
-        "TUSDUSDT",
-        "FDUSDUSDT",
-        "USDPUSDT",
-        "DAIUSDT"
-    ];
-
-    return tickers
-        .filter(t =>
-            t.symbol.endsWith("USDT") &&
-            !excluded.includes(t.symbol) &&
-            !t.symbol.includes("UPUSDT") &&
-            !t.symbol.includes("DOWNUSDT") &&
-            !t.symbol.includes("BULLUSDT") &&
-            !t.symbol.includes("BEARUSDT") &&
-            Number(t.quoteVolume) > 1000000
-        )
-        .sort((a,b) =>
-            Number(b.quoteVolume) - Number(a.quoteVolume)
-        )
-        .slice(0, 100)
-        .map(t => t.symbol);
+    return tickers.filter(t=>
+        t.symbol.endsWith("USDT") &&
+        !excluded.includes(t.symbol) &&
+        !/UPUSDT|DOWNUSDT|BULLUSDT|BEARUSDT/.test(t.symbol) &&
+        Number(t.quoteVolume)>1000000
+    )
+    .sort((a,b)=>Number(b.quoteVolume)-Number(a.quoteVolume))
+    .slice(0,100)
+    .map(t=>t.symbol);
 }
 
-function formatPrice(value) {
-
-    if (!Number.isFinite(value)) return "-";
-
-    if (value >= 1000) return value.toFixed(2);
-    if (value >= 1) return value.toFixed(4);
-    if (value >= 0.01) return value.toFixed(6);
-
-    return value.toFixed(8);
+function priceFormat(n){
+    if(!Number.isFinite(n))return "-";
+    if(n>=1000)return n.toFixed(2);
+    if(n>=1)return n.toFixed(4);
+    if(n>=0.01)return n.toFixed(6);
+    return n.toFixed(8);
 }
 
-function createCard(signal) {
-
-    const directionClass =
-        signal.direction === "LONG" ? "long" : "short";
+function card(s){
+    let cls=s.direction==="LONG"?"long":"short";
 
     return `
     <div class="signal">
-
         <div class="signal-head">
-
             <div>
-                <div class="coin">${signal.symbol}</div>
-                <div class="score">${signal.score}/100 bal</div>
+                <div class="coin">${s.symbol}</div>
+                <div class="score">${s.score}/100</div>
             </div>
-
-            <div class="direction ${directionClass}">
-                ${signal.direction}
-            </div>
-
+            <div class="direction ${cls}">${s.direction}</div>
         </div>
 
         <div class="signal-grid">
-
-            <div class="data">
-                <span>ENTRY</span>
-                <strong>${formatPrice(signal.entry)}</strong>
-            </div>
-
-            <div class="data">
-                <span>STOP LOSS</span>
-                <strong>${formatPrice(signal.stopLoss)}</strong>
-            </div>
-
-            <div class="data">
-                <span>TAKE PROFIT 1</span>
-                <strong>${formatPrice(signal.tp1)}</strong>
-            </div>
-
-            <div class="data">
-                <span>TAKE PROFIT 2</span>
-                <strong>${formatPrice(signal.tp2)}</strong>
-            </div>
-
-            <div class="data">
-                <span>RSI</span>
-                <strong>${signal.rsi.toFixed(1)}</strong>
-            </div>
-
-            <div class="data">
-                <span>VOLUME</span>
-                <strong>${signal.volumeRatio.toFixed(2)}x</strong>
-            </div>
-
+            <div class="data"><span>ENTRY</span><strong>${priceFormat(s.entry)}</strong></div>
+            <div class="data"><span>STOP LOSS</span><strong>${priceFormat(s.stop)}</strong></div>
+            <div class="data"><span>TP1</span><strong>${priceFormat(s.tp1)}</strong></div>
+            <div class="data"><span>TP2</span><strong>${priceFormat(s.tp2)}</strong></div>
+            <div class="data"><span>RSI</span><strong>${s.rsi.toFixed(2)}</strong></div>
+            <div class="data"><span>VOLUME</span><strong>${s.volume.toFixed(2)}x</strong></div>
         </div>
 
         <div class="confirm">
-            Multi-timeframe təsdiqi: ${signal.aligned}/3
-            <br>
-            Siqnal vaxtı: ${signal.timestamp}
+            Trend təsdiqi: ${s.aligned}/3
         </div>
-
-    </div>
-    `;
+    </div>`;
 }
 
-function renderSignals(longSignals, shortSignals) {
+function renderResults(){
+    document.getElementById("longResults").innerHTML=
+        longSignals.length?longSignals.slice(0,5).map(card).join(""):'<div class="empty">LONG siqnal yoxdur</div>';
 
-    const longBox = document.getElementById("longResults");
-    const shortBox = document.getElementById("shortResults");
+    document.getElementById("shortResults").innerHTML=
+        shortSignals.length?shortSignals.slice(0,5).map(card).join(""):'<div class="empty">SHORT siqnal yoxdur</div>';
 
-    longBox.innerHTML = longSignals.length
-        ? longSignals.slice(0,5).map(createCard).join("")
-        : '<div class="empty">Güclü LONG siqnalı tapılmadı</div>';
-
-    shortBox.innerHTML = shortSignals.length
-        ? shortSignals.slice(0,5).map(createCard).join("")
-        : '<div class="empty">Güclü SHORT siqnalı tapılmadı</div>';
-
-    document.getElementById("longCount").textContent =
-        longSignals.length;
-
-    document.getElementById("shortCount").textContent =
-        shortSignals.length;
+    document.getElementById("longCount").textContent=longSignals.length;
+    document.getElementById("shortCount").textContent=shortSignals.length;
 }
 
-async function startScanner() {
+async function startScanner(){
+    if(isScanning)return;
 
-    if (isScanning) return;
+    isScanning=true;
+    let button=document.getElementById("scanButton");
+    let status=document.getElementById("status");
+    let progress=document.getElementById("progressBar");
 
-    isScanning = true;
+    button.disabled=true;
+    button.textContent="SCANNING...";
 
-    const button = document.getElementById("scanButton");
-    const status = document.getElementById("status");
-    const progress = document.getElementById("progressBar");
+    longSignals=[];
+    shortSignals=[];
 
-    button.disabled = true;
-    button.textContent = "SCANNING...";
+    renderResults();
 
-    document.getElementById("checked").textContent = "0";
-    document.getElementById("longCount").textContent = "0";
-    document.getElementById("shortCount").textContent = "0";
+    let checked=0,errors=0;
 
-    document.getElementById("longResults").innerHTML =
-        '<div class="empty">Analiz aparılır...</div>';
+    try{
+        status.textContent="Coin siyahısı yüklənir...";
 
-    document.getElementById("shortResults").innerHTML =
-        '<div class="empty">Analiz aparılır...</div>';
+        let coins=await getTopCoins();
+        let tf=document.getElementById("timeframe").value;
 
-    progress.style.width = "0%";
+        for(let i=0;i<coins.length;i+=4){
+            let batch=coins.slice(i,i+4);
 
-    let checked = 0;
-    let errors = 0;
-
-    const longSignals = [];
-    const shortSignals = [];
-
-    try {
-
-        status.textContent = "Coin siyahısı yüklənir...";
-
-        const coins = await getTopCoins();
-
-        if (!coins.length) {
-            throw new Error("Coin siyahısı boşdur");
-        }
-
-        const selectedTimeframe =
-            document.getElementById("timeframe").value;
-
-        const batchSize = 5;
-
-        for (let i = 0; i < coins.length; i += batchSize) {
-
-            const batch = coins.slice(i, i + batchSize);
-
-            const results = await Promise.allSettled(
-                batch.map(symbol =>
-                    analyzeCoin(symbol, selectedTimeframe)
-                )
+            let results=await Promise.allSettled(
+                batch.map(symbol=>analyzeCoin(symbol,tf))
             );
 
-            results.forEach(result => {
-
+            results.forEach(result=>{
                 checked++;
 
-                if (result.status === "fulfilled") {
+                if(result.status==="fulfilled"){
+                    let data=result.value;
 
-                    const data = result.value;
-
-                    if (data.longSignal) {
-                        longSignals.push(data.longSignal);
-                    }
-
-                    if (data.shortSignal) {
-                        shortSignals.push(data.shortSignal);
-                    }
-
-                } else {
+                    if(data.long)longSignals.push(data.long);
+                    if(data.short)shortSignals.push(data.short);
+                }else{
                     errors++;
                 }
-
             });
 
-            document.getElementById("checked").textContent =
-                checked;
+            longSignals.sort((a,b)=>b.score-a.score);
+            shortSignals.sort((a,b)=>b.score-a.score);
 
-            progress.style.width =
-                (checked / coins.length * 100) + "%";
+            document.getElementById("checked").textContent=checked;
+            progress.style.width=(checked/coins.length*100)+"%";
 
-            status.textContent =
+            status.textContent=
                 `Analiz: ${checked}/${coins.length} | Xəta: ${errors}`;
 
-            longSignals.sort((a,b) => b.score - a.score);
-            shortSignals.sort((a,b) => b.score - a.score);
-
-            renderSignals(longSignals, shortSignals);
-
+            renderResults();
             await sleep(300);
         }
 
-        status.textContent =
-            `SCAN COMPLETE: ${checked} coin yoxlanıldı | ${errors} xəta | ${new Date().toLocaleTimeString()}`;
+        // Eyni coin və istiqamət üçün təkrar aktiv siqnal yaratma.
+        let newSignals=[...longSignals,...shortSignals];
 
-    } catch (error) {
+        newSignals.forEach(s=>{
+            let exists=activeSignals.some(a=>
+                a.symbol===s.symbol &&
+                a.direction===s.direction &&
+                a.status==="ACTIVE"
+            );
 
-        status.textContent =
-            "Xəta: " + error.message;
+            if(!exists){
+                activeSignals.unshift(s);
+            }
+        });
 
-    } finally {
+        activeSignals=activeSignals.slice(0,100);
+        saveData();
+        renderTracking();
 
-        isScanning = false;
-        button.disabled = false;
-        button.textContent = "START SCANNER";
+        status.textContent=
+            `SCAN COMPLETE: ${checked} coin yoxlanıldı, ${errors} xəta`;
+
+    }catch(error){
+        status.textContent="Xəta: "+error.message;
+    }finally{
+        isScanning=false;
+        button.disabled=false;
+        button.textContent="START SCANNER";
     }
 }
 
-</script>
+async function trackSignals(){
+    let active=activeSignals.filter(s=>s.status==="ACTIVE");
 
+    if(!active.length){
+        renderTracking();
+        return;
+    }
+
+    let results=await Promise.allSettled(
+        active.map(async s=>{
+            let response=await fetch(`${API}/ticker/price?symbol=${s.symbol}`);
+            if(!response.ok)throw new Error("Price error");
+            let data=await response.json();
+            return {signal:s,price:Number(data.price)};
+        })
+    );
+
+    results.forEach(result=>{
+        if(result.status!=="fulfilled")return;
+
+        let s=result.value.signal;
+        let price=result.value.price;
+
+        let hitSL=s.direction==="LONG"
+            ?price<=s.stop
+            :price>=s.stop;
+
+        let hitTP1=s.direction==="LONG"
+            ?price>=s.tp1
+            :price<=s.tp1;
+
+        let hitTP2=s.direction==="LONG"
+            ?price>=s.tp2
+            :price<=s.tp2;
+
+        // Eyni yoxlamada həm SL, həm TP keçilibsə,
+        // ardıcıllığı bilmək mümkün deyil.
+        if(hitSL&&hitTP2){
+            s.status="AMBIGUOUS";
+            s.finished=Date.now();
+            historyData.unshift({
+                ...s,
+                result:"AMBIGUOUS",
+                finalPrice:price
+            });
+            return;
+        }
+
+        if(hitTP2){
+            s.status="TP2";
+            s.finished=Date.now();
+            historyData.unshift({
+                ...s,
+                result:"TP2",
+                finalPrice:price
+            });
+            return;
+        }
+
+        if(hitSL){
+            s.status="SL";
+            s.finished=Date.now();
+            historyData.unshift({
+                ...s,
+                result:"SL",
+                finalPrice:price
+            });
+            return;
+        }
+
+        if(hitTP1&&!s.tp1Hit){
+            s.tp1Hit=true;
+            s.tp1Time=Date.now();
+        }
+    });
+
+    activeSignals=activeSignals.filter(s=>s.status==="ACTIVE");
+    historyData=historyData.slice(0,200);
+
+    saveData();
+    renderTracking();
+}
+
+function renderTracking(){
+    let active=activeSignals.filter(s=>s.status==="ACTIVE");
+    let tp1=activeSignals.filter(s=>s.tp1Hit).length;
+    let tp2=historyData.filter(s=>s.result==="TP2").length;
+
+    document.getElementById("activeCount").textContent=active.length;
+    document.getElementById("tp1Count").textContent=tp1;
+    document.getElementById("tp2Count").textContent=tp2;
+
+    let box=document.getElementById("activeSignals");
+
+    box.innerHTML=active.length?active.map(s=>`
+        <div class="history-item">
+            <strong>${s.symbol}</strong> — ${s.direction}
+            <br>Entry: ${priceFormat(s.entry)}
+            <br>Son qiymət: yoxlanılır
+            <br>TP1: ${s.tp1Hit?'<span class="good">Çatıb</span>':'Gözlənilir'}
+            <br>SL: ${priceFormat(s.stop)}
+            <br>TP2: ${priceFormat(s.tp2)}
+        </div>
+    `).join(""):'<div class="empty">Aktiv siqnal yoxdur</div>';
+
+    renderHistory();
+}
+
+function renderHistory(){
+    let tp2=historyData.filter(x=>x.result==="TP2").length;
+    let sl=historyData.filter(x=>x.result==="SL").length;
+    let decided=tp2+sl;
+
+    document.getElementById("wins").textContent=tp2;
+    document.getElementById("losses").textContent=sl;
+
+    document.getElementById("winRate").textContent=
+        decided?((tp2/decided)*100).toFixed(1)+"%":"0%";
+
+    let box=document.getElementById("history");
+
+    box.innerHTML=historyData.length?historyData.slice(0,30).map(s=>{
+        let cls=s.result==="TP2"?"good":s.result==="SL"?"bad":"";
+        return `
+        <div class="history-item">
+            <strong>${s.symbol}</strong> — ${s.direction}
+            <span class="${cls}">${s.result}</span>
+            <br>Entry: ${priceFormat(s.entry)}
+            | Nəticə qiyməti: ${priceFormat(s.finalPrice)}
+            <br>${new Date(s.finished).toLocaleString()}
+        </div>`;
+    }).join(""):'<div class="empty">Tarixçə boşdur</div>';
+}
+
+function clearHistory(){
+    if(!confirm("Bütün tarixçə və aktiv siqnallar silinsin?"))return;
+
+    activeSignals=[];
+    historyData=[];
+    saveData();
+    renderTracking();
+}
+
+renderTracking();
+
+// Hər 15 saniyədə bir aktiv siqnalları yoxla.
+setInterval(()=>{
+    trackSignals().catch(()=>{});
+},15000);
+
+</script>
 </body>
 </html>
