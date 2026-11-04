@@ -232,21 +232,36 @@ function EMAseries(data, period) {
 
 function RSI(data, period = 14) {
 
+    if(data.length <= period) return 50;
+
     let gains = 0;
     let losses = 0;
 
-    for(let i = data.length-period; i < data.length; i++) {
-
+    for(let i = 1; i <= period; i++) {
         let change = data[i] - data[i-1];
 
         if(change > 0) gains += change;
         else losses -= change;
     }
 
-    if(losses === 0) return 100;
-    if(gains === 0) return 0;
+    let avgGain = gains / period;
+    let avgLoss = losses / period;
 
-    return 100 - (100 / (1 + gains/losses));
+    for(let i = period + 1; i < data.length; i++) {
+
+        let change = data[i] - data[i-1];
+
+        let gain = Math.max(change, 0);
+        let loss = Math.max(-change, 0);
+
+        avgGain = (avgGain * (period-1) + gain) / period;
+        avgLoss = (avgLoss * (period-1) + loss) / period;
+    }
+
+    if(avgLoss === 0) return 100;
+    if(avgGain === 0) return 0;
+
+    return 100 - (100 / (1 + avgGain / avgLoss));
 }
 
 // ATR calculation
@@ -397,25 +412,50 @@ async function getAnalysis(pair, timeframe) {
     }
 
     let direction = "WAIT";
+let signalType = "NO SIGNAL";
+let quality = "LOW";
 
-    // RSI FILTER
-    if (
-        rsi > 50 &&
-        rsi < 70 &&
-        bullish >= 60 &&
-        bullish >= bearish + 10
-    ) {
-        direction = "LONG";
-    }
+// LONG SIGNAL
+if (
+    rsi > 45 &&
+    rsi < 72 &&
+    bullish >= 50 &&
+    bullish >= bearish + 10 &&
+    (ema20 > ema50 || macd > signal)
+) {
+    direction = "LONG";
+}
 
-    else if (
-        rsi > 30 &&
-        rsi < 50 &&
-        bearish >= 60 &&
-        bearish >= bullish + 10
-    ) {
-        direction = "SHORT";
+// SHORT SIGNAL
+else if (
+    rsi > 28 &&
+    rsi < 55 &&
+    bearish >= 50 &&
+    bearish >= bullish + 10 &&
+    (ema20 < ema50 || macd < signal)
+) {
+    direction = "SHORT";
+}
+
+let strength = Math.max(bullish,bearish);
+
+// SIGNAL QUALITY
+if(direction !== "WAIT") {
+
+    let confirmed =
+    direction === "LONG"
+    ? ema20 > ema50 && macd > signal
+    : ema20 < ema50 && macd < signal;
+
+    if(strength >= 70 && confirmed) {
+        signalType = "STRONG SIGNAL";
+        quality = "HIGH";
     }
+    else {
+        signalType = "EARLY SIGNAL";
+        quality = strength >= 60 ? "MEDIUM" : "LOW";
+    }
+}
 
     let strength = Math.max(bullish,bearish);
 
@@ -448,6 +488,8 @@ async function getAnalysis(pair, timeframe) {
         warning,
         atr,
         levels
+        signalType,
+        quality,
     };
 }
 
