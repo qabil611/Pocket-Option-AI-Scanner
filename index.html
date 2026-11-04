@@ -3,98 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Trading Scanner</title>
+
+<title>AI Trading Scanner V2</title>
 
 <style>
 body {
-    margin: 0;
-    padding: 15px;
-    background: #101827;
-    color: white;
-    font-family: Arial;
+    margin:0;
+    padding:15px;
+    background:#101827;
+    color:white;
+    font-family:Arial;
 }
+
 h1 {
-    text-align: center;
-    color: #00e5a0;
+    text-align:center;
+    color:#00e5a0;
 }
+
 .box {
-    background: #1d293b;
-    padding: 18px;
-    border-radius: 12px;
-    margin: 15px 0;
+    background:#1d293b;
+    padding:18px;
+    border-radius:12px;
+    margin:15px 0;
 }
-select, button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 12px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
+
+select,button {
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border-radius:8px;
+    border:none;
+    font-size:16px;
 }
+
 button {
-    background: #00c98b;
-    color: white;
-    font-weight: bold;
+    background:#00c98b;
+    color:white;
+    font-weight:bold;
 }
+
+.auto {
+    background:#2878ff;
+}
+
 .result {
-    text-align: center;
-    font-size: 20px;
-    padding: 20px;
+    text-align:center;
+    font-size:22px;
+    padding:15px;
 }
-.green { color: #00e5a0; }
-.red { color: #ff5252; }
-.small { color: #aab5c5; font-size: 13px; }
+
+.green {color:#00e5a0;}
+.red {color:#ff5252;}
+.yellow {color:#ffd54f;}
+
+.small {
+    color:#aab5c5;
+    font-size:13px;
+}
+
+.signal-card {
+    background:#101827;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+    border-left:4px solid #00e5a0;
+}
+
+hr {
+    border:1px solid #344258;
+}
 </style>
 </head>
 
 <body>
 
-<h1>AI TRADING SCANNER</h1>
+<h1>AI TRADING SCANNER V2</h1>
 
 <div class="box">
 
 <h3>Trading Settings</h3>
 
 <label>Market</label>
+
 <select id="market" onchange="changeMarket()">
 <option value="forex">FOREX</option>
 <option value="crypto">CRYPTO</option>
 </select>
 
 <label>Trading Pair</label>
+
 <select id="pair"></select>
 
 <label>Timeframe</label>
+
 <select id="time">
 <option value="1m">1 Minute</option>
 <option value="5m">5 Minutes</option>
 <option value="15m">15 Minutes</option>
 </select>
 
-<button onclick="scan()">START SCANNER</button>
+<button onclick="scan()">SCAN SELECTED PAIR</button>
+
+<button class="auto" onclick="autoScan()">
+AUTO SCAN TOP 5
+</button>
 
 </div>
 
 <div class="box result">
 
 <h3>SCAN RESULT</h3>
-<div id="result">Waiting for market data...</div>
+
+<div id="result">READY</div>
 
 </div>
 
 <div class="box">
 
 <h3>AI Analysis</h3>
-<p id="analysis">Select market and start scanner.</p>
+
+<div id="analysis">
+Waiting for market data...
+</div>
+
+</div>
+
+<div class="box">
+
+<h3>TOP 5 SIGNALS</h3>
+
+<div id="top5">
+Press AUTO SCAN to find signals.
+</div>
 
 </div>
 
 <div class="box">
 
 <h3>Scanner Status</h3>
+
 <p class="green">Interface: ONLINE</p>
-<p id="status" class="red">Market data: WAITING</p>
-<p class="small">Signals are technical indicators, not guaranteed predictions.</p>
+
+<p id="status" class="yellow">
+Market data: WAITING
+</p>
+
+<p class="small">
+Technical signals are not guaranteed trading results.
+</p>
 
 </div>
 
@@ -126,31 +182,34 @@ const cryptoPairs = [
 
 function changeMarket() {
 
-    let market = document.getElementById("market").value;
+    let market =
+    document.getElementById("market").value;
 
-    let pair = document.getElementById("pair");
+    let pair =
+    document.getElementById("pair");
 
     pair.innerHTML = "";
 
-    let list = market === "crypto"
-        ? cryptoPairs
-        : forexPairs;
+    let list =
+    market === "crypto" ? cryptoPairs : forexPairs;
 
     list.forEach(p => {
+
         let option = document.createElement("option");
+
         option.value = p;
         option.textContent = p;
+
         pair.appendChild(option);
+
     });
 
     document.getElementById("result").innerHTML =
-        "READY TO SCAN";
+    "READY";
 
     document.getElementById("analysis").innerHTML =
-        "Select trading pair and timeframe.";
+    "Select pair and start scanner.";
 
-    document.getElementById("status").innerHTML =
-        "Market data: WAITING";
 }
 
 function EMA(data, period) {
@@ -160,10 +219,33 @@ function EMA(data, period) {
     let ema = data[0];
 
     for(let i = 1; i < data.length; i++) {
-        ema = (data[i] - ema) * multiplier + ema;
+
+        ema =
+        (data[i] - ema) * multiplier + ema;
+
     }
 
     return ema;
+}
+
+function EMAseries(data, period) {
+
+    let multiplier = 2 / (period + 1);
+
+    let ema = data[0];
+
+    return data.map((value, index) => {
+
+        if(index > 0) {
+
+            ema =
+            (value - ema) * multiplier + ema;
+
+        }
+
+        return ema;
+
+    });
 }
 
 function RSI(data, period = 14) {
@@ -182,117 +264,352 @@ function RSI(data, period = 14) {
 
     if(losses === 0) return 100;
 
-    return 100 - (100 / (1 + gains/losses));
+    return 100 / (1 + losses/gains + 0) === 0
+        ? 0
+        : 100 - (100 / (1 + gains/losses));
+
+}
+
+async function getAnalysis(pair, timeframe) {
+
+    let symbol = pair.replace("/", "");
+
+    let url =
+    `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${timeframe}&limit=100`;
+
+    let response = await fetch(url);
+
+    if(!response.ok) {
+
+        throw new Error(pair + " data unavailable");
+
+    }
+
+    let candles = await response.json();
+
+    // Yalnız bağlanmış şamları analiz et
+    candles = candles.slice(0,-1);
+
+    let prices =
+    candles.map(c => Number(c[4]));
+
+    let volumes =
+    candles.map(c => Number(c[5]));
+
+    let price = prices[prices.length-1];
+
+    let ema20 = EMA(prices.slice(-40),20);
+
+    let ema50 = EMA(prices,50);
+
+    let rsi = RSI(prices);
+
+    let ema12 = EMAseries(prices,12);
+
+    let ema26 = EMAseries(prices,26);
+
+    let macdLine = prices.map((p,i) =>
+        ema12[i] - ema26[i]
+    );
+
+    let signalLine = EMAseries(macdLine,9);
+
+    let macd = macdLine[macdLine.length-1];
+
+    let signal =
+    signalLine[signalLine.length-1];
+
+    let histogram = macd - signal;
+
+    let avgVolume =
+    volumes.slice(-21,-1).reduce((a,b)=>a+b,0)/20;
+
+    let lastVolume = volumes[volumes.length-1];
+
+    let bullish = 0;
+    let bearish = 0;
+
+    // EMA trend
+
+    if(ema20 > ema50) bullish += 25;
+
+    if(ema20 < ema50) bearish += 25;
+
+    // Price position
+
+    if(price > ema20) bullish += 20;
+
+    if(price < ema20) bearish += 20;
+
+    // MACD
+
+    if(macd > signal && macd > 0)
+        bullish += 25;
+
+    else if(macd > signal)
+        bullish += 15;
+
+    if(macd < signal && macd < 0)
+        bearish += 25;
+
+    else if(macd < signal)
+        bearish += 15;
+
+    // RSI
+
+    if(rsi >= 50 && rsi <= 68)
+        bullish += 15;
+
+    else if(rsi >= 45 && rsi < 50)
+        bullish += 5;
+
+    if(rsi <= 50 && rsi >= 32)
+        bearish += 15;
+
+    else if(rsi > 50 && rsi <= 55)
+        bearish += 5;
+
+    // Volume
+
+    if(lastVolume > avgVolume * 1.2) {
+
+        if(price > Number(candles[candles.length-1][1]))
+            bullish += 15;
+
+        else
+            bearish += 15;
+
+    }
+
+    let direction = "WAIT";
+
+    if(bullish >= 60 && bullish >= bearish + 10)
+        direction = "LONG";
+
+    else if(bearish >= 60 && bearish >= bullish + 10)
+        direction = "SHORT";
+
+    let strength = Math.max(bullish,bearish);
+
+    let warning = "";
+
+    if(rsi >= 70)
+        warning = "OVERBOUGHT";
+
+    else if(rsi <= 30)
+        warning = "OVERSOLD";
+
+    return {
+
+        pair,
+        price,
+        rsi,
+        ema20,
+        ema50,
+        macd,
+        histogram,
+        bullish,
+        bearish,
+        direction,
+        strength,
+        warning
+
+    };
+
+}
+
+function displayAnalysis(data) {
+
+    let color =
+    data.direction === "LONG"
+    ? "green"
+    : data.direction === "SHORT"
+    ? "red"
+    : "yellow";
+
+    document.getElementById("result").innerHTML =
+
+    `<span class="${color}">
+    ${data.direction}
+    </span>`;
+
+    document.getElementById("analysis").innerHTML =
+
+    `Pair: ${data.pair}<hr>
+    Price: ${data.price.toFixed(5)}<br><br>
+    RSI: ${data.rsi.toFixed(2)}<br>
+    EMA 20: ${data.ema20.toFixed(5)}<br>
+    EMA 50: ${data.ema50.toFixed(5)}<br>
+    MACD: ${data.macd.toFixed(5)}<br>
+    MACD Histogram: ${data.histogram.toFixed(5)}<br><br>
+    LONG Score: ${data.bullish}/100<br>
+    SHORT Score: ${data.bearish}/100<br>
+    Signal Strength: ${data.strength}%<br><br>
+    <span class="yellow">
+    ${data.warning || "No RSI warning"}
+    </span>`;
+
 }
 
 async function scan() {
 
-    let market = document.getElementById("market").value;
-    let pair = document.getElementById("pair").value;
-    let timeframe = document.getElementById("time").value;
+    let market =
+    document.getElementById("market").value;
+
+    let pair =
+    document.getElementById("pair").value;
+
+    let timeframe =
+    document.getElementById("time").value;
 
     if(market === "forex") {
 
         document.getElementById("result").innerHTML =
-            "NO SIGNAL";
+        "NO DATA";
 
         document.getElementById("analysis").innerHTML =
-            "Forex live data provider is not connected yet.";
+        "Forex live data provider is not connected yet.";
 
         return;
+
     }
 
     document.getElementById("result").innerHTML =
-        "SCANNING...";
+    "SCANNING...";
 
     document.getElementById("status").innerHTML =
-        "Connecting to Binance...";
+    "Connecting to Binance...";
 
     try {
 
-        let symbol = pair.replace("/", "");
+        let data =
+        await getAnalysis(pair,timeframe);
 
-        let url =
-        `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${timeframe}&limit=100`;
-
-        let response = await fetch(url);
-
-        if(!response.ok) {
-            throw new Error("Market data unavailable");
-        }
-
-        let candles = await response.json();
-
-        let prices = candles.map(c => Number(c[4]));
-
-        let price = prices[prices.length-1];
-
-        let ema20 = EMA(prices.slice(-40), 20);
-
-        let ema50 = EMA(prices, 50);
-
-        let rsi = RSI(prices);
-
-        let fast = EMA(prices.slice(-30), 12);
-
-        let slow = EMA(prices.slice(-30), 26);
-
-        let macd = fast - slow;
-
-        let signal = "NO SIGNAL";
-
-        let strength = 0;
-
-        if(price > ema20 && ema20 > ema50 && rsi > 50 && rsi < 70 && macd > 0) {
-
-            signal = "LONG";
-            strength = 80;
-
-        }
-
-        else if(price < ema20 && ema20 < ema50 && rsi < 50 && rsi > 30 && macd < 0) {
-
-            signal = "SHORT";
-            strength = 80;
-
-        }
-
-        let color = signal === "LONG"
-            ? "green"
-            : signal === "SHORT"
-            ? "red"
-            : "";
-
-        document.getElementById("result").innerHTML =
-        `<span class="${color}">${signal}</span>`;
-
-        document.getElementById("analysis").innerHTML =
-
-        `Pair: ${pair}<br><br>
-        Price: ${price}<br>
-        RSI: ${rsi.toFixed(2)}<br>
-        EMA 20: ${ema20.toFixed(5)}<br>
-        EMA 50: ${ema50.toFixed(5)}<br>
-        MACD: ${macd.toFixed(5)}<br><br>
-        Signal Strength: ${strength}%`;
+        displayAnalysis(data);
 
         document.getElementById("status").innerHTML =
-            "LIVE CRYPTO DATA: CONNECTED";
+        "LIVE CRYPTO DATA: CONNECTED";
 
     }
 
     catch(error) {
 
         document.getElementById("result").innerHTML =
-            "DATA ERROR";
+        "DATA ERROR";
 
         document.getElementById("analysis").innerHTML =
-            error.message;
+        error.message;
 
         document.getElementById("status").innerHTML =
-            "MARKET DATA: ERROR";
+        "MARKET DATA: ERROR";
 
     }
+
+}
+
+async function autoScan() {
+
+    if(document.getElementById("market").value !== "crypto") {
+
+        alert("AUTO SCAN is available for CRYPTO.");
+
+        return;
+
+    }
+
+    let timeframe =
+    document.getElementById("time").value;
+
+    document.getElementById("top5").innerHTML =
+    "Scanning 11 cryptocurrencies...";
+
+    document.getElementById("status").innerHTML =
+    "AUTO SCANNER RUNNING...";
+
+    document.getElementById("result").innerHTML =
+    "SCANNING ALL COINS...";
+
+    let results = [];
+
+    let errors = 0;
+
+    let scans = await Promise.allSettled(
+
+        cryptoPairs.map(pair =>
+            getAnalysis(pair,timeframe)
+        )
+
+    );
+
+    scans.forEach(item => {
+
+        if(item.status === "fulfilled") {
+
+            results.push(item.value);
+
+        } else {
+
+            errors++;
+
+        }
+
+    });
+
+    results.sort((a,b) =>
+        b.strength - a.strength
+    );
+
+    let top = results
+        .filter(x =>
+            x.direction !== "WAIT"
+        )
+        .slice(0,5);
+
+    if(top.length === 0) {
+
+        document.getElementById("top5").innerHTML =
+        "No strong signals found. Wait for a better setup.";
+
+    } else {
+
+        document.getElementById("top5").innerHTML = "";
+
+        top.forEach((item,index) => {
+
+            let color =
+            item.direction === "LONG"
+            ? "green"
+            : "red";
+
+            let card =
+            document.createElement("div");
+
+            card.className = "signal-card";
+
+            card.innerHTML =
+
+            `<b>#${index+1} ${item.pair}</b><br><br>
+            <span class="${color}">
+            ${item.direction}
+            </span><br>
+            Strength: ${item.strength}%<br>
+            Price: ${item.price}<br>
+            RSI: ${item.rsi.toFixed(2)}<br>
+            ${item.warning}`;
+
+            document.getElementById("top5")
+            .appendChild(card);
+
+        });
+
+    }
+
+    document.getElementById("result").innerHTML =
+    `SCAN COMPLETE<br>
+    ${top.length} SIGNALS FOUND`;
+
+    document.getElementById("status").innerHTML =
+    `SCAN COMPLETE: ${results.length} coins checked, ${errors} errors`;
 
 }
 
