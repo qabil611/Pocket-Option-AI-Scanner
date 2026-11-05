@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#08111f">
 <link rel="manifest" href="./manifest.json">
-<title>AI Trading Scanner V9</title>
+<title>POCKET OPTION LIVE AI V9</title>
 
 <style>
 :root{
@@ -97,10 +97,16 @@ display:flex;align-items:center;justify-content:space-between;
 gap:10px;flex-wrap:wrap
 }
 #scannerPanel[hidden]{display:none!important}
+.indicator-box{
+display:grid;grid-template-columns:repeat(4,1fr);
+gap:8px;margin-top:10px
+}
+.indicator-box .cell b{font-size:15px}
 @media(max-width:650px){
 .stats{grid-template-columns:repeat(2,1fr)}
 .grid{grid-template-columns:repeat(2,1fr)}
 .live-grid{grid-template-columns:repeat(2,1fr)}
+.indicator-box{grid-template-columns:repeat(2,1fr)}
 h1{font-size:21px}
 .wrap{padding:10px}
 }
@@ -120,10 +126,8 @@ h1{font-size:21px}
 </div>
 </header>
 
-<!-- MARKET SCANNER -->
 <section class="panel" id="scannerPanel" hidden>
 <h2>📊 MARKET SCANNER</h2>
-
 <div class="row">
 <label>Əsas timeframe</label>
 <select id="tf">
@@ -131,49 +135,40 @@ h1{font-size:21px}
 <option value="5m">5 dəqiqə</option>
 <option value="1h">1 saat</option>
 </select>
-
 <label>Minimum bal</label>
 <select id="threshold">
 <option value="80">80+</option>
 <option value="75">75+</option>
 <option value="85">85+</option>
 </select>
-
 <button id="scanBtn">START SCANNER</button>
 </div>
-
 <div class="row" style="margin-top:12px">
 <button class="tab active" data-market="all">HAMISI</button>
 <button class="tab secondary" data-market="crypto">CRYPTO</button>
 <button class="tab secondary" data-market="forex">FOREX</button>
 </div>
-
 <div class="stats">
 <div class="stat"><span class="muted">Yoxlanılan</span><b id="checked">0</b></div>
 <div class="stat"><span class="muted">LONG</span><b id="longs">0</b></div>
 <div class="stat"><span class="muted">SHORT</span><b id="shorts">0</b></div>
 <div class="stat"><span class="muted">Siqnallar</span><b id="signals">0</b></div>
 </div>
-
 <div class="status" id="status">Skan gözləyir.</div>
 <h3>Güclü siqnallar</h3>
 <div id="results"><p class="muted">Skan başladılmayıb.</p></div>
 </section>
 
-<!-- LIVE AI -->
 <section class="panel">
 <h2 class="live-title">⚡ LIVE MULTI-TIMEFRAME ANALİZ</h2>
-
 <div class="row" style="margin-top:12px">
 <label>Bazar</label>
 <select id="liveMarket">
 <option value="crypto">CRYPTO – Binance</option>
 <option value="forex">FOREX</option>
 </select>
-
 <label>Aktiv</label>
 <select id="liveSymbol"></select>
-
 <button id="liveStart">▶ START LIVE</button>
 <button id="liveStop" class="secondary">■ STOP</button>
 </div>
@@ -181,63 +176,66 @@ h1{font-size:21px}
 <div class="live-status" id="liveStatus">Canlı analiz gözləyir...</div>
 
 <div class="grid">
-<div class="cell">
-<small>CANLI QİYMƏT</small>
-<b id="livePrice">---</b>
-</div>
-<div class="cell">
-<small>AI SCORE</small>
-<b class="score" id="totalScore">0</b>
-</div>
-<div class="cell">
-<small>İSTİQAMƏT UYĞUNLUĞU</small>
-<b id="agreement">---</b>
-</div>
+<div class="cell"><small>CANLI QİYMƏT</small><b id="livePrice">---</b></div>
+<div class="cell"><small>AI SCORE</small><b class="score" id="totalScore">0</b></div>
+<div class="cell"><small>İSTİQAMƏT UYĞUNLUĞU</small><b id="agreement">---</b></div>
 </div>
 
 <h3>📊 Zaman intervalları</h3>
+<div class="live-grid" id="timeframeGrid">
 
-<div class="live-grid">
 <div class="live-card">
-<h3>5 SANİYƏ</h3>
-<b id="s5" class="wait">WAIT</b>
+<h3>5 SANİYƏ</h3><b id="s5" class="wait">WAIT</b>
 <span class="muted" id="s5score">Məlumat gözlənilir</span>
 </div>
 <div class="live-card">
-<h3>10 SANİYƏ</h3>
-<b id="s10" class="wait">WAIT</b>
+<h3>10 SANİYƏ</h3><b id="s10" class="wait">WAIT</b>
 <span class="muted" id="s10score">Məlumat gözlənilir</span>
 </div>
 <div class="live-card">
-<h3>15 SANİYƏ</h3>
-<b id="s15" class="wait">WAIT</b>
+<h3>15 SANİYƏ</h3><b id="s15" class="wait">WAIT</b>
 <span class="muted" id="s15score">Məlumat gözlənilir</span>
 </div>
 <div class="live-card">
-<h3>1 DƏQİQƏ</h3>
-<b id="m1" class="wait">WAIT</b>
+<h3>1 DƏQİQƏ</h3><b id="m1" class="wait">WAIT</b>
 <span class="muted" id="m1score">0/100</span>
 </div>
 <div class="live-card">
-<h3>3 DƏQİQƏ</h3>
-<b id="m3" class="wait">WAIT</b>
+<h3>3 DƏQİQƏ</h3><b id="m3" class="wait">WAIT</b>
 <span class="muted" id="m3score">0/100</span>
 </div>
 <div class="live-card">
-<h3>5 DƏQİQƏ</h3>
-<b id="m5" class="wait">WAIT</b>
+<h3>5 DƏQİQƏ</h3><b id="m5" class="wait">WAIT</b>
 <span class="muted" id="m5score">0/100</span>
 </div>
 <div class="live-card">
-<h3>10 DƏQİQƏ</h3>
-<b id="m10" class="wait">WAIT</b>
+<h3>10 DƏQİQƏ</h3><b id="m10" class="wait">WAIT</b>
 <span class="muted" id="m10score">0/100</span>
 </div>
 <div class="live-card">
-<h3>MƏNBƏ</h3>
-<b id="sourceState" class="wait">---</b>
-<span class="muted">Məlumat keyfiyyəti</span>
+<h3>30 DƏQİQƏ</h3><b id="m30" class="wait">WAIT</b>
+<span class="muted" id="m30score">0/100</span>
 </div>
+<div class="live-card">
+<h3>1 SAAT</h3><b id="h1" class="wait">WAIT</b>
+<span class="muted" id="h1score">0/100</span>
+</div>
+<div class="live-card">
+<h3>2 SAAT</h3><b id="h2" class="wait">WAIT</b>
+<span class="muted" id="h2score">0/100</span>
+</div>
+</div>
+
+<h3>📈 Texniki göstəricilər</h3>
+<div class="indicator-box">
+<div class="cell"><small>RSI 14</small><b id="indRSI">---</b></div>
+<div class="cell"><small>MACD</small><b id="indMACD">---</b></div>
+<div class="cell"><small>EMA TREND</small><b id="indEMA">---</b></div>
+<div class="cell"><small>ATR</small><b id="indATR">---</b></div>
+<div class="cell"><small>BOLLINGER</small><b id="indBB">---</b></div>
+<div class="cell"><small>HƏCM</small><b id="indVOL">---</b></div>
+<div class="cell"><small>ŞAM FİQURU</small><b id="indCANDLE">---</b></div>
+<div class="cell"><small>TREND GÜCÜ</small><b id="indTREND">---</b></div>
 </div>
 
 <div class="consensus">
@@ -250,9 +248,7 @@ h1{font-size:21px}
 
 <section class="panel">
 <h2>📜 LIVE SIGNAL HISTORY</h2>
-<div id="liveHistory">
-<p class="muted">Hələ siqnal yoxdur.</p>
-</div>
+<div id="liveHistory"><p class="muted">Hələ siqnal yoxdur.</p></div>
 <button class="secondary" id="clearHistory">Tarixçəni təmizlə</button>
 </section>
 
@@ -261,7 +257,6 @@ Risk xəbərdarlığı: AI SCORE qazanc ehtimalı deyil və qazanca zəmanət ve
 Binance qiymətləri Pocket Option qiymətlərindən fərqlənə bilər.
 Qısa intervallarda səs-küy və gecikmə yüksəkdir. Əvvəlcə demo hesabda yoxlayın.
 </p>
-
 </div>
 
 <script>
@@ -270,52 +265,63 @@ Qısa intervallarda səs-küy və gecikmə yüksəkdir. Əvvəlcə demo hesabda 
 const $=id=>document.getElementById(id);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
+const cryptoPairs=[
+'BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT',
+'DOGEUSDT','ADAUSDT','LINKUSDT','AVAXUSDT','LTCUSDT',
+'DOTUSDT','TRXUSDT'
+];
+
 const forexPairs=[
 'EUR/USD','GBP/USD','USD/JPY','USD/CHF',
 'AUD/USD','USD/CAD','NZD/USD'
 ];
 
-const cryptoPairs=[
-'BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT',
-'XRPUSDT','DOGEUSDT','ADAUSDT','LINKUSDT',
-'AVAXUSDT','LTCUSDT','DOTUSDT','TRXUSDT'
+const frames=[
+{id:'s5',seconds:5,label:'5 saniyə'},
+{id:'s10',seconds:10,label:'10 saniyə'},
+{id:'s15',seconds:15,label:'15 saniyə'},
+{id:'m1',seconds:60,label:'1 dəqiqə'},
+{id:'m3',seconds:180,label:'3 dəqiqə'},
+{id:'m5',seconds:300,label:'5 dəqiqə'},
+{id:'m10',seconds:600,label:'10 dəqiqə'},
+{id:'m30',seconds:1800,label:'30 dəqiqə'},
+{id:'h1',seconds:3600,label:'1 saat'},
+{id:'h2',seconds:7200,label:'2 saat'}
 ];
 
-const minuteFrames={m1:1,m3:3,m5:5,m10:10};
-let liveLists={m1:[],m3:[],m5:[],m10:[]};
-
-let activeMarket='all';
-let scanBusy=false;
 let liveRunning=false;
 let socket=null;
-let forexTimer=null;
+let refreshTimer=null;
 let renderTimer=null;
-let liveSource=[];
 let tickCandles=[];
+let liveLists={};
 let livePrice=0;
+let liveHistory=loadHistory();
 let lastSavedKey='';
-let history=loadHistory();
+let activeMarket='all';
+let scanBusy=false;
+let forexTimer=null;
 
 function loadHistory(){
- try{
-  return JSON.parse(localStorage.getItem('po_live_history_v9')||'[]');
- }catch{
-  return [];
- }
+ try{return JSON.parse(localStorage.getItem('po_live_history_v9')||'[]')}
+ catch{return []}
+}
+
+function saveHistory(){
+ localStorage.setItem('po_live_history_v9',JSON.stringify(liveHistory));
 }
 
 function fmtPrice(n){
  if(!Number.isFinite(Number(n)))return '—';
  const x=Number(n);
- const digits=x>=1000?2:x>=1?4:x>=.01?6:8;
  return x.toLocaleString('en-US',{
   minimumFractionDigits:2,
-  maximumFractionDigits:digits
+  maximumFractionDigits:x>=1000?2:x>=1?4:8
  });
 }
 
 function ema(a,p){
- if(!a.length)return 0;
+ if(a.length===0)return 0;
  const k=2/(p+1);
  let v=a[0];
  for(let i=1;i<a.length;i++)v=a[i]*k+v*(1-k);
@@ -331,18 +337,15 @@ function rsi(a,p=14){
   else loss-=d;
  }
  if(loss===0)return gain===0?50:100;
- const rs=(gain/p)/(loss/p);
+ const rs=gain/loss;
  return 100-100/(1+rs);
 }
 
-function macdHist(a){
+function macd(a){
  if(a.length<35)return 0;
- const lines=[];
- for(let i=Math.max(30,a.length-40);i<=a.length;i++){
-  const z=a.slice(0,i);
-  lines.push(ema(z.slice(-60),12)-ema(z.slice(-60),26));
- }
- return lines.at(-1)-ema(lines,9);
+ const fast=ema(a.slice(-60),12);
+ const slow=ema(a.slice(-60),26);
+ return fast-slow;
 }
 
 function atr(c,p=14){
@@ -350,234 +353,561 @@ function atr(c,p=14){
  let sum=0;
  for(let i=c.length-p;i<c.length;i++){
   const x=c[i],q=c[i-1];
-  sum+=Math.max(x.h-x.l,Math.abs(x.h-q.c),Math.abs(x.l-q.c));
+  sum+=Math.max(
+   x.h-x.l,
+   Math.abs(x.h-q.c),
+   Math.abs(x.l-q.c)
+  );
  }
  return sum/p;
 }
 
+function bollinger(a,p=20){
+ if(a.length<p)return null;
+ const v=a.slice(-p);
+ const avg=v.reduce((s,x)=>s+x,0)/p;
+ const variance=v.reduce((s,x)=>s+(x-avg)**2,0)/p;
+ const sd=Math.sqrt(variance);
+ return {mid:avg,upper:avg+2*sd,lower:avg-2*sd};
+}
+
+function candlePattern(c){
+ if(c.length<3)return 'Məlumat azdır';
+ const x=c.at(-1);
+ const prev=c.at(-2);
+ const body=Math.abs(x.c-x.o);
+ const range=Math.max(x.h-x.l,0.00000001);
+ const upper=x.h-Math.max(x.o,x.c);
+ const lower=Math.min(x.o,x.c)-x.l;
+
+ if(body/range<0.1)return 'Doji';
+ if(lower>body*2&&upper<body)return 'Hammer';
+ if(upper>body*2&&lower<body)return 'Shooting Star';
+ if(x.c>x.o&&prev.c<prev.o&&x.c>prev.o&&x.o<prev.c)
+  return 'Bullish Engulfing';
+ if(x.c<x.o&&prev.c>prev.o&&x.o>prev.c&&x.c<prev.o)
+  return 'Bearish Engulfing';
+ return x.c>x.o?'Bullish candle':x.c<x.o?'Bearish candle':'Neutral';
+}
+
 function scoreCandles(c){
  if(!c||c.length<35){
-  return {
-   side:'WAIT',
-   score:0,
-   reason:'Kifayət qədər şam yoxdur'
-  };
+  return {side:'WAIT',score:0,reason:'Kifayət qədər şam yoxdur'};
  }
 
  const close=c.map(x=>x.c);
  const last=close.at(-1);
- const e9=ema(close.slice(-80),9);
+ const e9=ema(close.slice(-100),9);
  const e21=ema(close.slice(-100),21);
  const e50=ema(close.slice(-150),50);
+ const e200=ema(close,200);
  const rv=rsi(close);
- const mh=macdHist(close);
+ const mh=macd(close);
+ const bb=bollinger(close);
+ const av=atr(c);
+ const lastCandle=c.at(-1);
+ const avgVol=c.slice(-21,-1).reduce((s,x)=>s+(x.v||0),0)/20;
+ const volume=lastCandle.v||0;
 
  let bull=0,bear=0;
- const prev=c.at(-2);
-
- if(last>e9)bull+=15;else bear+=15;
- if(e9>e21)bull+=15;else bear+=15;
- if(e21>e50)bull+=20;else bear+=20;
-
- if(rv>=52&&rv<=68)bull+=15;
- else if(rv<=48&&rv>=32)bear+=15;
-
- if(mh>0)bull+=15;
- else if(mh<0)bear+=15;
-
- if(last>prev.c)bull+=10;
- else if(last<prev.c)bear+=10;
-
- const avgVol=c.slice(-21,-1)
-  .reduce((s,x)=>s+(x.v||0),0)/20;
- const vol=c.at(-1).v||0;
-
- if(avgVol>0&&vol>avgVol*1.15){
-  if(last>c.at(-1).o)bull+=10;
-  else if(last<c.at(-1).o)bear+=10;
- }
-
- let side=bull>bear?'CALL':bear>bull?'PUT':'WAIT';
- let score=Math.max(bull,bear);
  const reasons=[];
 
- if((side==='CALL'&&rv>72)||(side==='PUT'&&rv<28)){
-  score=Math.max(0,score-15);
-  reasons.push('RSI ekstrem zonadadır');
+ if(last>e9)bull+=8;else bear+=8;
+ if(e9>e21)bull+=12;else bear+=12;
+ if(e21>e50)bull+=14;else bear+=14;
+ if(e50>e200)bull+=12;else bear+=12;
+
+ if(rv>=52&&rv<=68)bull+=10;
+ else if(rv<=48&&rv>=32)bear+=10;
+ else if(rv>70)reasons.push('RSI yüksəkdir');
+ else if(rv<30)reasons.push('RSI aşağıdır');
+
+ if(mh>0)bull+=12;else if(mh<0)bear+=12;
+
+ if(lastCandle.c>lastCandle.o)bull+=8;
+ else if(lastCandle.c<lastCandle.o)bear+=8;
+
+ if(bb){
+  if(last>bb.mid)bull+=6;
+  else bear+=6;
+  if(last>bb.upper)reasons.push('Qiymət Bollinger üst zolağına yaxındır');
+  if(last<bb.lower)reasons.push('Qiymət Bollinger alt zolağına yaxındır');
  }
 
- if(avgVol>0&&vol<avgVol*.5){
-  score=Math.max(0,score-8);
-  reasons.push('Həcm zəifdir');
+ if(avgVol>0){
+  if(volume>avgVol*1.15){
+   if(lastCandle.c>lastCandle.o)bull+=8;
+   else if(lastCandle.c<lastCandle.o)bear+=8;
+  }else if(volume<avgVol*.5){
+   reasons.push('Həcm zəifdir');
+  }
  }
 
- if(Math.abs(bull-bear)<20){
+ const pattern=candlePattern(c);
+ if(pattern==='Bullish Engulfing'||pattern==='Hammer')bull+=8;
+ if(pattern==='Bearish Engulfing'||pattern==='Shooting Star')bear+=8;
+
+ const difference=Math.abs(bull-bear);
+ let side=bull>bear?'CALL':bear>bull?'PUT':'WAIT';
+ let score=Math.max(bull,bear);
+
+ if(difference<18){
+  side='WAIT';
   reasons.push('İstiqamət təsdiqi zəifdir');
  }
-
  if(score<55)side='WAIT';
 
  return {
   side,
-  score:Math.min(100,score),
+  score:Math.min(100,Math.round(score)),
   rsi:rv,
-  atr:atr(c),
-  reason:reasons.join('; ')||'Trend və momentum qiymətləndirilib'
+  macd:mh,
+  ema:e9>e21?'Yuxarı':'Aşağı',
+  atr:av,
+  bb,
+  volume:avgVol>0?(volume/avgVol):0,
+  pattern,
+  trend:Math.round(difference),
+  reason:reasons.join('; ')||'Trend və momentum təsdiqlənib'
  };
 }
 
-function makeLevels(side,price,range){
- const risk=Math.max(range*1.5,price*.0001);
- const sign=side==='CALL'?1:-1;
+function aggregate(source,seconds){
+ const out=[];
+ const ms=seconds*1000;
 
- return {
-  entry:price,
-  sl:price-sign*risk,
-  tp1:price+sign*risk*1.5,
-  tp2:price+sign*risk*2.2,
-  rr1:1.5,
-  rr2:2.2
+ for(const x of source){
+  const t=Math.floor(x.t/ms)*ms;
+  const last=out.at(-1);
+  if(!last||last.t!==t){
+   out.push({t,o:x.o,h:x.h,l:x.l,c:x.c,v:x.v||0});
+  }else{
+   last.h=Math.max(last.h,x.h);
+   last.l=Math.min(last.l,x.l);
+   last.c=x.c;
+   last.v+=(x.v||0);
+  }
+ }
+ return out;
+}
+
+function updateOne(id,result){
+ const el=$(id);
+ if(!el)return;
+ el.textContent=result.side;
+ el.className=result.side==='CALL'?'call':
+  result.side==='PUT'?'put':'wait';
+ const scoreEl=$(id+'score');
+ if(scoreEl){
+  scoreEl.textContent=`${result.score}/100 · ${result.reason||''}`;
+ }
+}
+
+function updateIndicators(r){
+ $('indRSI').textContent=Number.isFinite(r.rsi)?r.rsi.toFixed(1):'---';
+ $('indMACD').textContent=Number.isFinite(r.macd)?r.macd.toFixed(6):'---';
+ $('indEMA').textContent=r.ema||'---';
+ $('indATR').textContent=Number.isFinite(r.atr)?fmtPrice(r.atr):'---';
+ $('indBB').textContent=r.bb?'Aktiv':'---';
+ $('indVOL').textContent=r.volume? r.volume.toFixed(2)+'x':'---';
+ $('indCANDLE').textContent=r.pattern||'---';
+ $('indTREND').textContent=r.trend!==undefined?r.trend+'/100':'---';
+}
+
+function renderHistory(){
+ $('liveHistory').innerHTML=liveHistory.length?liveHistory.map(x=>`
+ <div class="history-item">
+ <b class="${x.side==='CALL'?'call':'put'}">${x.side}</b>
+ · SCORE ${x.score}
+ · Qiymət ${fmtPrice(x.price)}
+ · Uyğunluq ${x.agree}%
+ <span class="pill">${x.status||'OPEN'}</span>
+ <br><span class="muted">${x.time}</span>
+ </div>`).join(''):'<p class="muted">Hələ siqnal yoxdur.</p>';
+}
+
+function addHistory(side,score,agree){
+ const key=side+'_'+Math.floor(Date.now()/60000);
+ if(key===lastSavedKey)return;
+ lastSavedKey=key;
+
+ liveHistory.unshift({
+  side,score,agree,price:livePrice,
+  time:new Date().toLocaleString(),
+  status:'OPEN'
+ });
+ liveHistory=liveHistory.slice(0,50);
+ saveHistory();
+ renderHistory();
+}
+
+function updateLive(){
+ if(!liveRunning)return;
+
+ const isCrypto=$('liveMarket').value==='crypto';
+ const results=[];
+
+ if(isCrypto){
+  for(const s of [5,10,15]){
+   const candles=aggregate(tickCandles,s);
+   const r=scoreCandles(candles);
+   updateOne('s'+s,r);
+   if(r.side!=='WAIT')results.push({...r,weight:0.5});
+  }
+ }else{
+  for(const s of [5,10,15]){
+   updateOne('s'+s,{
+    side:'WAIT',score:0,
+    reason:'Forex saniyəlik məlumatı mövcud deyil'
+   });
+  }
+ }
+
+ let primary=null;
+
+ for(const f of frames.filter(x=>x.seconds>=60)){
+  const candles=liveLists[f.id]||[];
+  const r=scoreCandles(candles);
+  updateOne(f.id,r);
+
+  if(f.id==='h1')primary=r;
+  if(f.id==='m30'||f.id==='h1'||f.id==='h2'){
+   if(r.side!=='WAIT')results.push({...r,weight:2});
+  }else if(r.side!=='WAIT'){
+   results.push({...r,weight:1});
+  }
+ }
+
+ if(primary)updateIndicators(primary);
+
+ let bull=0,bear=0,total=0;
+ results.forEach(r=>{
+  if(r.side==='CALL')bull+=r.weight;
+  if(r.side==='PUT')bear+=r.weight;
+  total+=r.weight;
+ });
+
+ const max=Math.max(bull,bear);
+ const agreement=total?Math.round(max/total*100):0;
+ let side='WAIT';
+ let score=0;
+
+ if(total>=3&&agreement>=70){
+  side=bull>bear?'CALL':'PUT';
+  score=Math.round(Math.min(100,(max/total)*100));
+ }
+
+ if(side!=='WAIT'&&score>=85){
+  $('finalSignal').textContent=side==='CALL'?'GÜCLÜ BUY':'GÜCLÜ PUT';
+ }else if(side!=='WAIT'){
+  $('finalSignal').textContent=side==='CALL'?'BUY':'PUT';
+ }else{
+  $('finalSignal').textContent='WAIT';
+ }
+
+ $('finalSignal').className=side==='CALL'?'call':side==='PUT'?'put':'wait';
+ $('finalScore').textContent=score+'/100';
+ $('totalScore').textContent=score;
+ $('agreement').textContent=total?agreement+'%':'---';
+
+ if(side==='WAIT'){
+  $('finalText').textContent='Kifayət qədər eyni istiqamətli təsdiq yoxdur. Gözləyin.';
+ }else{
+  $('finalText').textContent=
+   `${side==='CALL'?'Alış':'Satış'} istiqamətində ${agreement}% uyğunluq. Demo hesabda yoxlayın.`;
+  addHistory(side,score,agreement);
+ }
+}
+
+function resetFrames(){
+ frames.forEach(f=>{
+  $(f.id).textContent='WAIT';
+  $(f.id).className='wait';
+  $(f.id+'score').textContent='Məlumat gözlənilir';
+ });
+ $('finalSignal').textContent='WAIT';
+ $('finalSignal').className='wait';
+ $('finalScore').textContent='0/100';
+ $('totalScore').textContent='0';
+ $('agreement').textContent='---';
+}
+
+async function loadCryptoHistory(symbol){
+ const r=await fetch(
+  `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1m&limit=1000`
+ );
+ if(!r.ok)throw Error('Binance şam məlumatı alınmadı');
+ const data=await r.json();
+ const candles=data.slice(0,-1).map(x=>({
+  t:Number(x[0]),o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]
+ }));
+ liveLists={};
+ frames.filter(f=>f.seconds>=60).forEach(f=>{
+  liveLists[f.id]=aggregate(candles,f.seconds);
+ });
+}
+
+function startSocket(symbol){
+ if(socket){
+  socket.onclose=null;
+  socket.close();
+  socket=null;
+ }
+ socket=new WebSocket(
+  `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@aggTrade`
+ );
+
+ socket.onopen=()=>{
+  $('liveStatus').textContent='Binance canlı bağlantısı qoşuldu.';
+  $('sourceState').textContent='LIVE';
+  $('sourceState').className='call';
+ };
+
+ socket.onmessage=e=>{
+  const d=JSON.parse(e.data);
+  const price=+d.p;
+  const t=Number(d.T);
+  const volume=+d.q;
+
+  livePrice=price;
+  $('livePrice').textContent=fmtPrice(price);
+
+  tickCandles.push({
+   t,o:price,h:price,l:price,c:price,v:volume
+  });
+
+  const cutoff=Date.now()-20*60*1000;
+  tickCandles=tickCandles.filter(x=>x.t>=cutoff);
+
+  const minute=Math.floor(t/60000)*60000;
+  const current=liveLists.m1||[];
+  const last=current.at(-1);
+
+  if(!last||last.t!==minute){
+   current.push({t:minute,o:price,h:price,l:price,c:price,v:volume});
+  }else{
+   last.h=Math.max(last.h,price);
+   last.l=Math.min(last.l,price);
+   last.c=price;
+   last.v+=volume;
+  }
+
+  liveLists.m1=current;
+  frames.filter(f=>f.seconds>60).forEach(f=>{
+   if(f.seconds===60)return;
+   liveLists[f.id]=aggregate(liveLists.m1,f.seconds/60);
+  });
+ };
+
+ socket.onerror=()=>{
+  $('liveStatus').textContent='Binance bağlantı xətası.';
+  $('sourceState').textContent='ERROR';
+  $('sourceState').className='put';
+ };
+
+ socket.onclose=()=>{
+  if(liveRunning){
+   $('liveStatus').textContent='Bağlantı kəsildi. Yenidən qoşulmağa çalışılır...';
+   setTimeout(()=>{
+    if(liveRunning)startSocket(symbol);
+   },3000);
+  }
  };
 }
 
-function analyzeScan(c,symbol,market){
- const a=scoreCandles(c);
- if(a.side==='WAIT'||a.score<Number($('threshold').value))return null;
+async function startCrypto(){
+ const symbol=$('liveSymbol').value;
+ if(!symbol)throw Error('Aktiv seçilməyib');
 
- const side=a.side==='CALL'?'LONG':'SHORT';
- const price=c.at(-1).c;
- const levels=makeLevels(a.side,price,a.atr||price*.001);
+ $('liveStatus').textContent='Binance məlumatları yüklənir...';
+ await loadCryptoHistory(symbol);
+ tickCandles=[];
+ startSocket(symbol);
 
- return {
-  symbol,market,side,score:a.score,rsi:a.rsi,...levels
- };
+ renderTimer=setInterval(updateLive,2000);
 }
 
-function renderSignals(list){
- const sorted=[...list].sort((a,b)=>b.score-a.score);
-
- $('results').innerHTML=sorted.length?sorted.map(s=>`
- <div class="signal ${s.side==='SHORT'?'short':''}">
- <h3>
-  <span>${s.symbol} <span class="tag">${s.side}</span></span>
-  <span>${s.score}/100</span>
- </h3>
- <div class="muted">${s.market} · RSI ${Number(s.rsi).toFixed(1)}</div>
- <div class="grid">
-  <div class="cell"><small>ENTRY</small>${fmtPrice(s.entry)}</div>
-  <div class="cell"><small>STOP LOSS</small>${fmtPrice(s.sl)}</div>
-  <div class="cell"><small>TAKE PROFIT 1</small>${fmtPrice(s.tp1)}</div>
-  <div class="cell"><small>TAKE PROFIT 2</small>${fmtPrice(s.tp2)}</div>
-  <div class="cell"><small>R/R TP1</small>1 : ${s.rr1.toFixed(2)}</div>
-  <div class="cell"><small>R/R TP2</small>1 : ${s.rr2.toFixed(2)}</div>
- </div>
- </div>`).join('')
- :'<p class="muted">Seçilmiş minimum bala uyğun siqnal tapılmadı.</p>';
-}
-
-/* MARKET SCANNER */
-
-async function getCryptoSymbols(){
- const r=await fetch('https://api.binance.com/api/v3/ticker/24hr');
- if(!r.ok)throw Error('Binance ticker xətası');
-
- const d=await r.json();
- const excluded=['UP','DOWN','BULL','BEAR'];
-
- return d.filter(x=>
-  x.symbol.endsWith('USDT')&&
-  !excluded.some(k=>x.symbol.includes(k+'USDT'))&&
-  Number(x.quoteVolume)>1000000
- )
- .sort((a,b)=>Number(b.quoteVolume)-Number(a.quoteVolume))
- .slice(0,100)
- .map(x=>x.symbol);
-}
-
-/* API açarı interfeysdən çıxarılıb.
-   Əvvəllər yadda saxlanmış açar varsa, localStorage-dan oxunur. */
 function getKey(){
  return localStorage.getItem('td_api_key')||'';
 }
 
 async function getForexCandles(pair,interval,key){
- const url=
- `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(pair)}&interval=${interval}&outputsize=220&apikey=${encodeURIComponent(key)}`;
-
+ const url=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(pair)}&interval=${interval}&outputsize=500&apikey=${encodeURIComponent(key)}`;
  const r=await fetch(url);
- if(!r.ok)throw Error('Twelve Data HTTP '+r.status);
-
+ if(!r.ok)throw Error('Forex HTTP '+r.status);
  const d=await r.json();
  if(!d.values)throw Error(d.message||'Forex məlumatı alınmadı');
 
  return d.values.slice().reverse().map(x=>({
+  t:new Date(x.datetime).getTime(),
   o:+x.open,h:+x.high,l:+x.low,c:+x.close,v:+(x.volume||0)
  }));
 }
 
+async function startForex(){
+ const key=getKey();
+ if(!key)throw Error('Forex üçün əvvəllər yadda saxlanmış Twelve Data API açarı tapılmadı.');
+
+ const pair=$('liveSymbol').value;
+ $('liveStatus').textContent='Forex məlumatları yüklənir...';
+
+ async function refresh(){
+  try{
+   const data=await getForexCandles(pair,'1min',key);
+   liveLists={};
+   frames.filter(f=>f.seconds>=60).forEach(f=>{
+    liveLists[f.id]=aggregate(data,f.seconds/60);
+   });
+   livePrice=data.at(-1).c;
+   $('livePrice').textContent=fmtPrice(livePrice);
+   $('liveStatus').textContent='Forex məlumatları yeniləndi.';
+   $('sourceState').textContent='LIVE';
+   $('sourceState').className='call';
+   updateLive();
+  }catch(e){
+   $('liveStatus').textContent='Forex xətası: '+e.message;
+  }
+ }
+
+ await refresh();
+ forexTimer=setInterval(refresh,60000);
+ renderTimer=setInterval(updateLive,5000);
+}
+
+function stopLive(){
+ liveRunning=false;
+ if(socket){
+  socket.onclose=null;
+  socket.close();
+  socket=null;
+ }
+ clearInterval(renderTimer);
+ clearInterval(forexTimer);
+ renderTimer=null;
+ forexTimer=null;
+ $('liveStatus').textContent='Canlı analiz dayandırıldı.';
+ $('sourceState').textContent='STOP';
+ $('sourceState').className='wait';
+}
+
+function fillSymbols(){
+ const market=$('liveMarket').value;
+ const list=market==='crypto'?cryptoPairs:forexPairs;
+ $('liveSymbol').innerHTML=list.map(x=>
+  `<option value="${x}">${x}</option>`
+ ).join('');
+}
+
+$('liveMarket').addEventListener('change',()=>{
+ stopLive();
+ fillSymbols();
+ resetFrames();
+ $('livePrice').textContent='---';
+});
+
+$('liveStart').addEventListener('click',async()=>{
+ stopLive();
+ resetFrames();
+ liveRunning=true;
+ $('liveStart').disabled=true;
+
+ try{
+  if($('liveMarket').value==='crypto')await startCrypto();
+  else await startForex();
+ }catch(e){
+  $('liveStatus').textContent='XƏTA: '+e.message;
+  liveRunning=false;
+ }finally{
+  $('liveStart').disabled=false;
+ }
+});
+
+$('liveStop').addEventListener('click',stopLive);
+
+$('clearHistory').addEventListener('click',()=>{
+ liveHistory=[];
+ saveHistory();
+ renderHistory();
+});
+
+$('scannerToggle').addEventListener('click',()=>{
+ const p=$('scannerPanel');
+ p.hidden=!p.hidden;
+ $('scannerToggle').textContent=p.hidden?
+  '📊 MARKET SCANNER AÇ':'📊 MARKET SCANNER BAĞLA';
+});
+
+function analyzeScan(c,symbol,market){
+ const a=scoreCandles(c);
+ if(a.side==='WAIT'||a.score<Number($('threshold').value))return null;
+ const side=a.side==='CALL'?'LONG':'SHORT';
+ return {
+  symbol,market,side,score:a.score,rsi:a.rsi,
+  price:c.at(-1).c
+ };
+}
+
+function renderSignals(list){
+ $('results').innerHTML=list.length?list.sort((a,b)=>b.score-a.score).map(s=>`
+ <div class="signal ${s.side==='SHORT'?'short':''}">
+ <h3>${s.symbol} <span class="tag">${s.side}</span>
+ <span>${s.score}/100</span></h3>
+ <div class="muted">${s.market} · RSI ${s.rsi.toFixed(1)}</div>
+ <div class="cell">Qiymət: ${fmtPrice(s.price)}</div>
+ </div>`).join(''):'<p class="muted">Güclü siqnal tapılmadı.</p>';
+}
+
 async function scanCrypto(){
- const symbols=await getCryptoSymbols();
- const out=[];
+ const r=await fetch('https://api.binance.com/api/v3/ticker/24hr');
+ if(!r.ok)throw Error('Binance ticker xətası');
+ const tickers=await r.json();
+ const symbols=tickers.filter(x=>
+  x.symbol.endsWith('USDT')&&Number(x.quoteVolume)>1000000
+ ).sort((a,b)=>+b.quoteVolume- +a.quoteVolume)
+ .slice(0,50).map(x=>x.symbol);
+
  const interval=$('tf').value;
+ const results=[];
 
- for(let i=0;i<symbols.length;i+=8){
-  const batch=symbols.slice(i,i+8);
-
+ for(let i=0;i<symbols.length;i+=5){
+  const batch=symbols.slice(i,i+5);
   const rows=await Promise.all(batch.map(async symbol=>{
    try{
-    const r=await fetch(
-     `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`
-    );
-    if(!r.ok)return null;
-    const d=await r.json();
-
+    const rr=await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`);
+    if(!rr.ok)return null;
+    const d=await rr.json();
     const candles=d.slice(0,-1).map(x=>({
      o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]
     }));
-
     return analyzeScan(candles,symbol,'CRYPTO');
-   }catch{
-    return null;
-   }
+   }catch{return null}
   }));
-
-  out.push(...rows.filter(Boolean));
-
+  results.push(...rows.filter(Boolean));
   $('checked').textContent=Math.min(i+batch.length,symbols.length);
-  $('status').textContent=
-   `Crypto skan edilir: ${Math.min(i+batch.length,symbols.length)}/${symbols.length}`;
-
-  await wait(180);
+  $('status').textContent=`Crypto skan: ${Math.min(i+batch.length,symbols.length)}/${symbols.length}`;
+  await wait(250);
  }
- return out;
+ return results;
 }
 
 async function scanForex(){
  const key=getKey();
- if(!key){
-  throw Error('Forex üçün əvvəl saxlanmış Twelve Data API açarı tapılmadı. Crypto skanından istifadə edə bilərsiniz.');
- }
-
- const interval=$('tf').value==='15m'?'15min':
+ if(!key)throw Error('Forex API açarı yaddaşda yoxdur.');
+ const tf=$('tf').value==='15m'?'15min':
   $('tf').value==='5m'?'5min':'1h';
-
- const out=[];
-
+ const results=[];
  for(let i=0;i<forexPairs.length;i++){
   try{
-   const candles=await getForexCandles(forexPairs[i],interval,key);
-   const signal=analyzeScan(candles.slice(0,-1),forexPairs[i],'FOREX');
-   if(signal)out.push(signal);
+   const c=await getForexCandles(forexPairs[i],tf,key);
+   const signal=analyzeScan(c.slice(0,-1),forexPairs[i],'FOREX');
+   if(signal)results.push(signal);
   }catch(e){
    $('status').textContent=forexPairs[i]+': '+e.message;
   }
-
   $('checked').textContent=String(Number($('checked').textContent)+1);
-  $('status').textContent=`Forex skan edilir: ${i+1}/${forexPairs.length}`;
-
-  if(i<forexPairs.length-1)await wait(1100);
+  await wait(1100);
  }
- return out;
+ return results;
 }
 
 document.querySelectorAll('.tab').forEach(b=>{
@@ -592,17 +922,8 @@ document.querySelectorAll('.tab').forEach(b=>{
  });
 });
 
-$('scannerToggle').addEventListener('click',()=>{
- const panel=$('scannerPanel');
- const opening=panel.hidden;
- panel.hidden=!opening;
- $('scannerToggle').textContent=
-  opening?'📊 MARKET SCANNER BAĞLA':'📊 MARKET SCANNER AÇ';
-});
-
 $('scanBtn').addEventListener('click',async()=>{
  if(scanBusy)return;
-
  scanBusy=true;
  $('scanBtn').disabled=true;
  $('checked').textContent='0';
@@ -611,18 +932,14 @@ $('scanBtn').addEventListener('click',async()=>{
  $('signals').textContent='0';
 
  let all=[];
-
  try{
   if(activeMarket!=='forex')all.push(...await scanCrypto());
   if(activeMarket!=='crypto')all.push(...await scanForex());
-
   $('longs').textContent=all.filter(x=>x.side==='LONG').length;
   $('shorts').textContent=all.filter(x=>x.side==='SHORT').length;
   $('signals').textContent=all.length;
-
   renderSignals(all);
-  $('status').textContent=
-   `SCAN COMPLETE: ${$('checked').textContent} alət yoxlanıldı.`;
+  $('status').textContent='SCAN COMPLETE';
  }catch(e){
   $('status').textContent='XƏTA: '+e.message;
   renderSignals(all);
@@ -632,440 +949,8 @@ $('scanBtn').addEventListener('click',async()=>{
  }
 });
 
-/* LIVE ANALYSIS */
-
-function aggregate(source,seconds){
- const out=[];
- const ms=seconds*1000;
-
- for(const x of source){
-  const t=Math.floor(x.t/ms)*ms;
-  const last=out.at(-1);
-
-  if(!last||last.t!==t){
-   out.push({t,o:x.o,h:x.h,l:x.l,c:x.c,v:x.v||0});
-  }else{
-   last.h=Math.max(last.h,x.h);
-   last.l=Math.min(last.l,x.l);
-   last.c=x.c;
-   last.v+=(x.v||0);
-  }
- }
- return out;
-}
-
-function rebuildMinuteLists(){
- for(const [key,minutes] of Object.entries(minuteFrames)){
-  liveLists[key]=aggregate(liveSource,minutes*60);
- }
-}
-
-function updateOne(id,result){
- $(id).textContent=result.side;
- $(id).className=
-  result.side==='CALL'?'call':
-  result.side==='PUT'?'put':'wait';
-
- $(id+'score').textContent=
-  `${result.score}/100`+
-  (result.reason&&result.side==='WAIT'?' · '+result.reason:'');
-}
-
-function persistHistory(){
- localStorage.setItem('po_live_history_v9',JSON.stringify(history));
-}
-
-function renderHistory(){
- $('liveHistory').innerHTML=history.length?history.map(x=>`
- <div class="history-item">
- <b class="${x.side==='CALL'?'call':'put'}">${x.side}</b>
- · SCORE ${x.score}
- · Qiymət ${fmtPrice(x.price)}
- · Uyğunluq ${Number.isFinite(Number(x.agree))?x.agree+'%':'—'}
- <span class="pill">${x.status||'OPEN'}</span>
- <br><span class="muted">${x.time}</span>
- <br><span class="muted">
- SL: ${fmtPrice(x.sl)} · TP1: ${fmtPrice(x.tp1)} · TP2: ${fmtPrice(x.tp2)}
- </span>
- </div>`).join('')
- :'<p class="muted">Hələ siqnal yoxdur.</p>';
-}
-
-function addHistory(side,score,agree){
- const now=Date.now();
- const key=side+'_'+Math.floor(now/30000);
-
- if(key===lastSavedKey)return;
- lastSavedKey=key;
-
- const range=atr(liveSource)||livePrice*.001;
- const levels=makeLevels(side,livePrice,range);
-
- history.unshift({
-  id:key,side,score,agree,price:livePrice,
-  time:new Date().toLocaleString(),
-  status:'OPEN',
-  sl:levels.sl,tp1:levels.tp1,tp2:levels.tp2
- });
-
- history=history.slice(0,40);
- persistHistory();
- renderHistory();
-}
-
-function updateHistoryOutcomes(){
- if(!livePrice)return;
- let changed=false;
-
- history.forEach(x=>{
-  if(x.status!=='OPEN'||!x.sl)return;
-
-  if(x.side==='CALL'){
-   if(livePrice<=x.sl)x.status='STOP LOSS';
-   else if(livePrice>=x.tp2)x.status='TP2';
-   else if(livePrice>=x.tp1)x.status='TP1';
-  }else{
-   if(livePrice>=x.sl)x.status='STOP LOSS';
-   else if(livePrice<=x.tp2)x.status='TP2';
-   else if(livePrice<=x.tp1)x.status='TP1';
-  }
-
-  if(x.status!=='OPEN')changed=true;
- });
-
- if(changed){
-  persistHistory();
-  renderHistory();
- }
-}
-
-function updateLive(){
- if(!liveRunning)return;
-
- const crypto=$('liveMarket').value==='crypto';
- const shortResults={};
-
- if(crypto){
-  for(const s of [5,10,15]){
-   shortResults['s'+s]=scoreCandles(aggregate(tickCandles,s));
-  }
- }else{
-  for(const s of [5,10,15]){
-   updateOne('s'+s,{
-    side:'WAIT',score:0,
-    reason:'Forex üçün saniyəlik şam məlumatı yoxdur'
-   });
-  }
- }
-
- if(crypto){
-  for(const [id,result] of Object.entries(shortResults)){
-   updateOne(id,result);
-  }
- }
-
- const allReady=[];
-
- for(const [id] of Object.entries(minuteFrames)){
-  const result=scoreCandles(liveLists[id]);
-  updateOne(id,result);
-  if(result.side!=='WAIT')allReady.push(result);
- }
-
- if(crypto){
-  for(const result of Object.values(shortResults)){
-   if(result.side!=='WAIT')allReady.push(result);
-  }
- }
-
- const calls=allReady.filter(x=>x.side==='CALL').length;
- const puts=allReady.filter(x=>x.side==='PUT').length;
- const total=calls+puts;
- const agreement=total?Math.round(Math.max(calls,puts)/total*100):0;
-
- let side='WAIT';
- if(total>=3&&agreement>=70){
-  side=calls>puts?'CALL':'PUT';
- }
-
- const scores=allReady
-  .filter(x=>x.side===side)
-  .map(x=>x.score);
-
- const finalScore=scores.length?
-  Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
-
- $('totalScore').textContent=finalScore;
- $('agreement').textContent=total?agreement+'%':'---';
- $('finalScore').textContent=finalScore+'/100';
- $('finalSignal').textContent=side;
- $('finalSignal').className=
-  side==='CALL'?'call':side==='PUT'?'put':'wait';
-
- $('finalText').textContent=
-  side==='WAIT'
-  ?'Kifayət qədər eyni istiqamətli təsdiq yoxdur. Gözləyin.'
-  :`${side==='CALL'?'Yuxarı':'Aşağı'} istiqamətdə ${agreement}% uyğunluq. Bu, qazanc zəmanəti deyil.`;
-
- if(side!=='WAIT'&&finalScore>=65){
-  addHistory(side,finalScore,agreement);
- }
-
- $('livePrice').textContent=fmtPrice(livePrice);
- updateHistoryOutcomes();
-}
-
-/* CRYPTO LIVE */
-
-function updateTickCandle(price,volume,time){
- const t=Math.floor(time/1000)*1000;
- const last=tickCandles.at(-1);
-
- if(!last||last.t!==t){
-  tickCandles.push({
-   t,o:price,h:price,l:price,c:price,v:volume||0
-  });
- }else{
-  last.h=Math.max(last.h,price);
-  last.l=Math.min(last.l,price);
-  last.c=price;
-  last.v+=(volume||0);
- }
-
- if(tickCandles.length>5000){
-  tickCandles=tickCandles.slice(-4000);
- }
-}
-
-function updateMinuteCandle(price,volume,time){
- const t=Math.floor(time/60000)*60000;
- const last=liveSource.at(-1);
-
- if(!last||last.t!==t){
-  liveSource.push({
-   t,o:price,h:price,l:price,c:price,v:volume||0
-  });
- }else{
-  last.h=Math.max(last.h,price);
-  last.l=Math.min(last.l,price);
-  last.c=price;
-  last.v+=(volume||0);
- }
-
- if(liveSource.length>1500){
-  liveSource=liveSource.slice(-1200);
- }
-
- rebuildMinuteLists();
-}
-
-async function loadCryptoHistory(symbol){
- const r=await fetch(
-  `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1m&limit=500`
- );
- if(!r.ok)throw Error('Binance tarixçə məlumatı alınmadı');
-
- const d=await r.json();
-
- liveSource=d.map(x=>({
-  t:+x[0],
-  o:+x[1],
-  h:+x[2],
-  l:+x[3],
-  c:+x[4],
-  v:+x[5]
- }));
-
- rebuildMinuteLists();
-
- const latest=liveSource.at(-1);
- if(latest)livePrice=latest.c;
-}
-
-function connectCrypto(symbol){
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
-
- const stream=symbol.toLowerCase()+'@trade';
- socket=new WebSocket('wss://stream.binance.com:9443/ws/'+stream);
-
- socket.onopen=()=>{
-  if(!liveRunning)return;
-  $('liveStatus').textContent='Binance canlı bağlantısı qoşuldu.';
-  $('sourceState').textContent='LIVE';
-  $('sourceState').className='call';
- };
-
- socket.onmessage=e=>{
-  if(!liveRunning)return;
-
-  try{
-   const d=JSON.parse(e.data);
-   const price=Number(d.p);
-   const volume=Number(d.q);
-   const time=Number(d.T);
-
-   if(!Number.isFinite(price)||!Number.isFinite(time))return;
-
-   livePrice=price;
-   updateTickCandle(price,volume,time);
-   updateMinuteCandle(price,volume,time);
-  }catch(err){
-   console.error(err);
-  }
- };
-
- socket.onerror=()=>{
-  $('liveStatus').textContent='Binance bağlantısında xəta.';
-  $('sourceState').textContent='ERROR';
-  $('sourceState').className='put';
- };
-
- socket.onclose=()=>{
-  if(liveRunning&&$('liveMarket').value==='crypto'){
-   $('liveStatus').textContent='Bağlantı kəsildi. Yenidən qoşulmağa çalışılır...';
-   setTimeout(()=>{
-    if(liveRunning&&$('liveMarket').value==='crypto'){
-     connectCrypto(symbol);
-    }
-   },3000);
-  }
- };
-}
-
-/* FOREX LIVE */
-
-async function fetchForexLive(){
- const key=getKey();
- if(!key){
-  throw Error('Forex API açarı əvvəlki yaddaşda tapılmadı. Crypto rejimindən istifadə edin.');
- }
-
- const pair=$('liveSymbol').value;
- const candles=await getForexCandles(pair,'1min',key);
-
- if(!candles.length)throw Error('Forex şamları boşdur.');
-
- liveSource=candles.map((x,i)=>({
-  ...x,
-  t:Date.now()-(candles.length-i)*60000
- }));
-
- rebuildMinuteLists();
- livePrice=candles.at(-1).c;
-
- $('livePrice').textContent=fmtPrice(livePrice);
- $('liveStatus').textContent='Forex məlumatı yeniləndi.';
- $('sourceState').textContent='FOREX';
- $('sourceState').className='call';
-
- updateLive();
-}
-
-function stopLive(){
- liveRunning=false;
-
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
-
- if(forexTimer){
-  clearInterval(forexTimer);
-  forexTimer=null;
- }
-
- if(renderTimer){
-  clearInterval(renderTimer);
-  renderTimer=null;
- }
-
- $('liveStatus').textContent='Canlı analiz dayandırıldı.';
- $('sourceState').textContent='STOP';
- $('sourceState').className='wait';
-}
-
-async function startLive(){
- stopLive();
-
- liveRunning=true;
- livePrice=0;
- liveSource=[];
- tickCandles=[];
- liveLists={m1:[],m3:[],m5:[],m10:[]};
- lastSavedKey='';
-
- const market=$('liveMarket').value;
- const symbol=$('liveSymbol').value;
-
- $('liveStart').disabled=true;
- $('liveStatus').textContent='Məlumat yüklənir...';
-
- try{
-  if(market==='crypto'){
-   await loadCryptoHistory(symbol);
-   if(!liveRunning)return;
-   connectCrypto(symbol);
-  }else{
-   await fetchForexLive();
-   if(!liveRunning)return;
-
-   forexTimer=setInterval(async()=>{
-    if(!liveRunning)return;
-    try{
-     await fetchForexLive();
-    }catch(e){
-     $('liveStatus').textContent=e.message;
-    }
-   },60000);
-  }
-
-  renderTimer=setInterval(updateLive,1000);
-  updateLive();
-
- }catch(e){
-  $('liveStatus').textContent='XƏTA: '+e.message;
-  $('sourceState').textContent='ERROR';
-  $('sourceState').className='put';
-  liveRunning=false;
- }finally{
-  $('liveStart').disabled=false;
- }
-}
-
-/* SELECTS AND BUTTONS */
-
-function updateSymbols(){
- const market=$('liveMarket').value;
- const list=market==='crypto'?cryptoPairs:forexPairs;
-
- $('liveSymbol').innerHTML=list.map(x=>
-  `<option value="${x}">${x}</option>`
- ).join('');
-}
-
-$('liveMarket').addEventListener('change',()=>{
- stopLive();
- updateSymbols();
-});
-
-$('liveStart').addEventListener('click',startLive);
-$('liveStop').addEventListener('click',stopLive);
-
-$('clearHistory').addEventListener('click',()=>{
- history=[];
- persistHistory();
- renderHistory();
-});
-
-updateSymbols();
+fillSymbols();
 renderHistory();
-
-window.addEventListener('beforeunload',stopLive);
 </script>
 </body>
 </html>
