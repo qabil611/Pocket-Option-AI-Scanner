@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#08111f">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Trading Scanner V8</title>
@@ -171,6 +173,13 @@ $('scanBtn').onclick=async()=>{
  }catch(e){$('status').textContent='XƏTA: '+e.message;render(all)}
  finally{busy=false;$('scanBtn').disabled=false}
 };
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js");
+  });
+}
 </script>
 </body>
 </html>
