@@ -1731,10 +1731,10 @@ $('scanBtn').disabled=false;
 
 /* Event listeners */
 
-$('liveStart').addEventListener(
-'click',
-startLive
-);
+$('liveStart').onclick=()=>{
+alert('START LIVE düyməsi işləyir');
+startLive();
+};
 
 $('liveStop').addEventListener(
 'click',
