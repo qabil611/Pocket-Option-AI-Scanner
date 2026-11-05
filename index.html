@@ -488,7 +488,6 @@ const nativeIntervals={
 60:'1m',
 180:'3m',
 300:'5m',
-600:'10m',
 1800:'30m',
 3600:'1h',
 7200:'2h'
@@ -1231,25 +1230,30 @@ async function loadCryptoHistory(symbol){
 const requests=Object.entries(nativeIntervals).map(
 async([sec,interval])=>{
 
+// 1 dəqiqəlik tarixçədən 10 dəqiqəlik şamlar da yaradılacaq.
+const limit=sec==='60'?1000:220;
+
 const data=await getJson(
-`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`
+`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`
 );
 
 historyLists[sec]=data.map(k=>({
-
 t:+k[0],
 o:+k[1],
 h:+k[2],
 l:+k[3],
 c:+k[4],
 v:+k[5]
-
 }));
 
 });
 
 await Promise.all(requests);
 
+// Binance-də olmayan 10m intervalını 1m şamlardan yaradırıq.
+historyLists[600]=aggregate(historyLists[60],600);
+
+}
 }
 
 function connectSocket(symbol){
