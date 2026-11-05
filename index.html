@@ -857,100 +857,203 @@ function renderSignals(list){
  </div>`).join(''):'<p class="muted">Güclü siqnal tapılmadı.</p>';
 }
 
-async function scanCrypto(){
- const r=await fetch('https://api.binance.com/api/v3/ticker/24hr');
- if(!r.ok)throw Error('Binance ticker xətası');
- const tickers=await r.json();
- const symbols=tickers.filter(x=>
-  x.symbol.endsWith('USDT')&&Number(x.quoteVolume)>1000000
- ).sort((a,b)=>+b.quoteVolume- +a.quoteVolume)
- .slice(0,50).map(x=>x.symbol);
+let reconnectTimer=null;
 
- const interval=$('tf').value;
- const results=[];
+async function startCrypto(){
+ const symbol=$('liveSymbol').value;
 
- for(let i=0;i<symbols.length;i+=5){
-  const batch=symbols.slice(i,i+5);
-  const rows=await Promise.all(batch.map(async symbol=>{
-   try{
-    const rr=await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`);
-    if(!rr.ok)return null;
-    const d=await rr.json();
-    const candles=d.slice(0,-1).map(x=>({
-     o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]
-    }));
-    return analyzeScan(candles,symbol,'CRYPTO');
-   }catch{return null}
-  }));
-  results.push(...rows.filter(Boolean));
-  $('checked').textContent=Math.min(i+batch.length,symbols.length);
-  $('status').textContent=`Crypto skan: ${Math.min(i+batch.length,symbols.length)}/${symbols.length}`;
-  await wait(250);
- }
- return results;
+ if(!symbol)throw Error('Aktiv seçilməyib');
+
+ $('liveStatus').textContent='Binance məlumatları yüklənir...';
+
+ tickCandles=[];
+ livePrice=0;
+
+ await loadCryptoHistory(symbol);
+
+ if(!liveRunning)return;
+
+ startSocket(symbol);
+
+ if(renderTimer)clearInterval(renderTimer);
+
+ renderTimer=setInterval(()=>{
+  if(liveRunning)updateLive();
+ },2000);
 }
 
-async function scanForex(){
- const key=getKey();
- if(!key)throw Error('Forex API açarı yaddaşda yoxdur.');
- const tf=$('tf').value==='15m'?'15min':
-  $('tf').value==='5m'?'5min':'1h';
- const results=[];
- for(let i=0;i<forexPairs.length;i++){
+function startSocket(symbol){
+ if(socket){
+  socket.onclose=null;
+  socket.close();
+  socket=null;
+ }
+
+ socket=new WebSocket(
+  `wss://stream.binance.com:443/ws/${symbol.toLowerCase()}@aggTrade`
+ );
+
+ const currentSocket=socket;
+
+ currentSocket.onopen=()=>{
+  if(!liveRunning)return;
+
+  $('liveStatus').textContent='Binance canlı bağlantısı qoşuldu.';
+ };
+
+ currentSocket.onmessage=e=>{
+  if(!liveRunning)return;
+
   try{
-   const c=await getForexCandles(forexPairs[i],tf,key);
-   const signal=analyzeScan(c.slice(0,-1),forexPairs[i],'FOREX');
-   if(signal)results.push(signal);
-  }catch(e){
-   $('status').textContent=forexPairs[i]+': '+e.message;
+   const d=JSON.parse(e.data);
+   const price=Number(d.p);
+   const t=Number(d.T);
+   const volume=Number(d.q);
+
+   if(!Number.isFinite(price)||!Number.isFinite(t))return;
+
+   livePrice=price;
+   $('livePrice').textContent=fmtPrice(price);
+
+   tickCandles.push({
+    t,o:price,h:price,l:price,c:price,v:volume
+   });
+
+   const cutoff=Date.now()-20*60*1000;
+   tickCandles=tickCandles.filter(x=>x.t>=cutoff);
+
+   const minute=Math.floor(t/60000)*60000;
+   const current=liveLists.m1||[];
+   const last=current.at(-1);
+
+   if(!last||last.t!==minute){
+    current.push({
+     t:minute,o:price,h:price,l:price,c:price,v:volume
+    });
+   }else{
+    last.h=Math.max(last.h,price);
+    last.l=Math.min(last.l,price);
+    last.c=price;
+    last.v+=volume;
+   }
+
+   liveLists.m1=current;
+
+   frames.filter(f=>f.seconds>60).forEach(f=>{
+    liveLists[f.id]=aggregate(
+     liveLists.m1,
+     f.seconds/60
+    );
+   });
+
+  }catch(err){
+   console.error('Binance məlumat xətası:',err);
   }
-  $('checked').textContent=String(Number($('checked').textContent)+1);
-  await wait(1100);
- }
- return results;
+ };
+
+ currentSocket.onerror=()=>{
+  if(liveRunning){
+   $('liveStatus').textContent='Binance bağlantı xətası.';
+  }
+ };
+
+ currentSocket.onclose=()=>{
+  if(liveRunning&&socket===currentSocket){
+   $('liveStatus').textContent=
+    'Bağlantı kəsildi. Yenidən qoşulur...';
+
+   reconnectTimer=setTimeout(()=>{
+    if(liveRunning)startSocket(symbol);
+   },3000);
+  }
+ };
 }
 
-document.querySelectorAll('.tab').forEach(b=>{
- b.addEventListener('click',()=>{
-  activeMarket=b.dataset.market;
-  document.querySelectorAll('.tab').forEach(x=>{
-   x.classList.remove('active');
-   x.classList.add('secondary');
-  });
-  b.classList.add('active');
-  b.classList.remove('secondary');
- });
-});
+async function startLive(){
+ stopLive(false);
 
-$('scanBtn').addEventListener('click',async()=>{
- if(scanBusy)return;
- scanBusy=true;
- $('scanBtn').disabled=true;
- $('checked').textContent='0';
- $('longs').textContent='0';
- $('shorts').textContent='0';
- $('signals').textContent='0';
+ resetFrames();
 
- let all=[];
+ liveRunning=true;
+
+ $('liveStart').disabled=true;
+ $('liveStatus').textContent='Canlı məlumatlar yüklənir...';
+
  try{
-  if(activeMarket!=='forex')all.push(...await scanCrypto());
-  if(activeMarket!=='crypto')all.push(...await scanForex());
-  $('longs').textContent=all.filter(x=>x.side==='LONG').length;
-  $('shorts').textContent=all.filter(x=>x.side==='SHORT').length;
-  $('signals').textContent=all.length;
-  renderSignals(all);
-  $('status').textContent='SCAN COMPLETE';
- }catch(e){
-  $('status').textContent='XƏTA: '+e.message;
-  renderSignals(all);
- }finally{
-  scanBusy=false;
-  $('scanBtn').disabled=false;
+  if($('liveMarket').value==='crypto'){
+   await startCrypto();
+  }else{
+   throw Error('Hazırda bu düzəliş Crypto/Binance bağlantısı üçündür. Forex ayrıca qoşulmalıdır.');
+  }
+ }catch(err){
+  console.error(err);
+  $('liveStatus').textContent='XƏTA: '+err.message;
+  liveRunning=false;
+  $('liveStart').disabled=false;
  }
+}
+
+function stopLive(showStatus=true){
+ liveRunning=false;
+
+ if(renderTimer){
+  clearInterval(renderTimer);
+  renderTimer=null;
+ }
+
+ if(refreshTimer){
+  clearInterval(refreshTimer);
+  refreshTimer=null;
+ }
+
+ if(reconnectTimer){
+  clearTimeout(reconnectTimer);
+  reconnectTimer=null;
+ }
+
+ if(socket){
+  socket.onclose=null;
+  socket.close();
+  socket=null;
+ }
+
+ $('liveStart').disabled=false;
+
+ if(showStatus){
+  $('liveStatus').textContent='Canlı analiz dayandırıldı.';
+ }
+}
+
+function initSymbols(){
+ $('liveSymbol').innerHTML=cryptoPairs.map(s=>
+  `<option value="${s}">${s}</option>`
+ ).join('');
+}
+
+$('liveStart').addEventListener('click',startLive);
+$('liveStop').addEventListener('click',()=>stopLive());
+
+$('liveMarket').addEventListener('change',()=>{
+ stopLive();
+ initSymbols();
+ $('livePrice').textContent='---';
 });
 
-fillSymbols();
+$('scannerToggle').addEventListener('click',()=>{
+ const panel=$('scannerPanel');
+ panel.hidden=!panel.hidden;
+ $('scannerToggle').textContent=panel.hidden?
+  '📊 MARKET SCANNER AÇ':'📊 MARKET SCANNER BAĞLA';
+});
+
+$('clearHistory').addEventListener('click',()=>{
+ liveHistory=[];
+ saveHistory();
+ renderHistory();
+});
+
+initSymbols();
 renderHistory();
-</script>
-</body>
-</html>
+resetFrames();
+
+console.log('POCKET OPTION LIVE AI V9 hazırdır.');
