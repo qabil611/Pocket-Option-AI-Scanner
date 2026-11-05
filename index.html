@@ -2,36 +2,27 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#08111f">
 <link rel="manifest" href="./manifest.json">
 <title>POCKET OPTION LIVE AI V9</title>
 
 <style>
 :root{
---bg:#0b1220;
---panel:#121d30;
---line:#26364f;
---text:#e8eef8;
---muted:#9aabc3;
---green:#20c997;
---red:#ff647c;
---blue:#5aa9ff;
---gold:#f4c95d;
+--bg:#0b1220;--panel:#121d30;--line:#26364f;
+--text:#e8eef8;--muted:#9aabc3;
+--green:#20c997;--red:#ff647c;
+--blue:#5aa9ff;--gold:#f4c95d
 }
 *{box-sizing:border-box}
-body{
-margin:0;background:var(--bg);color:var(--text);
-font:15px Arial,sans-serif
-}
-.wrap{max-width:1100px;margin:auto;padding:14px}
-header{padding:10px 0}
-h1{font-size:23px;margin:0}
-header p,.muted,.notice{color:var(--muted)}
-.panel{
-background:var(--panel);border:1px solid var(--line);
-border-radius:14px;padding:15px;margin:12px 0
-}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial}
+.wrap{max-width:1100px;margin:auto;padding:12px}
+header{padding:12px 0}
+h1{font-size:21px;margin:0}
+h2{font-size:18px}
+p,.muted{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);
+border-radius:14px;padding:14px;margin:12px 0}
 .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 input,select,button{
 border:1px solid var(--line);border-radius:9px;
@@ -40,75 +31,37 @@ font-size:14px;max-width:100%
 }
 button{background:#1d4f85;border:0;font-weight:bold;cursor:pointer}
 button.secondary{background:#29384f}
+button.stop{background:#852c42}
 button:disabled{opacity:.5}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.stat,.cell{
-background:#0c1728;padding:11px;border:1px solid var(--line);
-border-radius:9px;overflow-wrap:anywhere
-}
-.stat b{display:block;font-size:23px;margin-top:5px}
-.status,.live-status{
-padding:10px;border-radius:8px;background:#0c1728;
-color:var(--gold);margin-top:10px;font-size:13px
-}
-.signal{
-border:1px solid var(--line);border-left:4px solid var(--green);
-border-radius:10px;padding:13px;margin:9px 0;background:#0d192b
-}
-.signal.short{border-left-color:var(--red)}
-.signal h3{
-margin:0 0 8px;display:flex;justify-content:space-between;
-gap:8px;flex-wrap:wrap
-}
-.tag{
-font-size:11px;padding:4px 7px;border-radius:6px;
-background:#193e3b;color:#7ce4c1
-}
-.short .tag{background:#482330;color:#ff9aad}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.cell small{display:block;color:var(--muted);margin-bottom:5px}
-.notice{font-size:12px;line-height:1.5}
-.live-title{color:var(--blue)}
-.live-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.live-card{
-background:#101e32;border:1px solid var(--line);
-border-radius:10px;padding:11px;text-align:center
-}
-.live-card h3{margin:0;color:var(--muted);font-size:13px}
-.live-card b{display:block;font-size:18px;margin:9px 0}
-.call{color:var(--green)}
-.put{color:var(--red)}
-.wait{color:var(--gold)}
-.score{font-size:29px;font-weight:bold;color:var(--blue)}
-.consensus{
-padding:14px;border-radius:10px;background:#101e32;
-text-align:center;margin-top:12px;border:1px solid var(--line)
-}
-.history-item{
-padding:11px;background:#101e32;border-radius:8px;
-margin:7px 0;font-size:13px;line-height:1.5
-}
-.pill{
-display:inline-block;padding:3px 8px;border-radius:20px;
-background:#26364f;font-size:11px
-}
-.section-head{
-display:flex;align-items:center;justify-content:space-between;
-gap:10px;flex-wrap:wrap
-}
-#scannerPanel[hidden]{display:none!important}
-.indicator-box{
-display:grid;grid-template-columns:repeat(4,1fr);
-gap:8px;margin-top:10px
-}
-.indicator-box .cell b{font-size:15px}
-@media(max-width:650px){
-.stats{grid-template-columns:repeat(2,1fr)}
-.grid{grid-template-columns:repeat(2,1fr)}
-.live-grid{grid-template-columns:repeat(2,1fr)}
-.indicator-box{grid-template-columns:repeat(2,1fr)}
-h1{font-size:21px}
-.wrap{padding:10px}
+.row select,.row input{flex:1;min-width:120px}
+.row button{flex:1;min-width:110px}
+.status{padding:10px;border-radius:8px;background:#0c1728;
+color:var(--gold);margin-top:10px;font-size:13px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.cell,.stat,.live-card{background:#0c1728;padding:11px;
+border:1px solid var(--line);border-radius:9px}
+.cell small{display:block;color:var(--muted);margin-bottom:6px}
+.cell b{overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat b{display:block;font-size:22px;margin-top:5px}
+.live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.live-card{text-align:center}
+.live-card h3{font-size:12px;color:var(--muted);margin:0}
+.live-card b{display:block;font-size:19px;margin:9px 0}
+.call{color:var(--green)}.put{color:var(--red)}.wait{color:var(--gold)}
+.score{font-size:28px;color:var(--blue);font-weight:bold}
+.consensus{text-align:center;padding:14px;background:#101e32;
+border:1px solid var(--line);border-radius:10px;margin-top:12px}
+.history-item{padding:10px;background:#101e32;border-radius:8px;
+margin:7px 0;font-size:13px;line-height:1.5}
+.notice{font-size:12px;color:var(--muted);line-height:1.5}
+#scannerPanel[hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line)}
+th{color:var(--muted)}
+@media(min-width:700px){
+.grid{grid-template-columns:repeat(4,1fr)}
+.live-grid{grid-template-columns:repeat(5,1fr)}
 }
 </style>
 </head>
@@ -117,117 +70,107 @@ h1{font-size:21px}
 <div class="wrap">
 
 <header>
-<div class="section-head">
-<div>
 <h1>⚡ POCKET OPTION LIVE AI — V9</h1>
-<p>Canlı bazar analizi · Multi-timeframe · Crypto + Forex</p>
-</div>
-<button id="scannerToggle" class="secondary">📊 MARKET SCANNER AÇ</button>
-</div>
+<p>Live Multi-Timeframe Scanner · Crypto + Forex</p>
 </header>
+
+<section class="panel">
+<div class="row">
+<select id="liveMarket">
+<option value="crypto">CRYPTO — Binance</option>
+<option value="forex">FOREX — Twelve Data</option>
+</select>
+
+<select id="liveSymbol"></select>
+
+<input id="apiKey" type="password"
+placeholder="Twelve Data API açarı (Forex üçün)">
+</div>
+
+<div class="row" style="margin-top:10px">
+<button id="liveStart">▶ START LIVE</button>
+<button id="liveStop" class="stop" disabled>■ STOP</button>
+<button id="scannerToggle" class="secondary">📊 MARKET SCANNER</button>
+</div>
+
+<div class="status" id="liveStatus">
+Canlı analiz gözləyir...
+</div>
+
+<div class="muted" style="font-size:12px;margin-top:8px">
+Mənbə: <span id="sourceState">Bağlı</span>
+</div>
+</section>
 
 <section class="panel" id="scannerPanel" hidden>
 <h2>📊 MARKET SCANNER</h2>
+
 <div class="row">
-<label>Əsas timeframe</label>
-<select id="tf">
-<option value="15m">15 dəqiqə</option>
+<select id="scanTimeframe">
+<option value="1m">1 dəqiqə</option>
 <option value="5m">5 dəqiqə</option>
+<option value="15m">15 dəqiqə</option>
 <option value="1h">1 saat</option>
 </select>
-<label>Minimum bal</label>
-<select id="threshold">
-<option value="80">80+</option>
-<option value="75">75+</option>
-<option value="85">85+</option>
+
+<select id="scanThreshold">
+<option value="70">Minimum 70 bal</option>
+<option value="75">Minimum 75 bal</option>
+<option value="80">Minimum 80 bal</option>
+<option value="85">Minimum 85 bal</option>
 </select>
+
 <button id="scanBtn">START SCANNER</button>
 </div>
-<div class="row" style="margin-top:12px">
-<button class="tab active" data-market="all">HAMISI</button>
-<button class="tab secondary" data-market="crypto">CRYPTO</button>
-<button class="tab secondary" data-market="forex">FOREX</button>
+
+<div class="stats" style="margin-top:12px">
+<div class="stat">Yoxlanılan<b id="checked">0</b></div>
+<div class="stat">CALL<b id="longs">0</b></div>
+<div class="stat">PUT<b id="shorts">0</b></div>
+<div class="stat">Siqnallar<b id="signals">0</b></div>
 </div>
-<div class="stats">
-<div class="stat"><span class="muted">Yoxlanılan</span><b id="checked">0</b></div>
-<div class="stat"><span class="muted">LONG</span><b id="longs">0</b></div>
-<div class="stat"><span class="muted">SHORT</span><b id="shorts">0</b></div>
-<div class="stat"><span class="muted">Siqnallar</span><b id="signals">0</b></div>
+
+<div class="status" id="scanStatus">Scanner hazırdır.</div>
+
+<div style="overflow-x:auto;margin-top:12px">
+<table>
+<thead>
+<tr><th>Aktiv</th><th>Qiymət</th><th>Siqnal</th><th>Bal</th><th>RSI</th></tr>
+</thead>
+<tbody id="scanResults">
+<tr><td colspan="5">Skan başladılmayıb.</td></tr>
+</tbody>
+</table>
 </div>
-<div class="status" id="status">Skan gözləyir.</div>
-<h3>Güclü siqnallar</h3>
-<div id="results"><p class="muted">Skan başladılmayıb.</p></div>
 </section>
 
 <section class="panel">
-<h2 class="live-title">⚡ LIVE MULTI-TIMEFRAME ANALİZ</h2>
-<div class="row" style="margin-top:12px">
-<label>Bazar</label>
-<select id="liveMarket">
-<option value="crypto">CRYPTO – Binance</option>
-<option value="forex">FOREX</option>
-</select>
-<label>Aktiv</label>
-<select id="liveSymbol"></select>
-<button id="liveStart">▶ START LIVE</button>
-<button id="liveStop" class="secondary">■ STOP</button>
-</div>
-
-<div class="live-status" id="liveStatus">Canlı analiz gözləyir...</div>
+<h2 style="color:var(--blue)">⚡ LIVE MULTI-TIMEFRAME ANALİZ</h2>
 
 <div class="grid">
 <div class="cell"><small>CANLI QİYMƏT</small><b id="livePrice">---</b></div>
 <div class="cell"><small>AI SCORE</small><b class="score" id="totalScore">0</b></div>
-<div class="cell"><small>İSTİQAMƏT UYĞUNLUĞU</small><b id="agreement">---</b></div>
+<div class="cell"><small>UYĞUNLUQ</small><b id="agreement">---</b></div>
+<div class="cell"><small>BAZAR</small><b id="marketName">Crypto</b></div>
 </div>
 
 <h3>📊 Zaman intervalları</h3>
-<div class="live-grid" id="timeframeGrid">
 
-<div class="live-card">
-<h3>5 SANİYƏ</h3><b id="s5" class="wait">WAIT</b>
-<span class="muted" id="s5score">Məlumat gözlənilir</span>
-</div>
-<div class="live-card">
-<h3>10 SANİYƏ</h3><b id="s10" class="wait">WAIT</b>
-<span class="muted" id="s10score">Məlumat gözlənilir</span>
-</div>
-<div class="live-card">
-<h3>15 SANİYƏ</h3><b id="s15" class="wait">WAIT</b>
-<span class="muted" id="s15score">Məlumat gözlənilir</span>
-</div>
-<div class="live-card">
-<h3>1 DƏQİQƏ</h3><b id="m1" class="wait">WAIT</b>
-<span class="muted" id="m1score">0/100</span>
-</div>
-<div class="live-card">
-<h3>3 DƏQİQƏ</h3><b id="m3" class="wait">WAIT</b>
-<span class="muted" id="m3score">0/100</span>
-</div>
-<div class="live-card">
-<h3>5 DƏQİQƏ</h3><b id="m5" class="wait">WAIT</b>
-<span class="muted" id="m5score">0/100</span>
-</div>
-<div class="live-card">
-<h3>10 DƏQİQƏ</h3><b id="m10" class="wait">WAIT</b>
-<span class="muted" id="m10score">0/100</span>
-</div>
-<div class="live-card">
-<h3>30 DƏQİQƏ</h3><b id="m30" class="wait">WAIT</b>
-<span class="muted" id="m30score">0/100</span>
-</div>
-<div class="live-card">
-<h3>1 SAAT</h3><b id="h1" class="wait">WAIT</b>
-<span class="muted" id="h1score">0/100</span>
-</div>
-<div class="live-card">
-<h3>2 SAAT</h3><b id="h2" class="wait">WAIT</b>
-<span class="muted" id="h2score">0/100</span>
-</div>
+<div class="live-grid">
+<div class="live-card"><h3>5 SANİYƏ</h3><b id="s5" class="wait">WAIT</b><span id="s5score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>10 SANİYƏ</h3><b id="s10" class="wait">WAIT</b><span id="s10score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>15 SANİYƏ</h3><b id="s15" class="wait">WAIT</b><span id="s15score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>1 DƏQİQƏ</h3><b id="m1" class="wait">WAIT</b><span id="m1score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>3 DƏQİQƏ</h3><b id="m3" class="wait">WAIT</b><span id="m3score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>5 DƏQİQƏ</h3><b id="m5" class="wait">WAIT</b><span id="m5score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>10 DƏQİQƏ</h3><b id="m10" class="wait">WAIT</b><span id="m10score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>30 DƏQİQƏ</h3><b id="m30" class="wait">WAIT</b><span id="m30score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>1 SAAT</h3><b id="h1" class="wait">WAIT</b><span id="h1score" class="muted">Gözlənilir</span></div>
+<div class="live-card"><h3>2 SAAT</h3><b id="h2" class="wait">WAIT</b><span id="h2score" class="muted">Gözlənilir</span></div>
 </div>
 
 <h3>📈 Texniki göstəricilər</h3>
-<div class="indicator-box">
+<div class="grid">
 <div class="cell"><small>RSI 14</small><b id="indRSI">---</b></div>
 <div class="cell"><small>MACD</small><b id="indMACD">---</b></div>
 <div class="cell"><small>EMA TREND</small><b id="indEMA">---</b></div>
@@ -248,27 +191,28 @@ h1{font-size:21px}
 
 <section class="panel">
 <h2>📜 LIVE SIGNAL HISTORY</h2>
-<div id="liveHistory"><p class="muted">Hələ siqnal yoxdur.</p></div>
-<button class="secondary" id="clearHistory">Tarixçəni təmizlə</button>
+<div id="liveHistory" class="muted">Hələ siqnal yoxdur.</div>
+<button id="clearHistory" class="secondary">Tarixçəni təmizlə</button>
 </section>
 
 <p class="notice">
-Risk xəbərdarlığı: AI SCORE qazanc ehtimalı deyil və qazanca zəmanət vermir.
-Binance qiymətləri Pocket Option qiymətlərindən fərqlənə bilər.
-Qısa intervallarda səs-küy və gecikmə yüksəkdir. Əvvəlcə demo hesabda yoxlayın.
+Qeyd: Bu proqram Pocket Option tətbiqinin daxili qrafikini oxumur.
+Binance/Twelve Data məlumatlarını ayrıca analiz edir. Binance qiyməti
+Pocket Option qiymətindən fərqlənə bilər. AI balı qazanc ehtimalı deyil.
+Avtomatik əməliyyat etmir. Əvvəlcə demo hesabda yoxlayın.
 </p>
+
 </div>
 
 <script>
 'use strict';
 
 const $=id=>document.getElementById(id);
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
 const cryptoPairs=[
-'BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT',
-'DOGEUSDT','ADAUSDT','LINKUSDT','AVAXUSDT','LTCUSDT',
-'DOTUSDT','TRXUSDT'
+'BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT',
+'XRPUSDT','DOGEUSDT','ADAUSDT','LINKUSDT',
+'AVAXUSDT','LTCUSDT','DOTUSDT','TRXUSDT'
 ];
 
 const forexPairs=[
@@ -277,783 +221,661 @@ const forexPairs=[
 ];
 
 const frames=[
-{id:'s5',seconds:5,label:'5 saniyə'},
-{id:'s10',seconds:10,label:'10 saniyə'},
-{id:'s15',seconds:15,label:'15 saniyə'},
-{id:'m1',seconds:60,label:'1 dəqiqə'},
-{id:'m3',seconds:180,label:'3 dəqiqə'},
-{id:'m5',seconds:300,label:'5 dəqiqə'},
-{id:'m10',seconds:600,label:'10 dəqiqə'},
-{id:'m30',seconds:1800,label:'30 dəqiqə'},
-{id:'h1',seconds:3600,label:'1 saat'},
-{id:'h2',seconds:7200,label:'2 saat'}
+{id:'s5',sec:5},{id:'s10',sec:10},{id:'s15',sec:15},
+{id:'m1',sec:60},{id:'m3',sec:180},{id:'m5',sec:300},
+{id:'m10',sec:600},{id:'m30',sec:1800},
+{id:'h1',sec:3600},{id:'h2',sec:7200}
 ];
 
-let liveRunning=false;
+const nativeIntervals={
+60:'1m',180:'3m',300:'5m',1800:'30m',
+3600:'1h',7200:'2h'
+};
+
+let running=false;
 let socket=null;
-let refreshTimer=null;
-let renderTimer=null;
-let tickCandles=[];
-let liveLists={};
-let livePrice=0;
-let liveHistory=loadHistory();
-let lastSavedKey='';
-let activeMarket='all';
-let scanBusy=false;
-let forexTimer=null;
-
-function loadHistory(){
- try{return JSON.parse(localStorage.getItem('po_live_history_v9')||'[]')}
- catch{return []}
-}
-
-function saveHistory(){
- localStorage.setItem('po_live_history_v9',JSON.stringify(liveHistory));
-}
-
-function fmtPrice(n){
- if(!Number.isFinite(Number(n)))return '—';
- const x=Number(n);
- return x.toLocaleString('en-US',{
-  minimumFractionDigits:2,
-  maximumFractionDigits:x>=1000?2:x>=1?4:8
- });
-}
-
-function ema(a,p){
- if(a.length===0)return 0;
- const k=2/(p+1);
- let v=a[0];
- for(let i=1;i<a.length;i++)v=a[i]*k+v*(1-k);
- return v;
-}
-
-function rsi(a,p=14){
- if(a.length<p+1)return 50;
- let gain=0,loss=0;
- for(let i=a.length-p;i<a.length;i++){
-  const d=a[i]-a[i-1];
-  if(d>0)gain+=d;
-  else loss-=d;
- }
- if(loss===0)return gain===0?50:100;
- const rs=gain/loss;
- return 100-100/(1+rs);
-}
-
-function macd(a){
- if(a.length<35)return 0;
- const fast=ema(a.slice(-60),12);
- const slow=ema(a.slice(-60),26);
- return fast-slow;
-}
-
-function atr(c,p=14){
- if(c.length<p+1)return 0;
- let sum=0;
- for(let i=c.length-p;i<c.length;i++){
-  const x=c[i],q=c[i-1];
-  sum+=Math.max(
-   x.h-x.l,
-   Math.abs(x.h-q.c),
-   Math.abs(x.l-q.c)
-  );
- }
- return sum/p;
-}
-
-function bollinger(a,p=20){
- if(a.length<p)return null;
- const v=a.slice(-p);
- const avg=v.reduce((s,x)=>s+x,0)/p;
- const variance=v.reduce((s,x)=>s+(x-avg)**2,0)/p;
- const sd=Math.sqrt(variance);
- return {mid:avg,upper:avg+2*sd,lower:avg-2*sd};
-}
-
-function candlePattern(c){
- if(c.length<3)return 'Məlumat azdır';
- const x=c.at(-1);
- const prev=c.at(-2);
- const body=Math.abs(x.c-x.o);
- const range=Math.max(x.h-x.l,0.00000001);
- const upper=x.h-Math.max(x.o,x.c);
- const lower=Math.min(x.o,x.c)-x.l;
-
- if(body/range<0.1)return 'Doji';
- if(lower>body*2&&upper<body)return 'Hammer';
- if(upper>body*2&&lower<body)return 'Shooting Star';
- if(x.c>x.o&&prev.c<prev.o&&x.c>prev.o&&x.o<prev.c)
-  return 'Bullish Engulfing';
- if(x.c<x.o&&prev.c>prev.o&&x.o>prev.c&&x.c<prev.o)
-  return 'Bearish Engulfing';
- return x.c>x.o?'Bullish candle':x.c<x.o?'Bearish candle':'Neutral';
-}
-
-function scoreCandles(c){
- if(!c||c.length<35){
-  return {side:'WAIT',score:0,reason:'Kifayət qədər şam yoxdur'};
- }
-
- const close=c.map(x=>x.c);
- const last=close.at(-1);
- const e9=ema(close.slice(-100),9);
- const e21=ema(close.slice(-100),21);
- const e50=ema(close.slice(-150),50);
- const e200=ema(close,200);
- const rv=rsi(close);
- const mh=macd(close);
- const bb=bollinger(close);
- const av=atr(c);
- const lastCandle=c.at(-1);
- const avgVol=c.slice(-21,-1).reduce((s,x)=>s+(x.v||0),0)/20;
- const volume=lastCandle.v||0;
-
- let bull=0,bear=0;
- const reasons=[];
-
- if(last>e9)bull+=8;else bear+=8;
- if(e9>e21)bull+=12;else bear+=12;
- if(e21>e50)bull+=14;else bear+=14;
- if(e50>e200)bull+=12;else bear+=12;
-
- if(rv>=52&&rv<=68)bull+=10;
- else if(rv<=48&&rv>=32)bear+=10;
- else if(rv>70)reasons.push('RSI yüksəkdir');
- else if(rv<30)reasons.push('RSI aşağıdır');
-
- if(mh>0)bull+=12;else if(mh<0)bear+=12;
-
- if(lastCandle.c>lastCandle.o)bull+=8;
- else if(lastCandle.c<lastCandle.o)bear+=8;
-
- if(bb){
-  if(last>bb.mid)bull+=6;
-  else bear+=6;
-  if(last>bb.upper)reasons.push('Qiymət Bollinger üst zolağına yaxındır');
-  if(last<bb.lower)reasons.push('Qiymət Bollinger alt zolağına yaxındır');
- }
-
- if(avgVol>0){
-  if(volume>avgVol*1.15){
-   if(lastCandle.c>lastCandle.o)bull+=8;
-   else if(lastCandle.c<lastCandle.o)bear+=8;
-  }else if(volume<avgVol*.5){
-   reasons.push('Həcm zəifdir');
-  }
- }
-
- const pattern=candlePattern(c);
- if(pattern==='Bullish Engulfing'||pattern==='Hammer')bull+=8;
- if(pattern==='Bearish Engulfing'||pattern==='Shooting Star')bear+=8;
-
- const difference=Math.abs(bull-bear);
- let side=bull>bear?'CALL':bear>bull?'PUT':'WAIT';
- let score=Math.max(bull,bear);
-
- if(difference<18){
-  side='WAIT';
-  reasons.push('İstiqamət təsdiqi zəifdir');
- }
- if(score<55)side='WAIT';
-
- return {
-  side,
-  score:Math.min(100,Math.round(score)),
-  rsi:rv,
-  macd:mh,
-  ema:e9>e21?'Yuxarı':'Aşağı',
-  atr:av,
-  bb,
-  volume:avgVol>0?(volume/avgVol):0,
-  pattern,
-  trend:Math.round(difference),
-  reason:reasons.join('; ')||'Trend və momentum təsdiqlənib'
- };
-}
-
-function aggregate(source,seconds){
- const out=[];
- const ms=seconds*1000;
-
- for(const x of source){
-  const t=Math.floor(x.t/ms)*ms;
-  const last=out.at(-1);
-  if(!last||last.t!==t){
-   out.push({t,o:x.o,h:x.h,l:x.l,c:x.c,v:x.v||0});
-  }else{
-   last.h=Math.max(last.h,x.h);
-   last.l=Math.min(last.l,x.l);
-   last.c=x.c;
-   last.v+=(x.v||0);
-  }
- }
- return out;
-}
-
-function updateOne(id,result){
- const el=$(id);
- if(!el)return;
- el.textContent=result.side;
- el.className=result.side==='CALL'?'call':
-  result.side==='PUT'?'put':'wait';
- const scoreEl=$(id+'score');
- if(scoreEl){
-  scoreEl.textContent=`${result.score}/100 · ${result.reason||''}`;
- }
-}
-
-function updateIndicators(r){
- $('indRSI').textContent=Number.isFinite(r.rsi)?r.rsi.toFixed(1):'---';
- $('indMACD').textContent=Number.isFinite(r.macd)?r.macd.toFixed(6):'---';
- $('indEMA').textContent=r.ema||'---';
- $('indATR').textContent=Number.isFinite(r.atr)?fmtPrice(r.atr):'---';
- $('indBB').textContent=r.bb?'Aktiv':'---';
- $('indVOL').textContent=r.volume? r.volume.toFixed(2)+'x':'---';
- $('indCANDLE').textContent=r.pattern||'---';
- $('indTREND').textContent=r.trend!==undefined?r.trend+'/100':'---';
-}
-
-function renderHistory(){
- $('liveHistory').innerHTML=liveHistory.length?liveHistory.map(x=>`
- <div class="history-item">
- <b class="${x.side==='CALL'?'call':'put'}">${x.side}</b>
- · SCORE ${x.score}
- · Qiymət ${fmtPrice(x.price)}
- · Uyğunluq ${x.agree}%
- <span class="pill">${x.status||'OPEN'}</span>
- <br><span class="muted">${x.time}</span>
- </div>`).join(''):'<p class="muted">Hələ siqnal yoxdur.</p>';
-}
-
-function addHistory(side,score,agree){
- const key=side+'_'+Math.floor(Date.now()/60000);
- if(key===lastSavedKey)return;
- lastSavedKey=key;
-
- liveHistory.unshift({
-  side,score,agree,price:livePrice,
-  time:new Date().toLocaleString(),
-  status:'OPEN'
- });
- liveHistory=liveHistory.slice(0,50);
- saveHistory();
- renderHistory();
-}
-
-function updateLive(){
- if(!liveRunning)return;
-
- const isCrypto=$('liveMarket').value==='crypto';
- const results=[];
-
- if(isCrypto){
-  for(const s of [5,10,15]){
-   const candles=aggregate(tickCandles,s);
-   const r=scoreCandles(candles);
-   updateOne('s'+s,r);
-   if(r.side!=='WAIT')results.push({...r,weight:0.5});
-  }
- }else{
-  for(const s of [5,10,15]){
-   updateOne('s'+s,{
-    side:'WAIT',score:0,
-    reason:'Forex saniyəlik məlumatı mövcud deyil'
-   });
-  }
- }
-
- let primary=null;
-
- for(const f of frames.filter(x=>x.seconds>=60)){
-  const candles=liveLists[f.id]||[];
-  const r=scoreCandles(candles);
-  updateOne(f.id,r);
-
-  if(f.id==='h1')primary=r;
-  if(f.id==='m30'||f.id==='h1'||f.id==='h2'){
-   if(r.side!=='WAIT')results.push({...r,weight:2});
-  }else if(r.side!=='WAIT'){
-   results.push({...r,weight:1});
-  }
- }
-
- if(primary)updateIndicators(primary);
-
- let bull=0,bear=0,total=0;
- results.forEach(r=>{
-  if(r.side==='CALL')bull+=r.weight;
-  if(r.side==='PUT')bear+=r.weight;
-  total+=r.weight;
- });
-
- const max=Math.max(bull,bear);
- const agreement=total?Math.round(max/total*100):0;
- let side='WAIT';
- let score=0;
-
- if(total>=3&&agreement>=70){
-  side=bull>bear?'CALL':'PUT';
-  score=Math.round(Math.min(100,(max/total)*100));
- }
-
- if(side!=='WAIT'&&score>=85){
-  $('finalSignal').textContent=side==='CALL'?'GÜCLÜ BUY':'GÜCLÜ PUT';
- }else if(side!=='WAIT'){
-  $('finalSignal').textContent=side==='CALL'?'BUY':'PUT';
- }else{
-  $('finalSignal').textContent='WAIT';
- }
-
- $('finalSignal').className=side==='CALL'?'call':side==='PUT'?'put':'wait';
- $('finalScore').textContent=score+'/100';
- $('totalScore').textContent=score;
- $('agreement').textContent=total?agreement+'%':'---';
-
- if(side==='WAIT'){
-  $('finalText').textContent='Kifayət qədər eyni istiqamətli təsdiq yoxdur. Gözləyin.';
- }else{
-  $('finalText').textContent=
-   `${side==='CALL'?'Alış':'Satış'} istiqamətində ${agreement}% uyğunluq. Demo hesabda yoxlayın.`;
-  addHistory(side,score,agreement);
- }
-}
-
-function resetFrames(){
- frames.forEach(f=>{
-  $(f.id).textContent='WAIT';
-  $(f.id).className='wait';
-  $(f.id+'score').textContent='Məlumat gözlənilir';
- });
- $('finalSignal').textContent='WAIT';
- $('finalSignal').className='wait';
- $('finalScore').textContent='0/100';
- $('totalScore').textContent='0';
- $('agreement').textContent='---';
-}
-
-async function loadCryptoHistory(symbol){
- const r=await fetch(
-  `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1m&limit=1000`
- );
- if(!r.ok)throw Error('Binance şam məlumatı alınmadı');
- const data=await r.json();
- const candles=data.slice(0,-1).map(x=>({
-  t:Number(x[0]),o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]
- }));
- liveLists={};
- frames.filter(f=>f.seconds>=60).forEach(f=>{
-  liveLists[f.id]=aggregate(candles,f.seconds);
- });
-}
-
-function startSocket(symbol){
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
- socket=new WebSocket(
-  `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@aggTrade`
- );
-
- socket.onopen=()=>{
-  $('liveStatus').textContent='Binance canlı bağlantısı qoşuldu.';
-  $('sourceState').textContent='LIVE';
-  $('sourceState').className='call';
- };
-
- socket.onmessage=e=>{
-  const d=JSON.parse(e.data);
-  const price=+d.p;
-  const t=Number(d.T);
-  const volume=+d.q;
-
-  livePrice=price;
-  $('livePrice').textContent=fmtPrice(price);
-
-  tickCandles.push({
-   t,o:price,h:price,l:price,c:price,v:volume
-  });
-
-  const cutoff=Date.now()-20*60*1000;
-  tickCandles=tickCandles.filter(x=>x.t>=cutoff);
-
-  const minute=Math.floor(t/60000)*60000;
-  const current=liveLists.m1||[];
-  const last=current.at(-1);
-
-  if(!last||last.t!==minute){
-   current.push({t:minute,o:price,h:price,l:price,c:price,v:volume});
-  }else{
-   last.h=Math.max(last.h,price);
-   last.l=Math.min(last.l,price);
-   last.c=price;
-   last.v+=volume;
-  }
-
-  liveLists.m1=current;
-  frames.filter(f=>f.seconds>60).forEach(f=>{
-   if(f.seconds===60)return;
-   liveLists[f.id]=aggregate(liveLists.m1,f.seconds/60);
-  });
- };
-
- socket.onerror=()=>{
-  $('liveStatus').textContent='Binance bağlantı xətası.';
-  $('sourceState').textContent='ERROR';
-  $('sourceState').className='put';
- };
-
- socket.onclose=()=>{
-  if(liveRunning){
-   $('liveStatus').textContent='Bağlantı kəsildi. Yenidən qoşulmağa çalışılır...';
-   setTimeout(()=>{
-    if(liveRunning)startSocket(symbol);
-   },3000);
-  }
- };
-}
-
-async function startCrypto(){
- const symbol=$('liveSymbol').value;
- if(!symbol)throw Error('Aktiv seçilməyib');
-
- $('liveStatus').textContent='Binance məlumatları yüklənir...';
- await loadCryptoHistory(symbol);
- tickCandles=[];
- startSocket(symbol);
-
- renderTimer=setInterval(updateLive,2000);
-}
-
-function getKey(){
- return localStorage.getItem('td_api_key')||'';
-}
-
-async function getForexCandles(pair,interval,key){
- const url=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(pair)}&interval=${interval}&outputsize=500&apikey=${encodeURIComponent(key)}`;
- const r=await fetch(url);
- if(!r.ok)throw Error('Forex HTTP '+r.status);
- const d=await r.json();
- if(!d.values)throw Error(d.message||'Forex məlumatı alınmadı');
-
- return d.values.slice().reverse().map(x=>({
-  t:new Date(x.datetime).getTime(),
-  o:+x.open,h:+x.high,l:+x.low,c:+x.close,v:+(x.volume||0)
- }));
-}
-
-async function startForex(){
- const key=getKey();
- if(!key)throw Error('Forex üçün əvvəllər yadda saxlanmış Twelve Data API açarı tapılmadı.');
-
- const pair=$('liveSymbol').value;
- $('liveStatus').textContent='Forex məlumatları yüklənir...';
-
- async function refresh(){
-  try{
-   const data=await getForexCandles(pair,'1min',key);
-   liveLists={};
-   frames.filter(f=>f.seconds>=60).forEach(f=>{
-    liveLists[f.id]=aggregate(data,f.seconds/60);
-   });
-   livePrice=data.at(-1).c;
-   $('livePrice').textContent=fmtPrice(livePrice);
-   $('liveStatus').textContent='Forex məlumatları yeniləndi.';
-   $('sourceState').textContent='LIVE';
-   $('sourceState').className='call';
-   updateLive();
-  }catch(e){
-   $('liveStatus').textContent='Forex xətası: '+e.message;
-  }
- }
-
- await refresh();
- forexTimer=setInterval(refresh,60000);
- renderTimer=setInterval(updateLive,5000);
-}
-
-function stopLive(){
- liveRunning=false;
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
- clearInterval(renderTimer);
- clearInterval(forexTimer);
- renderTimer=null;
- forexTimer=null;
- $('liveStatus').textContent='Canlı analiz dayandırıldı.';
- $('sourceState').textContent='STOP';
- $('sourceState').className='wait';
-}
-
-function fillSymbols(){
- const market=$('liveMarket').value;
- const list=market==='crypto'?cryptoPairs:forexPairs;
- $('liveSymbol').innerHTML=list.map(x=>
-  `<option value="${x}">${x}</option>`
- ).join('');
-}
-
-$('liveMarket').addEventListener('change',()=>{
- stopLive();
- fillSymbols();
- resetFrames();
- $('livePrice').textContent='---';
-});
-
-$('liveStart').addEventListener('click',async()=>{
- stopLive();
- resetFrames();
- liveRunning=true;
- $('liveStart').disabled=true;
-
- try{
-  if($('liveMarket').value==='crypto')await startCrypto();
-  else await startForex();
- }catch(e){
-  $('liveStatus').textContent='XƏTA: '+e.message;
-  liveRunning=false;
- }finally{
-  $('liveStart').disabled=false;
- }
-});
-
-$('liveStop').addEventListener('click',stopLive);
-
-$('clearHistory').addEventListener('click',()=>{
- liveHistory=[];
- saveHistory();
- renderHistory();
-});
-
-$('scannerToggle').addEventListener('click',()=>{
- const p=$('scannerPanel');
- p.hidden=!p.hidden;
- $('scannerToggle').textContent=p.hidden?
-  '📊 MARKET SCANNER AÇ':'📊 MARKET SCANNER BAĞLA';
-});
-
-function analyzeScan(c,symbol,market){
- const a=scoreCandles(c);
- if(a.side==='WAIT'||a.score<Number($('threshold').value))return null;
- const side=a.side==='CALL'?'LONG':'SHORT';
- return {
-  symbol,market,side,score:a.score,rsi:a.rsi,
-  price:c.at(-1).c
- };
-}
-
-function renderSignals(list){
- $('results').innerHTML=list.length?list.sort((a,b)=>b.score-a.score).map(s=>`
- <div class="signal ${s.side==='SHORT'?'short':''}">
- <h3>${s.symbol} <span class="tag">${s.side}</span>
- <span>${s.score}/100</span></h3>
- <div class="muted">${s.market} · RSI ${s.rsi.toFixed(1)}</div>
- <div class="cell">Qiymət: ${fmtPrice(s.price)}</div>
- </div>`).join(''):'<p class="muted">Güclü siqnal tapılmadı.</p>';
-}
-
 let reconnectTimer=null;
+let renderTimer=null;
+let forexTimer=null;
+let livePrice=0;
+let historyLists={};
+let tickLists={5:[],10:[],15:[]};
+let history=[];
+let lastSignalKey='';
 
-async function startCrypto(){
- const symbol=$('liveSymbol').value;
+try{
+history=JSON.parse(localStorage.getItem('po_v9_history')||'[]');
+}catch(e){history=[]}
 
- if(!symbol)throw Error('Aktiv seçilməyib');
-
- $('liveStatus').textContent='Binance məlumatları yüklənir...';
-
- tickCandles=[];
- livePrice=0;
-
- await loadCryptoHistory(symbol);
-
- if(!liveRunning)return;
-
- startSocket(symbol);
-
- if(renderTimer)clearInterval(renderTimer);
-
- renderTimer=setInterval(()=>{
-  if(liveRunning)updateLive();
- },2000);
+function setStatus(text){
+$('liveStatus').textContent=text;
 }
 
-function startSocket(symbol){
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
-
- socket=new WebSocket(
-  `wss://stream.binance.com:443/ws/${symbol.toLowerCase()}@aggTrade`
- );
-
- const currentSocket=socket;
-
- currentSocket.onopen=()=>{
-  if(!liveRunning)return;
-
-  $('liveStatus').textContent='Binance canlı bağlantısı qoşuldu.';
- };
-
- currentSocket.onmessage=e=>{
-  if(!liveRunning)return;
-
-  try{
-   const d=JSON.parse(e.data);
-   const price=Number(d.p);
-   const t=Number(d.T);
-   const volume=Number(d.q);
-
-   if(!Number.isFinite(price)||!Number.isFinite(t))return;
-
-   livePrice=price;
-   $('livePrice').textContent=fmtPrice(price);
-
-   tickCandles.push({
-    t,o:price,h:price,l:price,c:price,v:volume
-   });
-
-   const cutoff=Date.now()-20*60*1000;
-   tickCandles=tickCandles.filter(x=>x.t>=cutoff);
-
-   const minute=Math.floor(t/60000)*60000;
-   const current=liveLists.m1||[];
-   const last=current.at(-1);
-
-   if(!last||last.t!==minute){
-    current.push({
-     t:minute,o:price,h:price,l:price,c:price,v:volume
-    });
-   }else{
-    last.h=Math.max(last.h,price);
-    last.l=Math.min(last.l,price);
-    last.c=price;
-    last.v+=volume;
-   }
-
-   liveLists.m1=current;
-
-   frames.filter(f=>f.seconds>60).forEach(f=>{
-    liveLists[f.id]=aggregate(
-     liveLists.m1,
-     f.seconds/60
-    );
-   });
-
-  }catch(err){
-   console.error('Binance məlumat xətası:',err);
-  }
- };
-
- currentSocket.onerror=()=>{
-  if(liveRunning){
-   $('liveStatus').textContent='Binance bağlantı xətası.';
-  }
- };
-
- currentSocket.onclose=()=>{
-  if(liveRunning&&socket===currentSocket){
-   $('liveStatus').textContent=
-    'Bağlantı kəsildi. Yenidən qoşulur...';
-
-   reconnectTimer=setTimeout(()=>{
-    if(liveRunning)startSocket(symbol);
-   },3000);
-  }
- };
-}
-
-async function startLive(){
- stopLive(false);
-
- resetFrames();
-
- liveRunning=true;
-
- $('liveStart').disabled=true;
- $('liveStatus').textContent='Canlı məlumatlar yüklənir...';
-
- try{
-  if($('liveMarket').value==='crypto'){
-   await startCrypto();
-  }else{
-   throw Error('Hazırda bu düzəliş Crypto/Binance bağlantısı üçündür. Forex ayrıca qoşulmalıdır.');
-  }
- }catch(err){
-  console.error(err);
-  $('liveStatus').textContent='XƏTA: '+err.message;
-  liveRunning=false;
-  $('liveStart').disabled=false;
- }
-}
-
-function stopLive(showStatus=true){
- liveRunning=false;
-
- if(renderTimer){
-  clearInterval(renderTimer);
-  renderTimer=null;
- }
-
- if(refreshTimer){
-  clearInterval(refreshTimer);
-  refreshTimer=null;
- }
-
- if(reconnectTimer){
-  clearTimeout(reconnectTimer);
-  reconnectTimer=null;
- }
-
- if(socket){
-  socket.onclose=null;
-  socket.close();
-  socket=null;
- }
-
- $('liveStart').disabled=false;
-
- if(showStatus){
-  $('liveStatus').textContent='Canlı analiz dayandırıldı.';
- }
+function formatPrice(n){
+if(!Number.isFinite(n))return '---';
+return n.toLocaleString('en-US',{
+maximumFractionDigits:n>=100?2:n>=1?5:8
+});
 }
 
 function initSymbols(){
- $('liveSymbol').innerHTML=cryptoPairs.map(s=>
-  `<option value="${s}">${s}</option>`
- ).join('');
+const market=$('liveMarket').value;
+const list=market==='crypto'?cryptoPairs:forexPairs;
+$('liveSymbol').innerHTML=list.map(x=>
+`<option value="${x}">${x}</option>`).join('');
+$('marketName').textContent=market==='crypto'?'Crypto':'Forex';
+}
+
+async function getJson(url){
+const response=await fetch(url);
+if(!response.ok)throw Error('HTTP '+response.status);
+const data=await response.json();
+if(data.code)throw Error(data.msg||'Birja xətası');
+if(data.status==='error')throw Error(data.message||'API xətası');
+return data;
+}
+
+function ema(values,period){
+if(values.length<period)return null;
+const k=2/(period+1);
+let value=values[0];
+for(let i=1;i<values.length;i++){
+value=values[i]*k+value*(1-k);
+}
+return value;
+}
+
+function rsi(values,period=14){
+if(values.length<period+1)return null;
+let gains=0,losses=0;
+for(let i=values.length-period;i<values.length;i++){
+const change=values[i]-values[i-1];
+if(change>0)gains+=change;
+else losses-=change;
+}
+if(losses===0)return gains===0?50:100;
+const rs=gains/losses;
+return 100-100/(1+rs);
+}
+
+function macd(values){
+if(values.length<35)return null;
+return ema(values.slice(-100),12)-ema(values.slice(-100),26);
+}
+
+function calculateATR(candles,period=14){
+if(candles.length<period+1)return null;
+let total=0;
+for(let i=candles.length-period;i<candles.length;i++){
+const c=candles[i],p=candles[i-1];
+total+=Math.max(c.h-c.l,Math.abs(c.h-p.c),Math.abs(c.l-p.c));
+}
+return total/period;
+}
+
+function bollinger(values,period=20){
+if(values.length<period)return null;
+const a=values.slice(-period);
+const mean=a.reduce((s,x)=>s+x,0)/period;
+const variance=a.reduce((s,x)=>s+(x-mean)**2,0)/period;
+const sd=Math.sqrt(variance);
+return {mid:mean,upper:mean+2*sd,lower:mean-2*sd};
+}
+
+function candlePattern(c){
+if(c.length<2)return '---';
+const x=c.at(-1),p=c.at(-2);
+const body=Math.abs(x.c-x.o);
+const range=Math.max(x.h-x.l,1e-10);
+const upper=x.h-Math.max(x.o,x.c);
+const lower=Math.min(x.o,x.c)-x.l;
+
+if(body/range<.1)return 'Doji';
+if(lower>body*2&&upper<body)return 'Hammer';
+if(upper>body*2&&lower<body)return 'Shooting Star';
+if(x.c>p.o&&x.o<p.c&&p.c<p.o)return 'Bullish Engulfing';
+if(x.c<p.o&&x.o>p.c&&p.c>p.o)return 'Bearish Engulfing';
+return x.c>x.o?'Bullish candle':x.c<x.o?'Bearish candle':'Neutral';
+}
+
+function analyze(candles){
+if(!candles||candles.length<36){
+return {side:'WAIT',score:0,reason:'35 tamamlanmış şam gözlənilir'};
+}
+
+/* Son şam formalaşmaqda ola bilər, ona görə hesablamadan çıxarılır. */
+const c=candles.slice(0,-1);
+if(c.length<35)return {side:'WAIT',score:0,reason:'Şam sayı azdır'};
+
+const closes=c.map(x=>x.c);
+const last=c.at(-1);
+const e9=ema(closes,9);
+const e21=ema(closes,21);
+const e50=ema(closes,50);
+const e200=ema(closes,200);
+const rv=rsi(closes);
+const mc=macd(closes);
+const bb=bollinger(closes);
+const av=calculateATR(c);
+const pattern=candlePattern(c);
+const avgVol=c.slice(-21,-1).reduce((s,x)=>s+(x.v||0),0)/20;
+
+let bull=0,bear=0;
+const reasons=[];
+
+if(e9!==null&&e21!==null){
+if(e9>e21)bull+=12;else bear+=12;
+}
+if(e21!==null&&e50!==null){
+if(e21>e50)bull+=14;else bear+=14;
+}
+if(e50!==null&&e200!==null){
+if(e50>e200)bull+=10;else bear+=10;
+}
+if(last.c>e9)bull+=8;else bear+=8;
+
+if(rv!==null){
+if(rv>=52&&rv<=68)bull+=10;
+else if(rv<=48&&rv>=32)bear+=10;
+else if(rv>70)reasons.push('RSI yüksəkdir');
+else if(rv<30)reasons.push('RSI aşağıdır');
+}
+
+if(mc!==null){
+if(mc>0)bull+=12;
+else if(mc<0)bear+=12;
+}
+
+if(last.c>last.o)bull+=8;
+else if(last.c<last.o)bear+=8;
+
+if(bb){
+if(last.c>bb.mid)bull+=6;
+else bear+=6;
+}
+
+if(avgVol>0&&last.v>avgVol*1.15){
+if(last.c>last.o)bull+=6;
+else if(last.c<last.o)bear+=6;
+}
+
+if(pattern==='Bullish Engulfing'||pattern==='Hammer')bull+=8;
+if(pattern==='Bearish Engulfing'||pattern==='Shooting Star')bear+=8;
+
+const difference=Math.abs(bull-bear);
+let side=bull>bear?'CALL':bear>bull?'PUT':'WAIT';
+let score=Math.max(bull,bear);
+
+if(difference<18||score<55)side='WAIT';
+
+return {
+side,
+score:Math.min(100,Math.round(score)),
+rsi:rv,macd:mc,
+ema:e9>e21?'Yüksəliş':'Eniş',
+atr:av,bb,pattern,
+volume:avgVol>0?last.v/avgVol:0,
+trend:difference,
+reason:reasons.join(' • ')||'Texniki göstəricilər hesablandı'
+};
+}
+
+function aggregate(candles,seconds){
+const result=[];
+const size=seconds*1000;
+
+for(const c of candles){
+const bucket=Math.floor(c.t/size)*size;
+let last=result.at(-1);
+if(!last||last.t!==bucket){
+result.push({
+t:bucket,o:c.o,h:c.h,l:c.l,c:c.c,v:c.v||0
+});
+}else{
+last.h=Math.max(last.h,c.h);
+last.l=Math.min(last.l,c.l);
+last.c=c.c;
+last.v+=(c.v||0);
+}
+}
+return result;
+}
+
+function updateFrame(id,result){
+const el=$(id);
+el.textContent=result.side;
+el.className=result.side==='CALL'?'call':
+result.side==='PUT'?'put':'wait';
+
+$(id+'score').textContent=
+result.score+'/100 · '+result.reason;
+}
+
+function updateIndicators(r){
+$('indRSI').textContent=r.rsi===null?'---':r.rsi.toFixed(1);
+$('indMACD').textContent=r.macd===null?'---':r.macd.toFixed(6);
+$('indEMA').textContent=r.ema||'---';
+$('indATR').textContent=r.atr===null?'---':formatPrice(r.atr);
+$('indBB').textContent=r.bb?'Aktiv':'---';
+$('indVOL').textContent=r.volume?r.volume.toFixed(2)+'x':'---';
+$('indCANDLE').textContent=r.pattern||'---';
+$('indTREND').textContent=r.trend===undefined?'---':r.trend+'/100';
+}
+
+function saveHistory(){
+localStorage.setItem('po_v9_history',JSON.stringify(history));
+}
+
+function renderHistory(){
+$('liveHistory').innerHTML=history.length?
+history.map(x=>`
+<div class="history-item">
+<b class="${x.side==='CALL'?'call':'put'}">${x.side}</b>
+ · ${x.symbol} · ${x.score}/100 · ${formatPrice(x.price)}
+<br><span class="muted">${x.time}</span>
+</div>`).join(''):
+'<p class="muted">Hələ siqnal yoxdur.</p>';
+}
+
+function recordSignal(side,score,agree){
+const key=side+'_'+Math.floor(Date.now()/60000);
+if(key===lastSignalKey)return;
+lastSignalKey=key;
+
+history.unshift({
+side,score,agree,
+symbol:$('liveSymbol').value,
+price:livePrice,
+time:new Date().toLocaleString()
+});
+history=history.slice(0,40);
+saveHistory();
+renderHistory();
+}
+
+function makeLiveCandle(sec,price,volume,time){
+const bucket=Math.floor(time/(sec*1000))*sec*1000;
+const list=tickLists[sec];
+let last=list.at(-1);
+
+if(!last||last.t!==bucket){
+list.push({t:bucket,o:price,h:price,l:price,c:price,v:volume});
+if(list.length>1000)list.shift();
+}else{
+last.h=Math.max(last.h,price);
+last.l=Math.min(last.l,price);
+last.c=price;
+last.v+=volume;
+}
+}
+
+function updateTrade(price,volume,time){
+livePrice=price;
+$('livePrice').textContent=formatPrice(price);
+
+[5,10,15].forEach(sec=>makeLiveCandle(sec,price,volume,time));
+
+const minute=Math.floor(time/60000)*60000;
+const list=historyLists[60]||[];
+let last=list.at(-1);
+
+if(!last||last.t!==minute){
+list.push({t:minute,o:price,h:price,l:price,c:price,v:volume});
+}else{
+last.h=Math.max(last.h,price);
+last.l=Math.min(last.l,price);
+last.c=price;
+last.v+=volume;
+}
+historyLists[60]=list;
+if(list.length>1200)list.shift();
+
+[180,300,600,1800,3600,7200].forEach(sec=>{
+historyLists[sec]=aggregate(list,sec);
+});
+}
+
+function updateLive(){
+if(!running)return;
+
+const results=[];
+let hourlyResult=null;
+
+if($('liveMarket').value==='crypto'){
+[5,10,15].forEach(sec=>{
+const r=analyze(tickLists[sec]);
+updateFrame('s'+sec,r);
+if(r.side!=='WAIT')results.push({r,weight:.5});
+});
+}else{
+[5,10,15].forEach(sec=>{
+updateFrame('s'+sec,{
+side:'WAIT',score:0,
+reason:'Forex saniyəlik feed yoxdur'
+});
+});
+}
+
+frames.filter(f=>f.sec>=60).forEach(f=>{
+const r=analyze(historyLists[f.sec]||[]);
+updateFrame(f.id,r);
+
+if(f.id==='h1')hourlyResult=r;
+
+const weight=[1800,3600,7200].includes(f.sec)?2:1;
+if(r.side!=='WAIT')results.push({r,weight});
+});
+
+if(hourlyResult)updateIndicators(hourlyResult);
+
+let call=0,put=0,total=0;
+results.forEach(x=>{
+if(x.r.side==='CALL')call+=x.weight;
+if(x.r.side==='PUT')put+=x.weight;
+total+=x.weight;
+});
+
+const agree=total?Math.round(Math.max(call,put)/total*100):0;
+let side='WAIT',score=0;
+
+if(total>=3&&agree>=70){
+side=call>put?'CALL':'PUT';
+score=agree;
+}
+
+$('finalSignal').textContent=side==='CALL'?'BUY / CALL':
+side==='PUT'?'SELL / PUT':'WAIT';
+$('finalSignal').className=side==='CALL'?'call':
+side==='PUT'?'put':'wait';
+
+$('finalScore').textContent=score+'/100';
+$('totalScore').textContent=score;
+$('agreement').textContent=total?agree+'%':'---';
+
+$('finalText').textContent=side==='WAIT'?
+'Kifayət qədər eyni istiqamətli təsdiq yoxdur. Gözləyin.':
+`${side} istiqamətində ${agree}% interval uyğunluğu. Demo hesabda yoxlayın.`;
+
+if(side!=='WAIT')recordSignal(side,score,agree);
+}
+
+async function loadCryptoHistory(symbol){
+const requests=Object.entries(nativeIntervals).map(async([sec,interval])=>{
+const data=await getJson(
+`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`
+);
+historyLists[sec]=data.slice(0,-1).map(k=>({
+t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]
+}));
+});
+
+const oneMinute=getJson(
+`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1m&limit=1000`
+).then(data=>{
+historyLists[60]=data.slice(0,-1).map(k=>({
+t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]
+}));
+});
+
+await Promise.all([...requests,oneMinute]);
+historyLists[600]=aggregate(historyLists[60],600);
+}
+
+function connectSocket(symbol){
+if(!running)return;
+
+if(socket){
+socket.onclose=null;
+socket.close();
+}
+
+socket=new WebSocket(
+`wss://stream.binance.com:443/ws/${symbol.toLowerCase()}@aggTrade`
+);
+
+socket.onopen=()=>{
+$('sourceState').textContent='Binance LIVE';
+setStatus('Binance canlı bağlantısı aktivdir.');
+};
+
+socket.onmessage=e=>{
+try{
+const d=JSON.parse(e.data);
+updateTrade(+d.p,+d.q,+d.T);
+}catch(err){}
+};
+
+socket.onerror=()=>{
+$('sourceState').textContent='Bağlantı xətası';
+};
+
+socket.onclose=()=>{
+if(running){
+$('liveStatus').textContent='Bağlantı kəsildi. Yenidən qoşulur...';
+reconnectTimer=setTimeout(()=>connectSocket(symbol),4000);
+}
+};
+}
+
+async function startCrypto(){
+const symbol=$('liveSymbol').value;
+if(!symbol)throw Error('Aktiv seçilməyib');
+
+setStatus('Binance tarixçə məlumatları yüklənir...');
+$('sourceState').textContent='Binance məlumatları alınır';
+
+historyLists={};
+tickLists={5:[],10:[],15:[]};
+
+await loadCryptoHistory(symbol);
+
+const last=historyLists[60].at(-1);
+if(last){
+livePrice=last.c;
+$('livePrice').textContent=formatPrice(livePrice);
+}
+
+connectSocket(symbol);
+}
+
+async function loadForex(){
+const key=$('apiKey').value.trim()||
+localStorage.getItem('td_api_key')||'';
+
+if(!key)throw Error('Forex üçün Twelve Data API açarı daxil edin.');
+
+localStorage.setItem('td_api_key',key);
+
+const symbol=$('liveSymbol').value;
+const url=
+`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1min&outputsize=500&apikey=${encodeURIComponent(key)}`;
+
+const data=await getJson(url);
+if(!data.values)throw Error(data.message||'Forex məlumatı alınmadı');
+
+const candles=data.values.reverse().map(x=>({
+t:new Date(x.datetime.replace(' ','T')+'Z').getTime(),
+o:+x.open,h:+x.high,l:+x.low,c:+x.close,v:+(x.volume||0)
+}));
+
+historyLists={60:candles.slice(0,-1)};
+[180,300,600,1800,3600,7200].forEach(sec=>{
+historyLists[sec]=aggregate(historyLists[60],sec);
+});
+
+livePrice=candles.at(-1).c;
+$('livePrice').textContent=formatPrice(livePrice);
+$('sourceState').textContent='Twelve Data • 1 dəqiqəlik';
+}
+
+async function startForex(){
+await loadForex();
+
+forexTimer=setInterval(async()=>{
+if(!running)return;
+try{
+await loadForex();
+}catch(e){
+setStatus('Forex yenilənmə xətası: '+e.message);
+}
+},60000);
+}
+
+async function startLive(){
+if(running)return;
+
+running=true;
+$('liveStart').disabled=true;
+$('liveStop').disabled=false;
+
+try{
+if($('liveMarket').value==='crypto'){
+await startCrypto();
+}else{
+await startForex();
+}
+
+renderTimer=setInterval(updateLive,1000);
+updateLive();
+
+}catch(e){
+stopLive();
+setStatus('BAŞLAMA XƏTASI: '+e.message);
+}
+}
+
+function stopLive(){
+running=false;
+
+if(socket){
+socket.onclose=null;
+try{socket.close()}catch(e){}
+socket=null;
+}
+
+clearTimeout(reconnectTimer);
+clearInterval(renderTimer);
+clearInterval(forexTimer);
+
+$('liveStart').disabled=false;
+$('liveStop').disabled=true;
+$('sourceState').textContent='Bağlı';
+setStatus('Canlı analiz dayandırıldı.');
+}
+
+async function runScanner(){
+if(scanBusy)return;
+scanBusy=true;
+
+$('scanBtn').disabled=true;
+$('scanStatus').textContent='Aktivlər yoxlanılır...';
+
+const interval=$('scanTimeframe').value;
+const threshold=Number($('scanThreshold').value);
+const market=$('liveMarket').value;
+const symbols=market==='crypto'?cryptoPairs:cryptoPairs;
+const rows=[];
+
+for(const symbol of symbols){
+try{
+const data=await getJson(
+`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=220`
+);
+const candles=data.slice(0,-1).map(k=>({
+t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]
+}));
+const r=analyze(candles);
+
+rows.push({
+symbol,price:candles.at(-1).c,
+signal:r.side,score:r.score,rsi:r.rsi
+});
+}catch(e){
+rows.push({symbol,error:e.message});
+}
+}
+
+rows.sort((a,b)=>(b.score||0)-(a.score||0));
+
+const filtered=rows.filter(x=>
+!x.error&&x.signal!=='WAIT'&&x.score>=threshold
+);
+
+$('checked').textContent=rows.length;
+$('longs').textContent=filtered.filter(x=>x.signal==='CALL').length;
+$('shorts').textContent=filtered.filter(x=>x.signal==='PUT').length;
+$('signals').textContent=filtered.length;
+
+$('scanResults').innerHTML=rows.map(x=>{
+if(x.error)return `<tr><td>${x.symbol}</td><td colspan="4">Xəta</td></tr>`;
+return `<tr>
+<td>${x.symbol}</td>
+<td>${formatPrice(x.price)}</td>
+<td class="${x.signal==='CALL'?'call':x.signal==='PUT'?'put':'wait'}">${x.signal}</td>
+<td>${x.score}</td>
+<td>${x.rsi===null?'--':x.rsi.toFixed(1)}</td>
+</tr>`;
+}).join('');
+
+$('scanStatus').textContent=
+`Skan tamamlandı. ${filtered.length} uyğun siqnal tapıldı.`;
+
+scanBusy=false;
+$('scanBtn').disabled=false;
 }
 
 $('liveStart').addEventListener('click',startLive);
-$('liveStop').addEventListener('click',()=>stopLive());
+$('liveStop').addEventListener('click',stopLive);
 
 $('liveMarket').addEventListener('change',()=>{
- stopLive();
- initSymbols();
- $('livePrice').textContent='---';
+stopLive();
+initSymbols();
+resetFrames();
+});
+
+$('liveSymbol').addEventListener('change',()=>{
+if(running){
+stopLive();
+startLive();
+}
 });
 
 $('scannerToggle').addEventListener('click',()=>{
- const panel=$('scannerPanel');
- panel.hidden=!panel.hidden;
- $('scannerToggle').textContent=panel.hidden?
-  '📊 MARKET SCANNER AÇ':'📊 MARKET SCANNER BAĞLA';
+$('scannerPanel').hidden=!$('scannerPanel').hidden;
+$('scannerToggle').textContent=$('scannerPanel').hidden?
+'📊 MARKET SCANNER AÇ':'📊 MARKET SCANNER BAĞLA';
 });
 
+$('scanBtn').addEventListener('click',runScanner);
+
 $('clearHistory').addEventListener('click',()=>{
- liveHistory=[];
- saveHistory();
- renderHistory();
+history=[];
+saveHistory();
+renderHistory();
 });
+
+function resetFrames(){
+frames.forEach(f=>{
+$(f.id).textContent='WAIT';
+$(f.id).className='wait';
+$(f.id+'score').textContent='Məlumat gözlənilir';
+});
+$('livePrice').textContent='---';
+$('totalScore').textContent='0';
+$('agreement').textContent='---';
+$('finalScore').textContent='0/100';
+$('finalSignal').textContent='WAIT';
+$('finalSignal').className='wait';
+$('finalText').textContent='Canlı məlumat gözlənilir.';
+}
+
+$('apiKey').value=localStorage.getItem('td_api_key')||'';
 
 initSymbols();
 renderHistory();
 resetFrames();
 
 console.log('POCKET OPTION LIVE AI V9 hazırdır.');
+</script>
+</body>
+</html>
