@@ -9,6 +9,53 @@
 
 <style>
 :root{
+/* ENTRY TIMER */
+
+.entry-panel{
+background:linear-gradient(145deg,#102944,#091525);
+border:1px solid var(--blue);
+border-radius:13px;
+padding:17px;
+margin-bottom:13px;
+text-align:center;
+}
+
+.entry-title{
+font-size:14px;
+font-weight:bold;
+color:var(--blue);
+margin-bottom:12px;
+}
+
+.entry-status{
+font-size:21px;
+font-weight:bold;
+margin:12px 0;
+}
+
+.entry-count{
+font-size:42px;
+font-weight:bold;
+color:var(--green);
+margin:8px 0;
+}
+
+.entry-direction{
+font-size:17px;
+font-weight:bold;
+margin:8px 0;
+}
+
+.entry-info{
+font-size:11px;
+color:var(--muted);
+line-height:1.8;
+}
+
+.entry-wait{color:var(--yellow)}
+.entry-ready{color:var(--green)}
+.entry-danger{color:var(--red)}
+.entry-blue{color:var(--blue)}
 --bg:#07101e;
 --panel:#101d30;
 --panel2:#0a1728;
@@ -530,6 +577,44 @@ Növbəti yenilənmə:
 
 <!-- AI SUMMARY -->
 
+<!-- ENTRY TIMER -->
+
+<div class="entry-panel">
+
+<div class="entry-title">
+⏱ AI ENTRY TIMER — GİRİŞ VAXTI
+</div>
+
+<div class="entry-status entry-wait" id="entryStatus">
+ŞAMIN BAĞLANMASINI GÖZLƏ
+</div>
+
+<div class="entry-count" id="entryCountdown">
+180
+</div>
+
+<div class="entry-direction" id="entryDirection">
+WAIT
+</div>
+
+<div class="entry-info">
+
+Seçilmiş timeframe:
+<span id="entryTF">1 dəqiqə</span>
+
+<br>
+
+Tövsiyə olunan əməliyyat müddəti:
+<span id="entryDuration">1 dəqiqə</span>
+
+<br>
+
+Giriş pəncərəsi:
+<span id="entryWindow">Gözlənilir</span>
+
+</div>
+
+</div>
 <div class="panel">
 
 <div class="panel-title">🧠 AI MARKET SUMMARY</div>
@@ -1964,6 +2049,173 @@ ${x.side}
 
 }
 
+/* ENTRY TIMER */
+
+let entryTimer = null;
+let previousBoundary = 0;
+let entryWindowUntil = 0;
+
+function updateEntryTimer(){
+
+if(!running){
+
+$("entryStatus").textContent="SİSTEM DAYANIB";
+$("entryStatus").className="entry-status entry-danger";
+$("entryCountdown").textContent="---";
+$("entryDirection").textContent="WAIT";
+
+return;
+
+}
+
+const now=Date.now();
+const duration=selectedTF*1000;
+
+const boundary=Math.floor(now/duration)*duration;
+const remaining=Math.ceil((boundary+duration-now)/1000);
+
+const result=lastResults.find(
+x=>x.tf===selectedTF
+);
+
+$("entryTF").textContent=tfNames[selectedTF];
+$("entryDuration").textContent=tfNames[selectedTF];
+
+/* Yeni şamın başlanması */
+
+if(previousBoundary===0){
+
+previousBoundary=boundary;
+
+}
+
+if(boundary!==previousBoundary){
+
+previousBoundary=boundary;
+
+entryWindowUntil=now+10000;
+
+}
+
+/* Giriş vaxtının hesablanması */
+
+$("entryCountdown").textContent=
+remaining;
+
+$("entryWindow").textContent=
+entryWindowUntil>now
+? "10 saniyəlik yoxlama pəncərəsi"
+: "Növbəti şam gözlənilir";
+
+/* Siqnal yoxdursa */
+
+if(!result || result.side==="WAIT"){
+
+$("entryStatus").textContent=
+"SIQNAL YOXDUR — GÖZLƏ";
+
+$("entryStatus").className=
+"entry-status entry-danger";
+
+$("entryDirection").textContent="WAIT";
+
+return;
+
+}
+
+/* Şam bağlanmağa yaxın */
+
+if(remaining<=5 && remaining>0){
+
+$("entryStatus").textContent=
+"ŞAM BAĞLANIR — GÖZLƏ";
+
+$("entryStatus").className=
+"entry-status entry-wait";
+
+$("entryDirection").textContent=
+result.side;
+
+return;
+
+}
+
+/* Yeni şamdan sonra siqnalın təsdiqi */
+
+if(entryWindowUntil>now){
+
+const expectedClosedCandle=boundary-duration;
+
+const candleConfirmed=
+result.candleTime>=expectedClosedCandle;
+
+if(candleConfirmed){
+
+$("entryStatus").textContent=
+"GİRİŞƏ HAZIR — SİQNALI YOXLА";
+
+$("entryStatus").className=
+"entry-status entry-ready";
+
+$("entryDirection").textContent=
+result.side+" | "+result.score+"%";
+
+}else{
+
+$("entryStatus").textContent=
+"YENİ MƏLUMAT GÖZLƏNİLİR";
+
+$("entryStatus").className=
+"entry-status entry-wait";
+
+$("entryDirection").textContent=
+result.side;
+
+}
+
+return;
+
+}
+
+/* Normal gözləmə */
+
+$("entryStatus").textContent=
+"NÖVBƏTİ ŞAMI GÖZLƏ";
+
+$("entryStatus").className=
+"entry-status entry-blue";
+
+$("entryDirection").textContent=
+result.side+" | "+result.score+"%";
+
+}
+
+function startEntryTimer(){
+
+if(entryTimer){
+clearInterval(entryTimer);
+}
+
+previousBoundary=0;
+entryWindowUntil=0;
+
+entryTimer=setInterval(updateEntryTimer,250);
+
+}
+
+function stopEntryTimer(){
+
+if(entryTimer){
+clearInterval(entryTimer);
+entryTimer=null;
+}
+
+$("entryStatus").textContent="SİSTEM DAYANIB";
+$("entryStatus").className="entry-status entry-danger";
+$("entryCountdown").textContent="---";
+$("entryDirection").textContent="WAIT";
+
+}
 
 /* SCAN */
 
@@ -2163,6 +2415,7 @@ $("apiCountdown").textContent="...";
 
 setLiveState(true);
 
+startEntryTimer();
 try{
 
 if(marketType==="CRYPTO"){
@@ -2213,6 +2466,9 @@ function stopLive(){
 running=false;
 
 runId++;
+
+// ENTRY TIMER DAYANDIR
+stopEntryTimer();
 
 if(activeController){
 
