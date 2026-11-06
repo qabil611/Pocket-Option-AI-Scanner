@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#08111f">
 <link rel="manifest" href="./manifest.json">
-<title>AI Trading Scanner V10</title>
+<title>POCKET OPTION LIVE AI V11</title>
 
 <style>
 :root{
@@ -61,7 +61,7 @@ color:var(--muted);
 margin-bottom:7px;
 }
 
-select,input{
+select{
 width:100%;
 padding:12px;
 border-radius:8px;
@@ -95,13 +95,6 @@ color:#061a16;
 .stop{
 background:var(--red);
 color:white;
-}
-
-.secondary{
-background:#263b58;
-color:white;
-width:100%;
-margin-bottom:10px;
 }
 
 .status{
@@ -206,12 +199,11 @@ overflow:auto;
 .notice{
 font-size:11px;
 color:var(--muted);
-line-height:1.5;
+line-height:1.6;
 }
 
 @media(max-width:500px){
 body{padding:9px}
-.grid{grid-template-columns:repeat(3,1fr)}
 .timeframes{grid-template-columns:repeat(4,1fr)}
 h1{font-size:20px}
 }
@@ -221,9 +213,9 @@ h1{font-size:20px}
 <body>
 <div class="container">
 
-<h1>⚡ AI TRADING SCANNER V10</h1>
+<h1>⚡ POCKET OPTION LIVE AI V11</h1>
 <div class="subtitle">
-Crypto + Forex | Multi-Timeframe Live Scanner
+Live Multi-Timeframe Scanner | Crypto + Forex
 </div>
 
 <div class="panel">
@@ -237,12 +229,8 @@ Crypto + Forex | Multi-Timeframe Live Scanner
 <label>Aktiv / Valyuta cütü</label>
 <select id="asset"></select>
 
-<label>Forex API açarı</label>
-<input id="apiKey" type="password" placeholder="Twelve Data API key">
-
-<button class="secondary" id="saveKey">API açarını yadda saxla</button>
-
 <label>Əsas analiz zaman dilimi</label>
+
 <div class="timeframes" id="timeframes">
 <button class="tf" data-tf="5">5s</button>
 <button class="tf" data-tf="10">10s</button>
@@ -264,52 +252,69 @@ Crypto + Forex | Multi-Timeframe Live Scanner
 </div>
 
 <br>
-<div class="status" id="status">Scanner hazırdır. Başlamaq üçün START düyməsinə basın.</div>
+
+<div class="status" id="status">
+V11 hazırdır. START düyməsinə basın.
+</div>
 
 </div>
 
 <div class="panel">
 <h3>📊 CANLI BAZAR</h3>
+
 <div class="grid">
+
 <div class="stat">
 <strong id="price">---</strong>
 <span>Son qiymət</span>
 </div>
+
 <div class="stat">
 <strong id="change">---</strong>
 <span>Qiymət dəyişməsi</span>
 </div>
+
 <div class="stat">
 <strong id="source">OFF</strong>
 <span>Məlumat mənbəyi</span>
 </div>
+
 </div>
 </div>
 
 <div class="panel">
 <h3>🧠 MULTI-TIMEFRAME ANALİZ</h3>
+
 <div class="grid">
+
 <div class="stat">
 <strong id="calls" class="call-text">0</strong>
 <span>CALL</span>
 </div>
+
 <div class="stat">
 <strong id="puts" class="put-text">0</strong>
 <span>PUT</span>
 </div>
+
 <div class="stat">
 <strong id="waits">0</strong>
 <span>WAIT</span>
 </div>
+
 </div>
+
 <br>
+
 <div id="results">
-<div class="small">Analiz başlamağı gözləyir.</div>
+<div class="small">Analiz gözləyir.</div>
 </div>
+
 </div>
 
 <div class="panel">
 <h3>⭐ TOP GÜCLÜ SİQNALLAR</h3>
+
 <div id="topSignals" class="small">
 Hələ siqnal yoxdur.
 </div>
@@ -317,28 +322,36 @@ Hələ siqnal yoxdur.
 
 <div class="panel">
 <h3>📜 SİQNAL TARİXÇƏSİ</h3>
+
 <div id="history">
 <div class="small">Tarixçə boşdur.</div>
 </div>
 </div>
 
 <div class="panel">
-<h3>ℹ️ MƏLUMAT</h3>
+<h3>ℹ️ V11 MƏLUMAT</h3>
+
 <div class="notice">
-Crypto məlumatları Binance-dən canlı WebSocket vasitəsilə alınır.
-Forex məlumatları Twelve Data API vasitəsilə yenilənir.
-Forex üçün saniyəlik real-time məlumat mövcud deyil.
-10 dəqiqəlik şamlar 1 dəqiqəlik şamlardan yaradılır.
-5s, 10s və 15s analizləri üçün kifayət qədər canlı məlumat toplanmalıdır.
-Siqnallar texniki indikatorlara əsaslanır, real süni intellekt modeli və ya qazanc zəmanəti deyil.
-Pocket Option qrafikini birbaşa oxumur.
+Crypto məlumatları Binance WebSocket vasitəsilə alınır.
+Forex məlumatları Render backend üzərindən Twelve Data-dan alınır.
+Forex yenilənməsi təxminən 60 saniyədir.
+Forex 3m, 5m və 10m şamları 1m məlumatlardan yaradılır.
+Forex 30m, 1h və 2h məlumatları ayrıca intervaldan alınır.
+5s, 10s və 15s Forex analizləri üçün real saniyəlik məlumat mövcud deyil.
+Siqnal balı indikatorların texniki uyğunluğunu göstərir, qazanc ehtimalı və ya zəmanəti deyil.
+Bu proqram Pocket Option-un Android tətbiqindəki qrafiki birbaşa oxumur.
 </div>
+
 </div>
 
 </div>
 
 <script>
+
 const $=id=>document.getElementById(id);
+
+const BACKEND_URL=
+"https://pocket-option-ai-v11.onrender.com";
 
 const cryptoAssets=[
 "BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT",
@@ -379,13 +392,15 @@ let running=false;
 let socket=null;
 let refreshTimer=null;
 let scanTimer=null;
+
 let historyLists={};
 let currentPrice=0;
 let firstPrice=0;
-let lastResults=[];
-let signalHistory=[];
 let currentSymbol="";
 let marketType="CRYPTO";
+
+let signalHistory=[];
+let lastResults=[];
 
 const nativeIntervals={
 60:"1m",
@@ -401,58 +416,90 @@ $("status").textContent=message;
 }
 
 function initAssets(){
+
 const market=$("market").value;
 const list=market==="CRYPTO"?cryptoAssets:forexAssets;
 
 $("asset").innerHTML=list.map(x=>
 `<option value="${x}">${x}</option>`
 ).join("");
+
 }
+
+initAssets();
 
 $("market").addEventListener("change",()=>{
 stopLive();
+signalHistory=[];
+$("history").innerHTML='<div class="small">Tarixçə boşdur.</div>';
 initAssets();
 });
 
-initAssets();
-
-$("apiKey").value=localStorage.getItem("td_api_key")||"";
-
-$("saveKey").onclick=()=>{
-const key=$("apiKey").value.trim();
-if(!key){
-alert("API açarını daxil edin.");
-return;
-}
-localStorage.setItem("td_api_key",key);
-alert("API açarı yadda saxlanıldı.");
-};
+$("asset").addEventListener("change",()=>{
+if(running)stopLive();
+signalHistory=[];
+$("history").innerHTML='<div class="small">Tarixçə boşdur.</div>';
+});
 
 $("timeframes").querySelectorAll("button").forEach(btn=>{
+
 btn.onclick=()=>{
-$("timeframes").querySelectorAll("button").forEach(b=>b.classList.remove("active"));
+
+$("timeframes").querySelectorAll("button")
+.forEach(b=>b.classList.remove("active"));
+
 btn.classList.add("active");
+
 selectedTF=Number(btn.dataset.tf);
+
 };
+
 });
 
 function getJson(url){
+
 return fetch(url).then(async response=>{
-if(!response.ok)throw new Error("HTTP "+response.status);
+
 const data=await response.json();
-if(data.code)throw new Error(data.msg||"Binance API xətası");
-if(data.status==="error")throw new Error(data.message||"Twelve Data xətası");
+
+if(!response.ok){
+throw new Error(data.error||data.message||"HTTP "+response.status);
+}
+
+if(data.code){
+throw new Error(data.msg||"Binance API xətası");
+}
+
+if(data.status==="error"){
+throw new Error(data.message||"API xətası");
+}
+
 return data;
+
 });
+
+}
+
+function prepareLists(){
+
+historyLists={};
+
+timeframes.forEach(tf=>{
+historyLists[tf]=[];
+});
+
 }
 
 function aggregate(candles,seconds){
+
 const groups={};
 
 candles.forEach(c=>{
+
 const bucket=Math.floor(c.t/(seconds*1000))*seconds*1000;
 
 if(!groups[bucket]){
+
 groups[bucket]={
 t:bucket,
 o:c.o,
@@ -461,22 +508,25 @@ l:c.l,
 c:c.c,
 v:c.v
 };
+
 }else{
+
 const g=groups[bucket];
+
 g.h=Math.max(g.h,c.h);
 g.l=Math.min(g.l,c.l);
 g.c=c.c;
 g.v+=c.v;
+
 }
+
 });
 
 return Object.values(groups).sort((a,b)=>a.t-b.t);
+
 }
 
-function prepareLists(){
-historyLists={};
-timeframes.forEach(tf=>historyLists[tf]=[]);
-}
+/* CRYPTO */
 
 async function loadCryptoHistory(symbol){
 
@@ -518,14 +568,16 @@ socket=new WebSocket(
 );
 
 socket.onopen=()=>{
-setStatus("Binance canlı WebSocket bağlantısı aktivdir.");
+setStatus("Binance canlı bağlantısı aktivdir.");
 $("source").textContent="LIVE";
 };
 
 socket.onmessage=event=>{
+
 if(!running)return;
 
 const trade=JSON.parse(event.data);
+
 const price=Number(trade.p);
 const quantity=Number(trade.q);
 const timestamp=Number(trade.T);
@@ -535,24 +587,32 @@ currentPrice=price;
 if(!firstPrice)firstPrice=price;
 
 $("price").textContent=price.toPrecision(8);
+
 $("change").textContent=
 (((price-firstPrice)/firstPrice)*100).toFixed(3)+"%";
 
 updateTrade(price,quantity,timestamp);
+
 };
 
 socket.onerror=()=>{
-setStatus("Binance WebSocket bağlantısında xəta.");
+setStatus("Binance WebSocket bağlantı xətası.");
 };
 
 socket.onclose=()=>{
+
 if(running){
-setStatus("WebSocket bağlantısı bağlandı. Yenidən qoşulmağa çalışılır...");
+
+setStatus("WebSocket yenidən qoşulur...");
+
 setTimeout(()=>{
 if(running)connectSocket(symbol);
 },3000);
+
 }
+
 };
+
 }
 
 function updateTrade(price,quantity,timestamp){
@@ -563,101 +623,177 @@ const bucket=Math.floor(timestamp/(tf*1000))*tf*1000;
 const list=historyLists[tf];
 
 if(!list.length){
+
 list.push({
 t:bucket,o:price,h:price,l:price,c:price,v:quantity
 });
+
 return;
+
 }
 
 let last=list[list.length-1];
 
 if(last.t===bucket){
+
 last.h=Math.max(last.h,price);
 last.l=Math.min(last.l,price);
 last.c=price;
 last.v+=quantity;
+
 }else if(bucket>last.t){
+
 list.push({
 t:bucket,o:price,h:price,l:price,c:price,v:quantity
 });
 
 if(list.length>1100)list.shift();
+
 }
 
 });
+
 }
 
-async function loadForexHistory(pair){
+/* FOREX */
 
-const key=localStorage.getItem("td_api_key");
+async function fetchForexCandles(pair,interval){
 
-if(!key)throw new Error("Əvvəlcə Twelve Data API açarını yadda saxlayın.");
+const url=
+BACKEND_URL+
+"/api/forex?symbol="+encodeURIComponent(pair)+
+"&interval="+encodeURIComponent(interval);
 
-const symbol=pair.replace("/","%2F");
+const data=await getJson(url);
 
-const data=await getJson(
-`https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1min&outputsize=500&apikey=${encodeURIComponent(key)}`
-);
-
-if(!data.values||!Array.isArray(data.values)){
-throw new Error(data.message||"Forex məlumatı alınmadı.");
+if(!Array.isArray(data.values)){
+throw new Error(data.message||data.error||"Forex şamları yoxdur.");
 }
 
-const candles=data.values.slice().reverse().map(c=>({
+return data.values.slice().reverse().map(c=>({
+
 t:new Date(c.datetime.replace(" ","T")+"Z").getTime(),
 o:Number(c.open),
 h:Number(c.high),
 l:Number(c.low),
 c:Number(c.close),
 v:Number(c.volume)||0
+
 }));
 
-historyLists[60]=candles;
+}
 
-[180,300,600,1800,3600,7200].forEach(tf=>{
-historyLists[tf]=aggregate(candles,tf);
-});
+async function loadForexHistory(pair){
+
+setStatus("Twelve Data Forex məlumatları alınır...");
+
+/*
+1m, 30m, 1h və 2h məlumatları
+Render backend üzərindən alınır.
+*/
+
+const results=await Promise.all([
+
+fetchForexCandles(pair,"1min"),
+fetchForexCandles(pair,"30min"),
+fetchForexCandles(pair,"1h"),
+fetchForexCandles(pair,"2h")
+
+]);
+
+historyLists[60]=results[0];
+historyLists[1800]=results[1];
+historyLists[3600]=results[2];
+historyLists[7200]=results[3];
+
+/* 1m məlumatlarından yaradılan intervallar */
+
+historyLists[180]=aggregate(historyLists[60],180);
+historyLists[300]=aggregate(historyLists[60],300);
+historyLists[600]=aggregate(historyLists[60],600);
+
+/* Forex saniyəlik şamları yoxdur */
+
+historyLists[5]=[];
+historyLists[10]=[];
+historyLists[15]=[];
+
+const candles=historyLists[60];
+
+if(!candles.length){
+throw new Error("Forex şam məlumatı boşdur.");
+}
 
 currentPrice=candles[candles.length-1].c;
 firstPrice=candles[0].o;
 
 $("price").textContent=currentPrice.toFixed(5);
+
 $("change").textContent=
 (((currentPrice-firstPrice)/firstPrice)*100).toFixed(3)+"%";
 
 $("source").textContent="API";
+
 }
+
+/* INDICATORS */
 
 function ema(values,period){
 
 if(values.length<period)return null;
 
 const k=2/(period+1);
-let result=values.slice(0,period).reduce((a,b)=>a+b,0)/period;
+
+let result=
+values.slice(0,period).reduce((a,b)=>a+b,0)/period;
 
 for(let i=period;i<values.length;i++){
+
 result=values[i]*k+result*(1-k);
+
 }
 
 return result;
+
 }
 
 function rsi(values,period=14){
 
 if(values.length<=period)return null;
 
-let gains=0,losses=0;
+let gains=0;
+let losses=0;
 
-for(let i=values.length-period;i<values.length;i++){
+for(let i=1;i<=period;i++){
+
 const diff=values[i]-values[i-1];
+
 if(diff>0)gains+=diff;
 else losses-=diff;
+
 }
 
-if(losses===0)return 100;
+let avgGain=gains/period;
+let avgLoss=losses/period;
 
-const rs=(gains/period)/(losses/period);
+for(let i=period+1;i<values.length;i++){
+
+const diff=values[i]-values[i-1];
+
+const gain=Math.max(diff,0);
+const loss=Math.max(-diff,0);
+
+avgGain=(avgGain*(period-1)+gain)/period;
+avgLoss=(avgLoss*(period-1)+loss)/period;
+
+}
+
+if(avgLoss===0)return 100;
+
+const rs=avgGain/avgLoss;
+
 return 100-(100/(1+rs));
+
 }
 
 function macd(values){
@@ -670,6 +806,7 @@ const slow=ema(values,26);
 if(fast===null||slow===null)return null;
 
 return fast-slow;
+
 }
 
 function bollinger(values){
@@ -677,9 +814,13 @@ function bollinger(values){
 if(values.length<20)return null;
 
 const last=values.slice(-20);
+
 const mean=last.reduce((a,b)=>a+b,0)/20;
 
-const variance=last.reduce((a,b)=>a+Math.pow(b-mean,2),0)/20;
+const variance=last.reduce(
+(a,b)=>a+Math.pow(b-mean,2),0
+)/20;
+
 const deviation=Math.sqrt(variance);
 
 return{
@@ -687,6 +828,7 @@ upper:mean+2*deviation,
 middle:mean,
 lower:mean-2*deviation
 };
+
 }
 
 function calculateATR(candles){
@@ -696,6 +838,7 @@ if(candles.length<15)return null;
 const ranges=[];
 
 for(let i=candles.length-14;i<candles.length;i++){
+
 const c=candles[i];
 const prev=candles[i-1];
 
@@ -704,20 +847,26 @@ c.h-c.l,
 Math.abs(c.h-prev.c),
 Math.abs(c.l-prev.c)
 ));
+
 }
 
 return ranges.reduce((a,b)=>a+b,0)/ranges.length;
+
 }
+
+/* ANALYSIS */
 
 function analyze(tf){
 
 const candles=historyLists[tf]||[];
 
 if(candles.length<36){
+
 return{
 tf,side:"WAIT",score:0,
 reason:"Məlumat toplanır"
 };
+
 }
 
 const completed=candles.slice(0,-1);
@@ -729,16 +878,19 @@ const previous=completed[completed.length-2];
 const e20=ema(closes,20);
 const e50=ema(closes,50);
 const e200=ema(closes,200);
+
 const r=rsi(closes);
 const m=macd(closes);
 const b=bollinger(closes);
 const atr=calculateATR(completed);
 
 if(e20===null||r===null||m===null||!b||atr===null){
+
 return{
 tf,side:"WAIT",score:0,
 reason:"İndikator məlumatı kifayət deyil"
 };
+
 }
 
 let call=0;
@@ -746,69 +898,91 @@ let put=0;
 let reasons=[];
 
 if(last.c>e20){
+
 call+=2;
 reasons.push("EMA20 yuxarı");
+
 }else{
+
 put+=2;
 reasons.push("EMA20 aşağı");
+
 }
 
 if(e50!==null){
+
 if(last.c>e50)call+=2;
 else put+=2;
+
 }
 
 if(e200!==null){
+
 if(last.c>e200)call+=2;
 else put+=2;
+
 }
 
 if(r<30){
+
 call+=2;
 reasons.push("RSI oversold");
+
 }else if(r>70){
+
 put+=2;
 reasons.push("RSI overbought");
+
 }else if(r>50){
+
 call+=1;
+
 }else{
+
 put+=1;
+
 }
 
 if(m>0)call+=2;
 else put+=2;
 
-if(last.c>b.lower){
-call+=1;
-}
+if(last.c>b.lower)call+=1;
 
-if(last.c>b.upper){
-put+=1;
-}
+if(last.c>b.upper)put+=1;
 
 if(last.c>last.o&&last.c>previous.c){
+
 call+=1;
 reasons.push("Bullish candle");
+
 }
 
 if(last.c<last.o&&last.c<previous.c){
+
 put+=1;
 reasons.push("Bearish candle");
+
 }
 
 if(last.h-last.l>atr*2){
+
 call=Math.max(0,call-1);
 put=Math.max(0,put-1);
+
 reasons.push("Yüksək volatillik");
+
 }
 
 const total=call+put;
 const difference=Math.abs(call-put);
-const score=total?Math.round((Math.max(call,put)/total)*100):0;
+
+const score=total?
+Math.round((Math.max(call,put)/total)*100):0;
 
 let side="WAIT";
 
 if(call>put&&difference>=3&&score>=65)side="CALL";
+
 if(put>call&&difference>=3&&score>=65)side="PUT";
 
 return{
@@ -821,7 +995,10 @@ rsi:r.toFixed(1),
 price:last.c,
 reason:reasons.join(", ")
 };
+
 }
+
+/* RENDER */
 
 function scanAll(){
 
@@ -855,6 +1032,7 @@ function renderResults(results){
 $("results").innerHTML=results.map(r=>{
 
 const cls=r.side.toLowerCase();
+
 const color=r.side==="CALL"?"call-text":
 r.side==="PUT"?"put-text":"wait-text";
 
@@ -887,18 +1065,27 @@ const strong=results
 .slice(0,5);
 
 if(!strong.length){
-$("topSignals").innerHTML="Güclü siqnal yoxdur. Daha uyğun bazar şəraitini gözləyin.";
+
+$("topSignals").innerHTML=
+"Güclü siqnal yoxdur. Gözləyin.";
+
 return;
+
 }
 
 $("topSignals").innerHTML=strong.map(r=>`
+
 <div class="signal ${r.side.toLowerCase()}">
+
 <div class="signal-head">
 <span>${tfNames[r.tf]}</span>
 <span>${r.side}</span>
 </div>
+
 <div class="small">Güc: ${r.score}%</div>
+
 </div>
+
 `).join("");
 
 }
@@ -906,36 +1093,62 @@ $("topSignals").innerHTML=strong.map(r=>`
 function recordSignal(result){
 
 const now=new Date();
+
 const minute=now.toISOString().slice(0,16);
 
-const key=currentSymbol+"_"+result.tf+"_"+result.side+"_"+minute;
+const key=
+currentSymbol+"_"+result.tf+"_"+result.side+"_"+minute;
 
 if(signalHistory.some(x=>x.key===key))return;
 
 signalHistory.unshift({
+
 key,
 symbol:currentSymbol,
 tf:tfNames[result.tf],
 side:result.side,
 score:result.score,
 time:now.toLocaleTimeString()
+
 });
 
 signalHistory=signalHistory.slice(0,50);
 
-$("history").innerHTML=signalHistory.map(x=>`
+$("history").innerHTML=`
+
 <table>
+
+<tr>
+<th>Saat</th>
+<th>Aktiv</th>
+<th>TF</th>
+<th>Siqnal</th>
+<th>Bal</th>
+</tr>
+
+${signalHistory.map(x=>`
+
 <tr>
 <td>${x.time}</td>
 <td>${x.symbol}</td>
 <td>${x.tf}</td>
-<td class="${x.side==="CALL"?"call-text":"put-text"}">${x.side}</td>
+<td class="${x.side==="CALL"?"call-text":"put-text"}">
+${x.side}
+</td>
 <td>${x.score}%</td>
 </tr>
+
+`).join("")}
+
 </table>
-`).join("");
+
+`;
+
+/* HISTORY END */
 
 }
+
+/* START */
 
 async function startCrypto(){
 
@@ -955,25 +1168,25 @@ async function startForex(){
 
 prepareLists();
 
-setStatus("Forex tarixçə məlumatları yüklənir...");
-
 await loadForexHistory(currentSymbol);
 
 if(!running)return;
 
-$("source").textContent="API";
-
-setStatus("Forex məlumatları aktivdir. Yenilənmə təxminən 60 saniyədir.");
+setStatus("Forex API aktivdir. Yenilənmə təxminən 60 saniyədir.");
 
 refreshTimer=setInterval(async()=>{
 
 if(!running)return;
 
 try{
+
 await loadForexHistory(currentSymbol);
 scanAll();
+
 }catch(e){
+
 setStatus("Forex yenilənmə xətası: "+e.message);
+
 }
 
 },60000);
@@ -992,14 +1205,23 @@ currentSymbol=$("asset").value;
 firstPrice=0;
 currentPrice=0;
 
+signalHistory=[];
+
+$("history").innerHTML=
+'<div class="small">Tarixçə boşdur.</div>';
+
 $("source").textContent="LOADING";
 
 try{
 
 if(marketType==="CRYPTO"){
+
 await startCrypto();
+
 }else{
+
 await startForex();
+
 }
 
 if(!running)return;
@@ -1011,31 +1233,41 @@ scanTimer=setInterval(scanAll,3000);
 }catch(error){
 
 setStatus("XƏTA: "+error.message);
+
 $("source").textContent="ERROR";
+
 running=false;
 
 }
 
 }
+
+/* STOP */
 
 function stopLive(){
 
 running=false;
 
 if(socket){
+
 socket.onclose=null;
 socket.close();
 socket=null;
+
 }
 
 if(refreshTimer){
+
 clearInterval(refreshTimer);
 refreshTimer=null;
+
 }
 
 if(scanTimer){
+
 clearInterval(scanTimer);
 scanTimer=null;
+
 }
 
 $("source").textContent="OFF";
@@ -1052,10 +1284,16 @@ $("liveStop").onclick=()=>{
 stopLive();
 };
 
+/* PWA */
+
 if("serviceWorker" in navigator){
+
 window.addEventListener("load",()=>{
+
 navigator.serviceWorker.register("./sw.js").catch(()=>{});
+
 });
+
 }
 
 </script>
