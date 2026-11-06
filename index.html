@@ -846,6 +846,9 @@ let nextRefreshAt = 0;
 
 let apiSeconds = 60;
 
+// Son bazar məlumatının alınma vaxtı
+let lastMarketUpdateAt = 0;
+
 
 /* ASSET INITIALIZATION */
 
@@ -1240,6 +1243,8 @@ connectSocket(symbol,token);
 
 function updateTrade(price,quantity,timestamp){
 
+lastMarketUpdateAt = Date.now();
+
 timeframes.forEach(tf=>{
 
 const bucket =
@@ -1250,14 +1255,12 @@ const list=historyLists[tf];
 if(!list.length){
 
 list.push({
-
 t:bucket,
 o:price,
 h:price,
 l:price,
 c:price,
 v:quantity
-
 });
 
 return;
@@ -1275,15 +1278,31 @@ last.v+=quantity;
 
 }else if(bucket>last.t){
 
-list.push({
+// Arada boş qalan şamları əvvəlki bağlanış qiyməti ilə tamamla
+let nextBucket=last.t+(tf*1000);
 
+while(nextBucket<bucket){
+
+list.push({
+t:nextBucket,
+o:last.c,
+h:last.c,
+l:last.c,
+c:last.c,
+v:0
+});
+
+nextBucket+=tf*1000;
+
+}
+
+list.push({
 t:bucket,
 o:price,
 h:price,
 l:price,
 c:price,
 v:quantity
-
 });
 
 if(list.length>1100){
@@ -1295,7 +1314,6 @@ list.shift();
 });
 
 }
-
 
 /* FOREX */
 
@@ -1370,10 +1388,11 @@ const last=candles[candles.length-1];
 
 firstPrice=last.o;
 
+lastMarketUpdateAt=Date.now();
+
 updatePrice(last.c);
 
 $("source").textContent="TWELVE DATA";
-
 }
 
 
@@ -2053,7 +2072,7 @@ ${x.side}
 
 }
 
-/* ENTRY TIMER */
+/* ENTRY TIMER — IMPROVED */
 
 let entryTimer = null;
 let previousBoundary = 0;
@@ -2075,8 +2094,11 @@ return;
 const now=Date.now();
 const duration=selectedTF*1000;
 
-const boundary=Math.floor(now/duration)*duration;
-const remaining=Math.ceil((boundary+duration-now)/1000);
+const boundary=
+Math.floor(now/duration)*duration;
+
+const remaining=
+Math.ceil((boundary+duration-now)/1000);
 
 const result=lastResults.find(
 x=>x.tf===selectedTF
@@ -2085,7 +2107,9 @@ x=>x.tf===selectedTF
 $("entryTF").textContent=tfNames[selectedTF];
 $("entryDuration").textContent=tfNames[selectedTF];
 
-/* Yeni şamın başlanması */
+$("entryCountdown").textContent=remaining;
+
+/* Yeni şam başlayanda */
 
 if(previousBoundary===0){
 
@@ -2101,22 +2125,19 @@ entryWindowUntil=now+10000;
 
 }
 
-/* Giriş vaxtının hesablanması */
-
-$("entryCountdown").textContent=
-remaining;
+/* Giriş pəncərəsi */
 
 $("entryWindow").textContent=
 entryWindowUntil>now
 ? "10 saniyəlik yoxlama pəncərəsi"
 : "Növbəti şam gözlənilir";
 
-/* Siqnal yoxdursa */
+/* Forex saniyəlik analiz dəstəkləmir */
 
-if(!result || result.side==="WAIT"){
+if(marketType==="FOREX" && selectedTF<=30){
 
 $("entryStatus").textContent=
-"SIQNAL YOXDUR — GÖZLƏ";
+"FOREX SANİYƏLİK MƏLUMAT DƏSTƏKLƏMİR";
 
 $("entryStatus").className=
 "entry-status entry-danger";
@@ -2127,7 +2148,23 @@ return;
 
 }
 
-/* Şam bağlanmağa yaxın */
+/* Siqnal yoxdursa */
+
+if(!result || result.side==="WAIT"){
+
+$("entryStatus").textContent=
+"SİQNAL YOXDUR — GÖZLƏ";
+
+$("entryStatus").className=
+"entry-status entry-danger";
+
+$("entryDirection").textContent="WAIT";
+
+return;
+
+}
+
+/* Şam bağlanmağa yaxındır */
 
 if(remaining<=5 && remaining>0){
 
@@ -2137,23 +2174,36 @@ $("entryStatus").textContent=
 $("entryStatus").className=
 "entry-status entry-wait";
 
-$("entryDirection").textContent=
-result.side;
+$("entryDirection").textContent=result.side;
 
 return;
 
 }
 
-/* Yeni şamdan sonra siqnalın təsdiqi */
+/* Məlumatın köhnə olub-olmadığını yoxla */
+
+const expectedClosedCandle=
+boundary-duration;
+
+const candleConfirmed=
+result.candleTime===expectedClosedCandle;
+
+const dataAge=
+now-lastMarketUpdateAt;
+
+const maxDataAge=
+marketType==="CRYPTO" ? 30000 : 75000;
+
+const dataFresh=
+lastMarketUpdateAt>0 &&
+dataAge<=maxDataAge &&
+lastMarketUpdateAt>=boundary;
+
+/* Yalnız yeni şamdan sonra və məlumat təzədirsə */
 
 if(entryWindowUntil>now){
 
-const expectedClosedCandle=boundary-duration;
-
-const candleConfirmed=
-result.candleTime>=expectedClosedCandle;
-
-if(candleConfirmed){
+if(candleConfirmed && dataFresh){
 
 $("entryStatus").textContent=
 "GİRİŞƏ HAZIR — SİQNALI YOXLА";
@@ -2167,13 +2217,13 @@ result.side+" | "+result.score+"%";
 }else{
 
 $("entryStatus").textContent=
-"YENİ MƏLUMAT GÖZLƏNİLİR";
+"MƏLUMAT GÖZLƏNİLİR — GİRİŞ ETMƏ";
 
 $("entryStatus").className=
 "entry-status entry-wait";
 
 $("entryDirection").textContent=
-result.side;
+result.side+" | "+result.score+"%";
 
 }
 
@@ -2194,6 +2244,7 @@ result.side+" | "+result.score+"%";
 
 }
 
+
 function startEntryTimer(){
 
 if(entryTimer){
@@ -2207,11 +2258,15 @@ entryTimer=setInterval(updateEntryTimer,250);
 
 }
 
+
 function stopEntryTimer(){
 
 if(entryTimer){
+
 clearInterval(entryTimer);
+
 entryTimer=null;
+
 }
 
 $("entryStatus").textContent="SİSTEM DAYANIB";
@@ -2448,15 +2503,15 @@ if(token!==runId)return;
 
 if(error.name==="AbortError")return;
 
-setStatus("XƏTA: "+error.message);
+const errorMessage=error.message;
+
+stopLive();
+
+setStatus("XƏTA: "+errorMessage);
 
 $("source").textContent="ERROR";
 
 $("apiState").textContent="ERROR";
-
-running=false;
-
-setLiveState(false);
 
 }
 
