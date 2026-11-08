@@ -929,14 +929,10 @@ const forexAssets = [
 ];
 
 const timeframes = [
-5,10,15,30,60,180,300,600,1800,3600,7200
+60,180,300,600,1800,3600,7200
 ];
 
 const tfNames = {
-5:"5 saniyə",
-10:"10 saniyə",
-15:"15 saniyə",
-30:"30 saniyə",
 60:"1 dəqiqə",
 180:"3 dəqiqə",
 300:"5 dəqiqə",
@@ -2396,11 +2392,6 @@ entryWindowUntil>now
 : "Növbəti şam gözlənilir";
 
 /* Forex saniyəlik analiz dəstəkləmir */
-
-if(marketType==="FOREX" && selectedTF<=30){
-
-$("entryStatus").textContent=
-"FOREX SANİYƏLİK MƏLUMAT DƏSTƏKLƏMİR";
 
 $("entryStatus").className=
 "entry-status entry-danger";
