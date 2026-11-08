@@ -818,39 +818,6 @@ function formatExpiry(seconds){
 }
 
 
-function recommendExpiry(result){
-
-    if(!result ||
-       result.side === "WAIT" ||
-       result.score < 65){
-
-        return null;
-    }
-
-    // CRYPTO
-    if(result.market === "CRYPTO"){
-
-        if(result.tf === 60){
-            return result.score >= 85 ? 30 : 60;
-        }
-
-        if(result.tf === 180) return 60;
-        if(result.tf === 300) return 180;
-        if(result.tf === 600) return 180;
-
-        return 300;
-    }
-
-    // FOREX
-    if(result.tf === 60) return 60;
-    if(result.tf === 180) return 180;
-    if(result.tf === 300) return 180;
-    if(result.tf === 600) return 300;
-
-    return 300;
-}
-
-
 function updateTradeAdvisor(){
 
 const result=lastResults.find(
@@ -965,11 +932,11 @@ const timeframes = [
 5,10,15,30,60,180,300,600,1800,3600,7200
 ];
 
-const timeframes = [
-60,180,300,600,1800,3600,7200
-];
-
 const tfNames = {
+5:"5 saniyə",
+10:"10 saniyə",
+15:"15 saniyə",
+30:"30 saniyə",
 60:"1 dəqiqə",
 180:"3 dəqiqə",
 300:"5 dəqiqə",
@@ -986,7 +953,7 @@ const nativeIntervals = {
 1800:"30m",
 3600:"1h",
 7200:"2h"
-};
+}
 
 
 /* STATE */
@@ -1159,7 +1126,13 @@ btn.classList.add("active");
 selectedTF = Number(btn.dataset.tf);
 
 if(lastResults.length){
-renderSelectedSignal(lastResults);
+
+    renderSelectedSignal(lastResults);
+
+    updateTradeAdvisor();
+
+    updateEntryTimer();
+
 }
 
 });
@@ -1756,6 +1729,118 @@ return ranges.reduce((a,b)=>a+b,0)/ranges.length;
 
 }
 
+/* TRADE ADVISOR */
+
+function formatExpiry(seconds){
+
+    if(seconds < 60){
+        return seconds + " saniyə";
+    }
+
+    const minutes = Math.floor(seconds / 60);
+
+    return minutes + " dəqiqə";
+}
+
+
+function recommendExpiry(result){
+
+    if(!result ||
+       result.side === "WAIT" ||
+       result.score < 65){
+
+        return null;
+    }
+
+    if(result.market === "CRYPTO"){
+
+        if(result.tf === 60){
+            return result.score >= 85 ? 30 : 60;
+        }
+
+        if(result.tf === 180) return 60;
+        if(result.tf === 300) return 180;
+        if(result.tf === 600) return 180;
+
+        return 300;
+    }
+
+    if(result.tf === 60) return 60;
+    if(result.tf === 180) return 180;
+    if(result.tf === 300) return 180;
+    if(result.tf === 600) return 300;
+
+    return 300;
+}
+
+
+function updateTradeAdvisor(){
+
+    const result = lastResults.find(
+        x => x.tf === selectedTF
+    );
+
+    if(!result){
+
+        $("tradeDirection").textContent = "WAIT";
+        $("tradeScore").textContent = "--";
+        $("recommendedExpiry").textContent = "--";
+
+        $("callButton").disabled = true;
+        $("putButton").disabled = true;
+
+        return;
+    }
+
+    const side = result.side;
+
+    $("tradeDirection").textContent = side;
+
+    $("tradeScore").textContent =
+        result.score + "/100";
+
+    $("tradeDirection").className =
+        side === "CALL" ? "call-text" :
+        side === "PUT" ? "put-text" :
+        "wait-text";
+
+    const expiry = recommendExpiry({
+        ...result,
+        market: marketType
+    });
+
+    if(expiry === null){
+
+        $("recommendedExpiry").textContent =
+            "TÖVSİYƏ YOXDUR";
+
+        $("callButton").disabled = true;
+        $("putButton").disabled = true;
+
+        $("advisorStatus").textContent =
+            "WAIT — güclü siqnal yoxdur. Əməliyyat açma.";
+
+        return;
+    }
+
+    $("recommendedExpiry").textContent =
+        formatExpiry(expiry);
+
+    $("expirySelect").value = String(expiry);
+
+    $("advisorStatus").textContent =
+        "AI " + side +
+        " istiqamətini müəyyən etdi. " +
+        "Analiz: " + tfNames[result.tf] +
+        ". Tövsiyə olunan müddət: " +
+        formatExpiry(expiry);
+
+    $("callButton").disabled =
+        !running || side !== "CALL";
+
+    $("putButton").disabled =
+        !running || side !== "PUT";
+}
 
 /* AI ANALYSIS */
 
@@ -2481,6 +2566,8 @@ const selected=results.find(x=>x.tf===selectedTF);
 if(selected && selected.side!=="WAIT"){
 
 recordSignal(selected);
+updateTradeAdvisor();
+updateEntryTimer();
 
 }
 
