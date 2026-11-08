@@ -1731,115 +1731,118 @@ return ranges.reduce((a,b)=>a+b,0)/ranges.length;
 
 /* TRADE ADVISOR */
 
-function formatExpiry(seconds){
-
-    if(seconds < 60){
-        return seconds + " saniyə";
-    }
-
-    const minutes = Math.floor(seconds / 60);
-
-    return minutes + " dəqiqə";
-}
-
-
-function recommendExpiry(result){
-
-    if(!result ||
-       result.side === "WAIT" ||
-       result.score < 65){
-
-        return null;
-    }
-
-    if(result.market === "CRYPTO"){
-
-        if(result.tf === 60){
-            return result.score >= 85 ? 30 : 60;
-        }
-
-        if(result.tf === 180) return 60;
-        if(result.tf === 300) return 180;
-        if(result.tf === 600) return 180;
-
-        return 300;
-    }
-
-    if(result.tf === 60) return 60;
-    if(result.tf === 180) return 180;
-    if(result.tf === 300) return 180;
-    if(result.tf === 600) return 300;
-
-    return 300;
-}
-
 
 function updateTradeAdvisor(){
 
-    const result = lastResults.find(
-        x => x.tf === selectedTF
+    const validResults = lastResults.filter(r =>
+        r.tf >= 60 &&
+        r.side !== "WAIT" &&
+        r.score >= 65
     );
 
-    if(!result){
+    const calls = validResults.filter(r => r.side === "CALL");
+    const puts = validResults.filter(r => r.side === "PUT");
 
-        $("tradeDirection").textContent = "WAIT";
-        $("tradeScore").textContent = "--";
-        $("recommendedExpiry").textContent = "--";
+    const callCount = calls.length;
+    const putCount = puts.length;
 
-        $("callButton").disabled = true;
-        $("putButton").disabled = true;
+    const selected = lastResults.find(
+        r => r.tf === selectedTF
+    );
 
-        return;
+    let direction = "WAIT";
+    let confirmations = 0;
+    let consensus = [];
+
+    if(callCount >= 3 && callCount > putCount){
+        direction = "CALL";
+        confirmations = callCount;
+        consensus = calls;
     }
 
-    const side = result.side;
+    if(putCount >= 3 && putCount > callCount){
+        direction = "PUT";
+        confirmations = putCount;
+        consensus = puts;
+    }
 
-    $("tradeDirection").textContent = side;
+    const selectedConfirmed =
+        selected &&
+        selected.side === direction &&
+        selected.score >= 65;
 
-    $("tradeScore").textContent =
-        result.score + "/100";
+    $("tradeDirection").textContent =
+        direction === "WAIT"
+        ? "WAIT"
+        : direction + " TREND";
 
     $("tradeDirection").className =
-        side === "CALL" ? "call-text" :
-        side === "PUT" ? "put-text" :
+        direction === "CALL" ? "call-text" :
+        direction === "PUT" ? "put-text" :
         "wait-text";
 
-    const expiry = recommendExpiry({
-        ...result,
-        market: marketType
-    });
+    $("tradeScore").textContent =
+        direction === "WAIT"
+        ? "--"
+        : Math.round(
+            consensus.reduce((sum,r)=>sum+r.score,0) /
+            consensus.length
+        ) + "/100";
 
-    if(expiry === null){
+    if(direction === "WAIT"){
 
         $("recommendedExpiry").textContent =
             "TÖVSİYƏ YOXDUR";
 
+        $("advisorStatus").textContent =
+            "Ən azı 3 timeframe eyni istiqaməti təsdiqləmir. Gözlə.";
+
         $("callButton").disabled = true;
         $("putButton").disabled = true;
-
-        $("advisorStatus").textContent =
-            "WAIT — güclü siqnal yoxdur. Əməliyyat açma.";
 
         return;
     }
 
+    const reference = selectedConfirmed
+        ? selected
+        : consensus[0];
+
+    const expiry = recommendExpiry({
+        ...reference,
+        market: marketType
+    });
+
     $("recommendedExpiry").textContent =
         formatExpiry(expiry);
 
-    $("expirySelect").value = String(expiry);
+    if(!selectedConfirmed){
+
+        $("advisorStatus").textContent =
+            direction + " TREND TƏSDİQLƏNDİ (" +
+            confirmations +
+            " timeframe). Seçilmiş " +
+            tfNames[selectedTF] +
+            " hələ giriş siqnalı verməyib. Gözlə.";
+
+        $("callButton").disabled = true;
+        $("putButton").disabled = true;
+
+        return;
+    }
 
     $("advisorStatus").textContent =
-        "AI " + side +
-        " istiqamətini müəyyən etdi. " +
-        "Analiz: " + tfNames[result.tf] +
-        ". Tövsiyə olunan müddət: " +
-        formatExpiry(expiry);
+        direction + " GİRİŞ SİQNALI TƏSDİQLƏNDİ. " +
+        confirmations +
+        " timeframe eyni istiqamətdədir. " +
+        "Seçilmiş timeframe: " +
+        tfNames[selectedTF] +
+        ". Müddət: " + formatExpiry(expiry);
 
     $("callButton").disabled =
-        !running || side !== "CALL";
+        !running || direction !== "CALL";
 
     $("putButton").disabled =
-        !running || side !== "PUT";
+        !running || direction !== "PUT";
 }
 
 /* AI ANALYSIS */
@@ -2540,39 +2543,41 @@ $("entryDirection").textContent="WAIT";
 
 function scanAll(){
 
-if(!running)return;
+    if(!running) return;
 
-const results=timeframes.map(tf=>analyze(tf));
+    const results = timeframes.map(tf => analyze(tf));
 
-lastResults=results;
+    lastResults = results;
 
-$("calls").textContent =
-results.filter(x=>x.side==="CALL").length;
+    $("calls").textContent =
+        results.filter(x=>x.side==="CALL").length;
 
-$("puts").textContent =
-results.filter(x=>x.side==="PUT").length;
+    $("puts").textContent =
+        results.filter(x=>x.side==="PUT").length;
 
-$("waits").textContent =
-results.filter(x=>x.side==="WAIT").length;
+    $("waits").textContent =
+        results.filter(x=>x.side==="WAIT").length;
 
-renderResults(results);
+    renderResults(results);
 
-renderTop(results);
+    renderTop(results);
 
-renderSelectedSignal(results);
+    renderSelectedSignal(results);
 
-const selected=results.find(x=>x.tf===selectedTF);
+    // Hər skanda Advisor yenilə
+    updateTradeAdvisor();
 
-if(selected && selected.side!=="WAIT"){
+    // Hər skanda giriş vaxtını yenilə
+    updateEntryTimer();
 
-recordSignal(selected);
-updateTradeAdvisor();
-updateEntryTimer();
+    const selected = results.find(
+        x => x.tf === selectedTF
+    );
 
+    if(selected && selected.side !== "WAIT"){
+        recordSignal(selected);
+    }
 }
-
-}
-
 
 /* CRYPTO START */
 
