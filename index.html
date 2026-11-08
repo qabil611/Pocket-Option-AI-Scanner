@@ -808,34 +808,36 @@ Tarixçə boşdur.
 
 function formatExpiry(seconds){
 
-if(seconds<60){
-return seconds+" saniyə";
-}
+    if(seconds < 60){
+        return seconds + " saniyə";
+    }
 
-return (seconds/60)+" dəqiqə";
+    const minutes = Math.floor(seconds / 60);
 
+    return minutes + " dəqiqə";
 }
 
 
 function recommendExpiry(result){
 
-if(!result || result.side==="WAIT" || result.score<65){
-return null;
+    if(!result || result.side === "WAIT" || result.score < 65){
+        return null;
+    }
+
+    if(result.score >= 90){
+        return 60;
+    }
+
+    if(result.score >= 80){
+        return 120;
+    }
+
+    if(result.score >= 70){
+        return 180;
+    }
+
+    return 300;
 }
-
-if(marketType==="FOREX"){
-
-// Forex məlumatı təxminən 60 saniyədən bir yenilənir.
-// Buna görə saniyəlik əməliyyat tövsiyə edilmir.
-
-if(result.tf===60) return 60;
-if(result.tf===180) return 60;
-if(result.tf===300) return 180;
-
-return 300;
-
-}
-
 // Crypto
 
 if(result.tf===60){
@@ -2283,10 +2285,10 @@ x=>x.tf===selectedTF
 );
 
 $("entryTF").textContent=tfNames[selectedTF];
-const expiry=recommendExpiry(result);
+const expiry = recommendExpiry(result);
 
-$("entryDuration").textContent=
-expiry===null ? "Tövsiyə yoxdur" : formatExpiry(expiry);
+$("entryDuration").textContent =
+    expiry === null ? "Tövsiyə yoxdur" : formatExpiry(expiry);
 
 $("entryCountdown").textContent=remaining;
 
