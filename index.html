@@ -874,7 +874,7 @@ $("putButton").disabled=
 
 • AI analiz EMA20/50/200, RSI, MACD, Bollinger Bands və ATR indikatorlarından istifadə edir.
 
-<br>
+<br><br>
 
 • AI balı statistik uyğunluq göstəricisidir, qazanc ehtimalı və ya zəmanəti deyil.
 
@@ -2363,158 +2363,142 @@ let entryWindowUntil = 0;
 
 function updateEntryTimer(){
 
-if(!running){
+    if(!running){
 
-$("entryStatus").textContent="SİSTEM DAYANIB";
+        $("entryStatus").textContent="SİSTEM DAYANIB";
+        $("entryStatus").className="entry-status entry-danger";
+        $("entryCountdown").textContent="---";
+        $("entryDirection").textContent="WAIT";
 
-const now=Date.now();
-const duration=selectedTF*1000;
+        return;
+    }
 
-const boundary=
-Math.floor(now/duration)*duration;
+    const now = Date.now();
+    const duration = selectedTF * 1000;
 
-const remaining=
-Math.ceil((boundary+duration-now)/1000);
+    const boundary =
+        Math.floor(now / duration) * duration;
 
-const result=lastResults.find(
-x=>x.tf===selectedTF
-);
+    const remaining =
+        Math.ceil((boundary + duration - now) / 1000);
 
-$("entryTF").textContent=tfNames[selectedTF];
-const expiry = recommendExpiry(result);
+    const selectedResult = lastResults.find(
+        item => item.tf === selectedTF
+    );
 
-$("entryDuration").textContent =
-    expiry === null ? "Tövsiyə yoxdur" : formatExpiry(expiry);
+    $("entryTF").textContent = tfNames[selectedTF];
 
-$("entryCountdown").textContent=remaining;
+    const expiry = recommendExpiry(selectedResult);
 
-/* Yeni şam başlayanda */
+    $("entryDuration").textContent =
+        expiry === null
+        ? "Tövsiyə yoxdur"
+        : formatExpiry(expiry);
 
-if(previousBoundary===0){
+    $("entryCountdown").textContent = remaining;
 
-previousBoundary=boundary;
+    /* Yeni şam başlayanda */
 
-}
+    if(previousBoundary === 0){
+        previousBoundary = boundary;
+    }
 
-if(boundary!==previousBoundary){
+    if(boundary !== previousBoundary){
 
-previousBoundary=boundary;
+        previousBoundary = boundary;
+        entryWindowUntil = now + 10000;
 
-entryWindowUntil=now+10000;
+    }
 
-}
+    /* Giriş pəncərəsi */
 
-/* Giriş pəncərəsi */
+    $("entryWindow").textContent =
+        entryWindowUntil > now
+        ? "10 saniyəlik yoxlama pəncərəsi"
+        : "Növbəti şam gözlənilir";
 
-$("entryWindow").textContent=
-entryWindowUntil>now
-? "10 saniyəlik yoxlama pəncərəsi"
-: "Növbəti şam gözlənilir";
+    /* Siqnal yoxdursa */
 
-/* Forex saniyəlik analiz dəstəkləmir */
+    if(!selectedResult || selectedResult.side === "WAIT"){
 
-$("entryStatus").className=
-"entry-status entry-danger";
+        $("entryStatus").textContent =
+            "SİQNAL YOXDUR — GÖZLƏ";
 
-$("entryDirection").textContent="WAIT";
+        $("entryStatus").className =
+            "entry-status entry-danger";
 
-return;
+        $("entryDirection").textContent = "WAIT";
 
-}
+        return;
+    }
 
-/* Siqnal yoxdursa */
+    /* Şam bağlanmağa yaxındır */
 
-if(!result || result.side==="WAIT"){
+    if(remaining <= 5){
 
-$("entryStatus").textContent=
-"SİQNAL YOXDUR — GÖZLƏ";
+        $("entryStatus").textContent =
+            "ŞAM BAĞLANIR — GÖZLƏ";
 
-$("entryStatus").className=
-"entry-status entry-danger";
+        $("entryStatus").className =
+            "entry-status entry-wait";
 
-$("entryDirection").textContent="WAIT";
+        $("entryDirection").textContent =
+            selectedResult.side;
 
-return;
+        return;
+    }
 
-}
+    /* Məlumatın təzəliyini yoxla */
 
-/* Şam bağlanmağa yaxındır */
+    const expectedCandle = boundary - duration;
 
-if(remaining<=5 && remaining>0){
+    const dataAge = now - lastMarketUpdateAt;
 
-$("entryStatus").textContent=
-"ŞAM BAĞLANIR — GÖZLƏ";
+    const maxAge =
+        marketType === "CRYPTO" ? 30000 : 75000;
 
-$("entryStatus").className=
-"entry-status entry-wait";
+    const dataFresh =
+        lastMarketUpdateAt > 0 &&
+        dataAge <= maxAge;
 
-$("entryDirection").textContent=result.side;
+    /* Giriş pəncərəsi */
 
-return;
+    if(entryWindowUntil > now){
 
-}
+        if(
+            selectedResult.candleTime === expectedCandle &&
+            dataFresh
+        ){
 
-/* Məlumatın köhnə olub-olmadığını yoxla */
+            $("entryStatus").textContent =
+                "GİRİŞƏ HAZIR — SİQNALI YOXLА";
 
-const expectedClosedCandle=
-boundary-duration;
+            $("entryStatus").className =
+                "entry-status entry-ready";
 
-const candleConfirmed=
-result.candleTime===expectedClosedCandle;
+        }else{
 
-const dataAge=
-now-lastMarketUpdateAt;
+            $("entryStatus").textContent =
+                "MƏLUMAT GÖZLƏNİLİR — GİRİŞ ETMƏ";
 
-const maxDataAge=
-marketType==="CRYPTO" ? 30000 : 75000;
+            $("entryStatus").className =
+                "entry-status entry-wait";
 
-const dataFresh=
-lastMarketUpdateAt>0 &&
-dataAge<=maxDataAge &&
-lastMarketUpdateAt>=boundary;
+        }
 
-/* Yalnız yeni şamdan sonra və məlumat təzədirsə */
+    }else{
 
-if(entryWindowUntil>now){
+        $("entryStatus").textContent =
+            "NÖVBƏTİ ŞAMI GÖZLƏ";
 
-if(candleConfirmed && dataFresh){
+        $("entryStatus").className =
+            "entry-status entry-blue";
 
-$("entryStatus").textContent=
-"GİRİŞƏ HAZIR — SİQNALI YOXLА";
+    }
 
-$("entryStatus").className=
-"entry-status entry-ready";
-
-$("entryDirection").textContent=
-result.side+" | "+result.score+"%";
-
-}else{
-
-$("entryStatus").textContent=
-"MƏLUMAT GÖZLƏNİLİR — GİRİŞ ETMƏ";
-
-$("entryStatus").className=
-"entry-status entry-wait";
-
-$("entryDirection").textContent=
-result.side+" | "+result.score+"%";
-
-}
-
-return;
-
-}
-
-/* Normal gözləmə */
-
-$("entryStatus").textContent=
-"NÖVBƏTİ ŞAMI GÖZLƏ";
-
-$("entryStatus").className=
-"entry-status entry-blue";
-
-$("entryDirection").textContent=
-result.side+" | "+result.score+"%";
+    $("entryDirection").textContent =
+        selectedResult.side + " | " +
+        selectedResult.score + "%";
 
 }
 
