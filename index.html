@@ -783,26 +783,16 @@ Tarixçə boşdur.
 <div class="notice">
 
 • Crypto məlumatları Binance API və WebSocket vasitəsilə alınır.
-
 <br>
-
-• 5s, 10s, 15s və 30s şamları real əməliyyatlardan yaradılır.
-
+• Analiz timeframe-ləri: 1m, 3m, 5m, 10m, 30m, 1h, 2h.
 <br>
-
 • Forex məlumatları Render backend və Twelve Data vasitəsilə alınır.
-
 <br>
-
 • Forex yenilənməsi təxminən 60 saniyədən bir həyata keçirilir.
-
 <br>
-
 • Forex 3m, 5m və 10m şamları 1m məlumatlardan yaradılır.
-
 <br>
-
-• Forex saniyəlik məlumatları bu versiyada mövcud deyil.
+• Saniyəlik analiz bu versiyada aktiv deyil.
 
 <br>
 
@@ -1725,6 +1715,43 @@ return ranges.reduce((a,b)=>a+b,0)/ranges.length;
 
 }
 
+/* EXPIRY FUNCTIONS */
+
+function formatExpiry(seconds){
+
+    if(!seconds || seconds <= 0){
+        return "Tövsiyə yoxdur";
+    }
+
+    if(seconds < 60){
+        return seconds + " saniyə";
+    }
+
+    const minutes = Math.floor(seconds / 60);
+
+    return minutes + " dəqiqə";
+}
+
+
+function recommendExpiry(result){
+
+    if(!result || result.side === "WAIT" || result.score < 65){
+        return null;
+    }
+
+    const expiryMap = {
+        60: 60,
+        180: 60,
+        300: 180,
+        600: 300,
+        1800: 300,
+        3600: 300,
+        7200: 300
+    };
+
+    return expiryMap[result.tf] || null;
+}
+
 /* TRADE ADVISOR */
 
 
@@ -2339,13 +2366,6 @@ function updateEntryTimer(){
 if(!running){
 
 $("entryStatus").textContent="SİSTEM DAYANIB";
-$("entryStatus").className="entry-status entry-danger";
-$("entryCountdown").textContent="---";
-$("entryDirection").textContent="WAIT";
-
-return;
-
-}
 
 const now=Date.now();
 const duration=selectedTF*1000;
