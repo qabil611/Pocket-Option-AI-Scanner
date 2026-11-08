@@ -820,42 +820,34 @@ function formatExpiry(seconds){
 
 function recommendExpiry(result){
 
-    if(!result || result.side === "WAIT" || result.score < 65){
+    if(!result ||
+       result.side === "WAIT" ||
+       result.score < 65){
+
         return null;
     }
 
-    if(result.score >= 90){
-        return 60;
+    // CRYPTO
+    if(result.market === "CRYPTO"){
+
+        if(result.tf === 60){
+            return result.score >= 85 ? 30 : 60;
+        }
+
+        if(result.tf === 180) return 60;
+        if(result.tf === 300) return 180;
+        if(result.tf === 600) return 180;
+
+        return 300;
     }
 
-    if(result.score >= 80){
-        return 120;
-    }
-
-    if(result.score >= 70){
-        return 180;
-    }
+    // FOREX
+    if(result.tf === 60) return 60;
+    if(result.tf === 180) return 180;
+    if(result.tf === 300) return 180;
+    if(result.tf === 600) return 300;
 
     return 300;
-}
-// Crypto
-
-if(result.tf===60){
-
-if(result.score>=85) return 30;
-
-return 60;
-
-}
-
-if(result.tf===180) return 60;
-
-if(result.tf===300) return 180;
-
-if(result.tf===600) return 180;
-
-return 300;
-
 }
 
 
