@@ -573,83 +573,156 @@ Növbəti yenilənmə:
 </div>
 
 
-<!-- AI SUMMARY -->
-
-<!-- ENTRY TIMER -->
+<!-- AI ENTRY TIMER -->
 
 <div class="entry-panel">
 
-<div class="entry-title">
-⏱ AI ENTRY TIMER — GİRİŞ VAXTI
+    <div class="entry-title">
+        ⏱ AI ENTRY TIMER — GİRİŞ VAXTI
+    </div>
+
+    <div class="entry-status entry-wait" id="entryStatus">
+        ŞAMIN BAĞLANMASINI GÖZLƏ
+    </div>
+
+    <div class="entry-count" id="entryCountdown">
+        180
+    </div>
+
+    <div class="entry-direction" id="entryDirection">
+        WAIT
+    </div>
+
+    <div class="entry-info">
+
+        Seçilmiş timeframe:
+        <span id="entryTF">1 dəqiqə</span>
+
+        <br>
+
+        Tövsiyə olunan əməliyyat müddəti:
+        <span id="entryDuration">1 dəqiqə</span>
+
+        <br>
+
+        Giriş pəncərəsi:
+        <span id="entryWindow">Gözlənilir</span>
+
+    </div>
+
 </div>
 
-<div class="entry-status entry-wait" id="entryStatus">
-ŞAMIN BAĞLANMASINI GÖZLƏ
+
+<!-- AI TRADE EXECUTION ADVISOR -->
+
+<div class="panel" id="tradeAdvisor">
+
+    <div class="panel-title">
+        🎯 AI TRADE EXECUTION ADVISOR
+    </div>
+
+    <div class="grid">
+
+        <div class="stat">
+            <strong id="tradeDirection" class="wait-text">
+                WAIT
+            </strong>
+            <span>ƏMƏLİYYAT İSTİQAMƏTİ</span>
+        </div>
+
+        <div class="stat">
+            <strong id="tradeScore">--</strong>
+            <span>AI TEXNİKİ BALI</span>
+        </div>
+
+        <div class="stat">
+            <strong id="recommendedExpiry">--</strong>
+            <span>TÖVSİYƏ EDİLƏN MÜDDƏT</span>
+        </div>
+
+    </div>
+
+    <div class="section-divider"></div>
+
+    <label>Əməliyyat müddəti</label>
+
+    <select id="expirySelect">
+        <option value="5">5 saniyə</option>
+        <option value="10">10 saniyə</option>
+        <option value="15">15 saniyə</option>
+        <option value="30">30 saniyə</option>
+        <option value="60" selected>1 dəqiqə</option>
+        <option value="180">3 dəqiqə</option>
+        <option value="300">5 dəqiqə</option>
+    </select>
+
+    <div class="buttons">
+
+        <button id="callButton" class="start" disabled>
+            ▲ CALL (AL)
+        </button>
+
+        <button id="putButton" class="stop" disabled>
+            ▼ PUT (SAT)
+        </button>
+
+    </div>
+
+    <div class="status" id="advisorStatus">
+        Canlı analiz gözlənilir.
+    </div>
+
+    <div class="small" style="margin-top:10px">
+        Analiz timeframe-i və əməliyyat müddəti ayrıdır.
+        CALL/PUT düymələri brokerə sifariş göndərmir.
+        Əməliyyatı Pocket Option-da özün əl ilə açmalısan.
+        AI balı qazanc ehtimalı və ya zəmanəti deyil.
+    </div>
+
 </div>
 
-<div class="entry-count" id="entryCountdown">
-180
-</div>
 
-<div class="entry-direction" id="entryDirection">
-WAIT
-</div>
+<!-- AI MARKET SUMMARY -->
 
-<div class="entry-info">
-
-Seçilmiş timeframe:
-<span id="entryTF">1 dəqiqə</span>
-
-<br>
-
-Tövsiyə olunan əməliyyat müddəti:
-<span id="entryDuration">1 dəqiqə</span>
-
-<br>
-
-Giriş pəncərəsi:
-<span id="entryWindow">Gözlənilir</span>
-
-</div>
-
-</div>
 <div class="panel">
 
-<div class="panel-title">🧠 AI MARKET SUMMARY</div>
+    <div class="panel-title">
+        🧠 AI MARKET SUMMARY
+    </div>
 
-<div class="grid">
+    <div class="grid">
 
-<div class="stat">
-<strong id="calls" class="call-text">0</strong>
-<span>CALL</span>
-</div>
+        <div class="stat">
+            <strong id="calls" class="call-text">0</strong>
+            <span>CALL</span>
+        </div>
 
-<div class="stat">
-<strong id="puts" class="put-text">0</strong>
-<span>PUT</span>
-</div>
+        <div class="stat">
+            <strong id="puts" class="put-text">0</strong>
+            <span>PUT</span>
+        </div>
 
-<div class="stat">
-<strong id="waits" class="wait-text">0</strong>
-<span>WAIT</span>
-</div>
+        <div class="stat">
+            <strong id="waits" class="wait-text">0</strong>
+            <span>WAIT</span>
+        </div>
 
-</div>
+    </div>
 
-<div class="section-divider"></div>
+    <div class="section-divider"></div>
 
-<div id="selectedSignal" class="signal">
+    <div id="selectedSignal" class="signal">
 
-<div class="signal-head">
-<span>SEÇİLMİŞ TIMEFRAME</span>
-<span class="badge wait">WAIT</span>
-</div>
+        <div class="signal-head">
+            <span>SEÇİLMİŞ TIMEFRAME</span>
+            <span class="badge wait">WAIT</span>
+        </div>
 
-<div class="signal-details">
-Analiz gözləyir.
-</div>
+        <div class="signal-details">
+            Analiz gözləyir.
+        </div>
 
-</div>
+    </div>
 
 </div>
 
@@ -733,6 +806,121 @@ Tarixçə boşdur.
 
 <br>
 
+function formatExpiry(seconds){
+
+if(seconds<60){
+return seconds+" saniyə";
+}
+
+return (seconds/60)+" dəqiqə";
+
+}
+
+
+function recommendExpiry(result){
+
+if(!result || result.side==="WAIT" || result.score<65){
+return null;
+}
+
+if(marketType==="FOREX"){
+
+// Forex məlumatı təxminən 60 saniyədən bir yenilənir.
+// Buna görə saniyəlik əməliyyat tövsiyə edilmir.
+
+if(result.tf===60) return 60;
+if(result.tf===180) return 60;
+if(result.tf===300) return 180;
+
+return 300;
+
+}
+
+// Crypto
+
+if(result.tf===60){
+
+if(result.score>=85) return 30;
+
+return 60;
+
+}
+
+if(result.tf===180) return 60;
+
+if(result.tf===300) return 180;
+
+if(result.tf===600) return 180;
+
+return 300;
+
+}
+
+
+function updateTradeAdvisor(){
+
+const result=lastResults.find(
+x=>x.tf===selectedTF
+);
+
+if(!result){
+
+$("tradeDirection").textContent="WAIT";
+$("tradeScore").textContent="--";
+$("recommendedExpiry").textContent="--";
+
+$("callButton").disabled=true;
+$("putButton").disabled=true;
+
+return;
+
+}
+
+const side=result.side;
+
+$("tradeDirection").textContent=side;
+$("tradeScore").textContent=result.score+"/100";
+
+$("tradeDirection").className=
+side==="CALL"?"call-text":
+side==="PUT"?"put-text":"wait-text";
+
+const expiry=recommendExpiry(result);
+
+if(expiry===null){
+
+$("recommendedExpiry").textContent="TÖVSİYƏ YOXDUR";
+
+$("advisorStatus").textContent=
+"WAIT — güclü və təsdiqlənmiş siqnal yoxdur. Əməliyyat açma.";
+
+$("callButton").disabled=true;
+$("putButton").disabled=true;
+
+return;
+
+}
+
+$("recommendedExpiry").textContent=
+formatExpiry(expiry);
+
+$("expirySelect").value=String(expiry);
+
+$("advisorStatus").textContent=
+"AI "+side+" istiqamətini müəyyən etdi. "+
+"Analiz: "+tfNames[result.tf]+
+". Tövsiyə edilən əməliyyat müddəti: "+
+formatExpiry(expiry)+
+". Girişdən əvvəl yeni şamda siqnalı yenidən yoxla.";
+
+$("callButton").disabled=
+!running || side!=="CALL";
+
+$("putButton").disabled=
+!running || side!=="PUT";
+
+}
+
 • AI analiz EMA20/50/200, RSI, MACD, Bollinger Bands və ATR indikatorlarından istifadə edir.
 
 <br>
@@ -783,11 +971,11 @@ const timeframes = [
 5,10,15,30,60,180,300,600,1800,3600,7200
 ];
 
+const timeframes = [
+60,180,300,600,1800,3600,7200
+];
+
 const tfNames = {
-5:"5 saniyə",
-10:"10 saniyə",
-15:"15 saniyə",
-30:"30 saniyə",
 60:"1 dəqiqə",
 180:"3 dəqiqə",
 300:"5 dəqiqə",
@@ -1367,10 +1555,6 @@ historyLists[180]=aggregate(historyLists[60],180);
 historyLists[300]=aggregate(historyLists[60],300);
 historyLists[600]=aggregate(historyLists[60],600);
 
-historyLists[5]=[];
-historyLists[10]=[];
-historyLists[15]=[];
-historyLists[30]=[];
 
 const candles=historyLists[60];
 
@@ -2099,7 +2283,10 @@ x=>x.tf===selectedTF
 );
 
 $("entryTF").textContent=tfNames[selectedTF];
-$("entryDuration").textContent=tfNames[selectedTF];
+const expiry=recommendExpiry(result);
+
+$("entryDuration").textContent=
+expiry===null ? "Tövsiyə yoxdur" : formatExpiry(expiry);
 
 $("entryCountdown").textContent=remaining;
 
@@ -2339,74 +2526,72 @@ $("apiProgress").style.width="100%";
 
 function scheduleForexRefresh(token){
 
-if(refreshTimer){
-clearTimeout(refreshTimer);
+    if(refreshTimer){
+        clearTimeout(refreshTimer);
+    }
+
+    if(token !== runId || !running) return;
+
+    nextRefreshAt = Date.now() + 60000;
+
+    $("nextUpdate").textContent =
+        new Date(nextRefreshAt).toLocaleTimeString();
+
+    refreshTimer = setTimeout(async()=>{
+
+        if(!running || token !== runId) return;
+
+        if(requestInProgress){
+            scheduleForexRefresh(token);
+            return;
+        }
+
+        requestInProgress = true;
+
+        $("apiState").textContent = "REFRESHING";
+
+        setStatus("Forex məlumatları yenilənir...");
+
+        try{
+
+            await loadForexHistory(currentSymbol,token);
+
+            if(token !== runId || !running) return;
+
+            $("apiState").textContent = "CONNECTED";
+
+            resetApiCountdown();
+
+            scanAll();
+
+            updateTradeAdvisor();
+
+            setStatus("Forex məlumatları yeniləndi.");
+
+        }catch(error){
+
+            if(token !== runId || !running) return;
+
+            $("apiState").textContent = "ERROR";
+
+            setStatus("Forex yenilənmə xətası: " + error.message);
+
+            resetApiCountdown();
+
+        }finally{
+
+            requestInProgress = false;
+
+            if(running && token === runId){
+                scheduleForexRefresh(token);
+            }
+
+        }
+
+    },60000);
+updateTradeAdvisor();
+
 }
-
-if(token!==runId || !running)return;
-
-nextRefreshAt=Date.now()+60000;
-
-$("nextUpdate").textContent =
-new Date(nextRefreshAt).toLocaleTimeString();
-
-refreshTimer=setTimeout(async()=>{
-
-if(!running || token!==runId)return;
-
-if(requestInProgress){
-
-scheduleForexRefresh(token);
-return;
-
-}
-
-requestInProgress=true;
-
-$("apiState").textContent="REFRESHING";
-
-setStatus("Forex məlumatları yenilənir...");
-
-try{
-
-await loadForexHistory(currentSymbol,token);
-
-if(token!==runId || !running)return;
-
-$("apiState").textContent="CONNECTED";
-
-resetApiCountdown();
-
-scanAll();
-
-setStatus("Forex məlumatları yeniləndi.");
-
-}catch(error){
-
-if(token!==runId || !running)return;
-
-$("apiState").textContent="ERROR";
-
-setStatus("Forex yenilənmə xətası: "+error.message);
-
-resetApiCountdown();
-
-}finally{
-
-requestInProgress=false;
-
-if(running && token===runId){
-
-scheduleForexRefresh(token);
-
-}
-
-}
-
-},60000);
-
-}
-
 
 /* FOREX START */
 
@@ -2591,6 +2776,49 @@ $("apiProgress").style.width="0%";
 setStatus("Scanner dayandırıldı.");
 
 }
+
+$("callButton").addEventListener("click",()=>{
+
+const result=lastResults.find(
+x=>x.tf===selectedTF
+);
+
+if(!running || !result || result.side!=="CALL"){
+return;
+}
+
+$("advisorStatus").textContent=
+"CALL seçildi. Müddət: "+
+formatExpiry(Number($("expirySelect").value))+
+". Pocket Option qrafikində qiyməti yoxla və əməliyyatı əl ilə aç.";
+
+});
+
+
+$("putButton").addEventListener("click",()=>{
+
+const result=lastResults.find(
+x=>x.tf===selectedTF
+);
+
+if(!running || !result || result.side!=="PUT"){
+return;
+}
+
+$("advisorStatus").textContent=
+"PUT seçildi. Müddət: "+
+formatExpiry(Number($("expirySelect").value))+
+". Pocket Option qrafikində qiyməti yoxla və əməliyyatı əl ilə aç.";
+
+});
+
+$("expirySelect").addEventListener("change",()=>{
+
+$("advisorStatus").textContent=
+"Seçilmiş əməliyyat müddəti: "+
+formatExpiry(Number($("expirySelect").value));
+
+});
 
 
 /* BUTTONS */
