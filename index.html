@@ -5,117 +5,304 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101e">
 <link rel="manifest" href="./manifest.json">
-<title>POCKET OPTION AI V15 PRO</title>
+<title>POCKET OPTION AI V16 PRO</title>
 
 <style>
 :root{
---bg:#07101e;--panel:#101d30;--panel2:#0a1728;
---line:#263950;--text:#edf4ff;--muted:#91a4bd;
---green:#00d69a;--red:#ff5573;--yellow:#ffcc66;
+--bg:#07101e;
+--panel:#101d30;
+--panel2:#0a1728;
+--line:#263950;
+--text:#edf4ff;
+--muted:#91a4bd;
+--green:#00d69a;
+--red:#ff5573;
+--yellow:#ffcc66;
 --blue:#55aaff;
+--purple:#a77bff;
 }
+
 *{box-sizing:border-box}
+
 body{
-margin:0;padding:11px;background:var(--bg);
-color:var(--text);font-family:Arial,sans-serif
+margin:0;padding:11px;
+background:var(--bg);
+color:var(--text);
+font-family:Arial,sans-serif
 }
+
 .app{max-width:950px;margin:auto}
+
 header{
-display:flex;justify-content:space-between;
-align-items:center;gap:10px;margin-bottom:13px
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:13px
 }
+
 h1{font-size:19px;margin:0}
 h2{font-size:14px;margin:0 0 13px}
-.sub,.muted{color:var(--muted);font-size:11px}
+
+.sub,.muted{
+color:var(--muted);
+font-size:11px
+}
+
 .sub{margin-top:5px}
+
 .badge{
-border:1px solid var(--line);border-radius:20px;
-padding:7px 10px;font-size:10px;color:var(--green)
+border:1px solid var(--line);
+border-radius:20px;
+padding:7px 10px;
+font-size:10px;
+color:var(--green)
 }
+
 .panel{
-background:var(--panel);border:1px solid var(--line);
-border-radius:13px;padding:13px;margin-bottom:11px
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:13px;
+padding:13px;
+margin-bottom:11px
 }
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
 label{
-display:block;font-size:11px;color:var(--muted);
+display:block;
+font-size:11px;
+color:var(--muted);
 margin-bottom:6px
 }
+
 select,button{
-width:100%;min-height:43px;padding:10px;
-border-radius:9px;border:1px solid var(--line);
-background:var(--panel2);color:var(--text);
+width:100%;
+min-height:43px;
+padding:10px;
+border-radius:9px;
+border:1px solid var(--line);
+background:var(--panel2);
+color:var(--text);
 font-size:13px
 }
-button{font-weight:bold;cursor:pointer}
-button.primary{background:#087b65;border-color:#087b65}
-button.refresh{background:#15518b;border-color:#15518b}
-button:disabled{opacity:.5}
-.actions{
-display:grid;grid-template-columns:1fr 1fr;
-gap:9px;margin-top:12px
+
+button{
+font-weight:bold;
+cursor:pointer
 }
-.price{font-size:26px;font-weight:bold;margin:7px 0}
-.status{font-size:12px;margin-top:9px;line-height:1.5}
+
+button.primary{
+background:#087b65;
+border-color:#087b65
+}
+
+button.refresh{
+background:#15518b;
+border-color:#15518b
+}
+
+button:disabled{opacity:.5}
+
+.actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px;
+margin-top:12px
+}
+
+.price{
+font-size:26px;
+font-weight:bold;
+margin:7px 0
+}
+
+.status{
+font-size:12px;
+margin-top:9px;
+line-height:1.5
+}
+
 .green{color:var(--green)}
 .red{color:var(--red)}
 .yellow{color:var(--yellow)}
 .blue{color:var(--blue)}
+.purple{color:var(--purple)}
+
 .grid{
-display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
 gap:9px
 }
+
 .card{
-background:var(--panel2);border:1px solid var(--line);
-border-radius:10px;padding:11px;min-width:0
+background:var(--panel2);
+border:1px solid var(--line);
+border-radius:10px;
+padding:11px;
+min-width:0
 }
+
 .card.best{border:2px solid var(--green)}
-.card h3{font-size:13px;margin:0 0 9px}
-.score{font-size:24px;font-weight:bold;margin:6px 0}
-.direction{font-size:14px;font-weight:bold}
+
+.card h3{
+font-size:13px;
+margin:0 0 9px
+}
+
+.score{
+font-size:24px;
+font-weight:bold;
+margin:6px 0
+}
+
+.direction{
+font-size:14px;
+font-weight:bold
+}
+
 .bar{
-height:6px;background:#263950;border-radius:8px;
-overflow:hidden;margin:9px 0
+height:6px;
+background:#263950;
+border-radius:8px;
+overflow:hidden;
+margin:9px 0
 }
-.bar span{display:block;height:100%;background:var(--blue)}
+
+.bar span{
+display:block;
+height:100%;
+background:var(--blue)
+}
+
 .metrics{
-display:flex;justify-content:space-between;
-font-size:10px;color:var(--muted)
+display:flex;
+justify-content:space-between;
+font-size:10px;
+color:var(--muted)
 }
+
 .recommend{
-background:#0b2630;border:1px solid #17614f;
-border-radius:11px;text-align:center;padding:15px
+background:#0b2630;
+border:1px solid #17614f;
+border-radius:11px;
+text-align:center;
+padding:15px
 }
-.big{font-size:25px;font-weight:bold;margin:8px 0}
-.small{font-size:11px;color:var(--muted);line-height:1.55}
-table{width:100%;border-collapse:collapse;font-size:12px}
+
+.big{
+font-size:25px;
+font-weight:bold;
+margin:8px 0
+}
+
+.small{
+font-size:11px;
+color:var(--muted);
+line-height:1.55
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px
+}
+
 td,th{
-padding:9px 5px;border-bottom:1px solid var(--line);
+padding:9px 5px;
+border-bottom:1px solid var(--line);
 text-align:left
 }
-th{color:var(--muted);font-weight:normal}
-.chart{width:100%;height:390px}
+
+th{
+color:var(--muted);
+font-weight:normal
+}
+
+.chart{
+width:100%;
+height:390px
+}
+
 .history-item{
-padding:8px 0;border-bottom:1px solid var(--line);
+padding:8px 0;
+border-bottom:1px solid var(--line);
 font-size:11px
 }
+
 .auto-box{
-background:var(--panel2);border:1px solid var(--line);
-border-radius:10px;padding:12px;margin-top:11px
+background:var(--panel2);
+border:1px solid var(--line);
+border-radius:10px;
+padding:12px;
+margin-top:11px
 }
+
 .auto-line{
-display:flex;align-items:center;
-justify-content:space-between;gap:10px
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px
 }
+
 .toggle{
-width:21px;height:21px;min-height:21px;
+width:21px;
+height:21px;
+min-height:21px;
 accent-color:var(--green)
 }
-.auto-label{font-size:12px;font-weight:bold}
+
+.auto-label{
+font-size:12px;
+font-weight:bold
+}
+
 .refresh-info{
-margin-top:9px;font-size:11px;color:var(--muted);
+margin-top:9px;
+font-size:11px;
+color:var(--muted);
 line-height:1.6
 }
+
+.market-tabs{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-bottom:12px
+}
+
+.market-btn{
+font-size:11px;
+padding:11px 5px;
+border:1px solid var(--line);
+background:var(--panel2);
+border-radius:9px
+}
+
+.market-btn.active.real{
+background:#087b65;
+border-color:var(--green)
+}
+
+.market-btn.active.otc{
+background:#583b91;
+border-color:var(--purple)
+}
+
+.otc-notice{
+background:#211936;
+border:1px solid #6548a0;
+border-radius:9px;
+padding:11px;
+font-size:11px;
+line-height:1.6;
+margin-top:10px
+}
+
 @media(max-width:480px){
 body{padding:8px}
 h1{font-size:16px}
@@ -127,37 +314,58 @@ h1{font-size:16px}
 </head>
 
 <body>
+
 <div class="app">
 
 <header>
 <div>
-<h1>⚡ POCKET OPTION AI V15 PRO</h1>
-<div class="sub">SMART REFRESH · AUTO SCAN · MULTI TIMEFRAME</div>
+<h1>⚡ POCKET OPTION AI V16 PRO</h1>
+<div class="sub">DUAL MARKET · OTC AI · AUTO SCANNER</div>
 </div>
 <div class="badge" id="systemStatus">SYSTEM READY</div>
 </header>
 
 <section class="panel">
+
 <h2>⚙️ TRADING CONTROL CENTER</h2>
 
+<div class="market-tabs">
+
+<button class="market-btn active real"
+id="realMode">🟢 REAL MARKET</button>
+
+<button class="market-btn"
+id="otcMode">🟣 OTC MARKET</button>
+
+<button class="market-btn"
+id="allMode">📊 ALL MARKETS</button>
+
+</div>
+
 <div class="row">
+
 <div>
 <label>Bazar</label>
 <select id="market">
 <option value="CRYPTO">CRYPTO — BINANCE</option>
 <option value="FOREX">FOREX — TWELVE DATA</option>
+<option value="OTC">POCKET OPTION OTC</option>
 </select>
 </div>
+
 <div>
 <label>Aktiv / Valyuta cütü</label>
 <select id="asset"></select>
 </div>
+
 </div>
 
 <div class="row" style="margin-top:10px">
+
 <div>
 <label>Analiz timeframe</label>
 <select id="timeframe">
+
 <option value="1">1 dəqiqə</option>
 <option value="3">3 dəqiqə</option>
 <option value="5">5 dəqiqə</option>
@@ -165,102 +373,155 @@ h1{font-size:16px}
 <option value="30">30 dəqiqə</option>
 <option value="60">1 saat</option>
 <option value="120">2 saat</option>
+
 </select>
 </div>
 
 <div>
 <label>Əməliyyat müddəti</label>
 <select id="manualExpiry">
+
 <option value="1">1 dəqiqə</option>
 <option value="2">2 dəqiqə</option>
 <option value="3">3 dəqiqə</option>
 <option value="5">5 dəqiqə</option>
+
 </select>
 </div>
+
 </div>
 
 <div class="actions">
+
 <button class="refresh" id="refreshButton">
 🔄 QRAFİKİ YENİLƏ & SKAN ET
 </button>
-<button id="stopButton">■ DAYANDIR</button>
+
+<button id="stopButton">
+■ DAYANDIR
+</button>
+
 </div>
 
 <div class="auto-box">
+
 <div class="auto-line">
+
 <label class="auto-label" for="autoRefresh">
 ⚡ AVTOMATİK YENİLƏMƏ
 </label>
-<input class="toggle" type="checkbox" id="autoRefresh">
+
+<input class="toggle"
+type="checkbox"
+id="autoRefresh">
+
 </div>
+
 <div class="refresh-info" id="autoInfo">
 Avtomatik yenilənmə söndürülüb.
 </div>
+
 </div>
 
 <div class="status" id="connectionStatus">
 Analiz üçün hazırdır.
 </div>
-</section>
 
-<section class="panel">
-<h2>📈 LIVE TRADINGVIEW CHART</h2>
-<div id="tradingview_chart" class="chart"></div>
-<div class="small">
-Qrafik TradingView-dən, skaner məlumatları Binance və Forex serverindən alınır.
-OTC qiymətləri ilə eyni olmaya bilər.
+<div class="otc-notice" id="otcNotice" style="display:none">
+
+🟣 OTC rejimi aktivdir.
+
+OTC analizinin işləməsi üçün Pocket Option
+tətbiqindən real şam məlumatları Android
+inteqrasiyası vasitəsilə ötürülməlidir.
+
+Məlumat gəlmədikdə sistem saxta siqnal yaratmır.
+
 </div>
+
 </section>
 
 <section class="panel">
+
+<h2>📈 LIVE TRADINGVIEW CHART</h2>
+
+<div id="tradingview_chart" class="chart"></div>
+
+<div class="small" id="chartInfo">
+Qrafik TradingView-dən alınır.
+</div>
+
+</section>
+
+<section class="panel">
+
 <h2>📊 LIVE MARKET MONITOR</h2>
+
 <div class="price" id="price">---</div>
 
 <div class="row">
+
 <div>
 <div class="muted">ŞAM DƏYİŞMƏSİ</div>
 <b id="change">---</b>
 </div>
+
 <div>
 <div class="muted">MƏLUMAT MƏNBƏYİ</div>
 <b id="source">---</b>
 </div>
+
 </div>
 
 <div class="status" id="dataStatus">
 Məlumat gözlənilir.
 </div>
+
 <div class="status blue" id="refreshStatus">
 Son yenilənmə: hələ yoxdur
 </div>
+
 </section>
 
 <section class="panel">
-<h2>🏆 AI EXPIRY ANALYZER — ƏN YAXŞI MÜDDƏT</h2>
+
+<h2>🏆 AI EXPIRY ANALYZER</h2>
 
 <div class="recommend">
+
 <div class="muted">AI TÖVSİYƏSİ</div>
+
 <div class="big" id="bestExpiry">WAIT</div>
+
 <div class="direction" id="bestDirection">
 Analiz gözlənilir
 </div>
+
 <div class="small" id="bestReason">
-1, 2, 3 və 5 dəqiqəlik müqayisə aparılacaq.
+Məlumat gözlənilir.
 </div>
+
 </div>
 
 <div style="height:12px"></div>
+
 <div class="grid" id="expiryCards">
-<div class="card"><h3>1 DƏQİQƏ</h3>--</div>
-<div class="card"><h3>2 DƏQİQƏ</h3>--</div>
-<div class="card"><h3>3 DƏQİQƏ</h3>--</div>
-<div class="card"><h3>5 DƏQİQƏ</h3>--</div>
+
+<div class="card">1 DƏQİQƏ --</div>
+<div class="card">2 DƏQİQƏ --</div>
+<div class="card">3 DƏQİQƏ --</div>
+<div class="card">5 DƏQİQƏ --</div>
+
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>📋 MÜDDƏTLƏRİN MÜQAYİSƏSİ</h2>
+
 <table>
+
 <thead>
 <tr>
 <th>Müddət</th>
@@ -269,112 +530,169 @@ Analiz gözlənilir
 <th>Qərar</th>
 </tr>
 </thead>
+
 <tbody id="comparison">
 <tr><td colspan="4">Analiz gözlənilir</td></tr>
 </tbody>
+
 </table>
+
 </section>
 
 <section class="panel">
-<h2>⏱ FAST ENTRY AI — QƏRAR PƏNCƏRƏSİ</h2>
+
+<h2>⏱ FAST ENTRY AI</h2>
+
 <div class="row">
+
 <div>
 <div class="muted">QƏRAR SAYĞACI</div>
 <div class="score" id="entryCountdown">--</div>
 </div>
+
 <div>
 <div class="muted">GİRİŞ VƏZİYYƏTİ</div>
 <div class="direction" id="entryStatus">WAIT</div>
 </div>
+
 </div>
+
 <div class="small" id="entryMessage">
 Yeni analiz aparılmayıb.
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>🎯 AI TRADE ADVISOR</h2>
+
 <div class="grid">
+
 <div class="card">
 <div class="muted">İSTİQAMƏT</div>
 <div class="score" id="advisorDirection">WAIT</div>
 </div>
+
 <div class="card">
 <div class="muted">TEXNİKİ BAL</div>
 <div class="score" id="advisorScore">--</div>
 </div>
+
 <div class="card">
 <div class="muted">ƏMƏLİYYAT MÜDDƏTİ</div>
 <div class="score" id="advisorExpiry">--</div>
 </div>
+
 <div class="card">
-<div class="muted">SEÇİLMİŞ TIMEFRAME</div>
+<div class="muted">TIMEFRAME</div>
 <div class="score" id="advisorTF">--</div>
 </div>
+
 </div>
 
 <div class="actions">
-<button id="callButton" class="primary">▲ CALL</button>
-<button id="putButton">▼ PUT</button>
+
+<button id="callButton" class="primary">
+▲ CALL
+</button>
+
+<button id="putButton">
+▼ PUT
+</button>
+
 </div>
+
 <div class="status" id="advisorMessage">
 Bu düymələr brokerə sifariş göndərmir.
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>🧠 MULTI-TIMEFRAME ANALYSIS</h2>
+
 <div id="multiResults" class="small">
 Analiz gözlənilir.
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>⭐ TOP SIGNALS</h2>
+
 <div id="topSignals" class="small">
 Analiz gözlənilir.
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>📜 SIGNAL HISTORY</h2>
+
 <div id="history" class="small">
 Hələ nəticə yoxdur.
 </div>
+
 </section>
 
 <section class="panel">
+
 <h2>ℹ️ SYSTEM INFORMATION</h2>
+
 <div class="small">
-• Crypto məlumatları Binance API-dən alınır.<br>
-• Forex məlumatları Render backend vasitəsilə alınır.<br>
-• Yenilənmə yeni məlumatları alır və analizi təkrarlayır.<br>
-• Forex avtomatik yenilənməsi minimum 60 saniyədir.<br>
+
+• Crypto — Binance API.<br>
+• Forex — Render backend.<br>
+• OTC — Android inteqrasiyası.<br>
+• OTC və Forex məlumatları qarışdırılmır.<br>
 • Texniki bal real qazanc ehtimalı deyil.<br>
-• OTC məlumatı birbaşa oxunmur.<br>
-• CALL və PUT düymələri brokerə sifariş göndərmir.
+• CALL / PUT düymələri sifariş göndərmir.
+
 </div>
+
 </section>
 
 </div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
+
 <script>
 "use strict";
 
-const BACKEND_URL="https://pocket-option-ai-v11.onrender.com";
+const BACKEND_URL=
+"https://pocket-option-ai-v11.onrender.com";
+
 const $=id=>document.getElementById(id);
 
 const cryptoAssets=[
-"BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT",
-"ADAUSDT","DOGEUSDT","AVAXUSDT","LINKUSDT","DOTUSDT",
-"LTCUSDT","TRXUSDT","BCHUSDT","SUIUSDT","APTUSDT",
-"TONUSDT","NEARUSDT","INJUSDT","ARBUSDT","OPUSDT"
+"BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT",
+"XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT",
+"LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT",
+"BCHUSDT","SUIUSDT","APTUSDT","TONUSDT",
+"NEARUSDT","INJUSDT","ARBUSDT","OPUSDT"
 ];
 
 const forexAssets=[
-"EUR/USD","GBP/USD","USD/JPY","AUD/USD",
-"USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"
+"EUR/USD","GBP/USD","USD/JPY",
+"AUD/USD","USD/CAD","USD/CHF",
+"NZD/USD","EUR/GBP","EUR/JPY"
+];
+
+const otcAssets=[
+"EUR/USD OTC",
+"GBP/USD OTC",
+"USD/JPY OTC",
+"AUD/USD OTC",
+"USD/CAD OTC",
+"EUR/GBP OTC",
+"GBP/JPY OTC",
+"EUR/JPY OTC",
+"NZD/USD OTC",
+"USD/CHF OTC"
 ];
 
 let activeController=null;
@@ -384,11 +702,20 @@ let latestResults=null;
 let historyItems=[];
 let currentAnalysisId=0;
 let isAnalyzing=false;
+let running=true;
 let lastSuccessfulUpdate=null;
 
+let otcCandles={};
+
 function loadAssets(){
- const list=$("market").value==="CRYPTO"
-  ?cryptoAssets:forexAssets;
+
+ const market=$("market").value;
+
+ let list=market==="CRYPTO"
+  ?cryptoAssets
+  :market==="FOREX"
+  ?forexAssets
+  :otcAssets;
 
  $("asset").innerHTML=list.map(x=>
   `<option value="${x}">${x}</option>`
@@ -397,7 +724,45 @@ function loadAssets(){
  updateChart();
  resetDisplay();
  updateAutoInfo();
+
+ $("otcNotice").style.display=
+  market==="OTC"?"block":"none";
 }
+
+function setMarket(mode){
+
+ if(mode==="REAL"){
+  $("market").value="CRYPTO";
+  $("realMode").classList.add("active","real");
+  $("otcMode").classList.remove("active","otc");
+  $("allMode").classList.remove("active");
+ }
+
+ if(mode==="OTC"){
+  $("market").value="OTC";
+  $("otcMode").classList.add("active","otc");
+  $("realMode").classList.remove("active","real");
+  $("allMode").classList.remove("active");
+ }
+
+ if(mode==="ALL"){
+  $("market").value="CRYPTO";
+  $("allMode").classList.add("active");
+  $("realMode").classList.remove("active","real");
+  $("otcMode").classList.remove("active","otc");
+ }
+
+ stopAutoTimer();
+ loadAssets();
+
+ if($("autoRefresh").checked){
+  scheduleAutoRefresh();
+ }
+}
+
+$("realMode").onclick=()=>setMarket("REAL");
+$("otcMode").onclick=()=>setMarket("OTC");
+$("allMode").onclick=()=>setMarket("ALL");
 
 $("market").addEventListener("change",()=>{
  stopAutoTimer();
@@ -425,9 +790,8 @@ $("timeframe").addEventListener("change",()=>{
  }
 });
 
-loadAssets();
-
 function resetDisplay(){
+
  $("price").textContent="---";
  $("change").textContent="---";
  $("source").textContent="---";
@@ -435,16 +799,16 @@ function resetDisplay(){
 
  $("bestExpiry").textContent="WAIT";
  $("bestDirection").textContent="Yeni analiz gözlənilir";
- $("bestReason").textContent="Yeni aktiv seçildi. Yenidən skan et.";
+ $("bestReason").textContent="Yenidən skan et.";
 
  $("expiryCards").innerHTML=`
- <div class="card"><h3>1 DƏQİQƏ</h3>--</div>
- <div class="card"><h3>2 DƏQİQƏ</h3>--</div>
- <div class="card"><h3>3 DƏQİQƏ</h3>--</div>
- <div class="card"><h3>5 DƏQİQƏ</h3>--</div>`;
+ <div class="card">1 DƏQİQƏ --</div>
+ <div class="card">2 DƏQİQƏ --</div>
+ <div class="card">3 DƏQİQƏ --</div>
+ <div class="card">5 DƏQİQƏ --</div>`;
 
  $("comparison").innerHTML=
-  `<tr><td colspan="4">Yeni analiz gözlənilir</td></tr>`;
+ `<tr><td colspan="4">Yeni analiz gözlənilir</td></tr>`;
 
  $("multiResults").textContent="Yeni analiz gözlənilir.";
  $("topSignals").textContent="Yeni analiz gözlənilir.";
@@ -452,17 +816,33 @@ function resetDisplay(){
  $("advisorDirection").textContent="WAIT";
  $("advisorScore").textContent="--";
  $("advisorExpiry").textContent="--";
- $("advisorTF").textContent=$("timeframe").value+" dəq.";
 
  $("entryCountdown").textContent="--";
  $("entryStatus").textContent="WAIT";
  $("entryMessage").textContent="Yeni analiz gözlənilir.";
 
  latestResults=null;
+
  clearInterval(countdownTimer);
 }
 
 function updateChart(){
+
+ if($("market").value==="OTC"){
+
+  $("tradingview_chart").innerHTML=
+  `<div class="otc-notice">
+  OTC qrafiki burada avtomatik göstərilmir.
+  Pocket Option OTC qrafikinin real məlumatı
+  ayrıca inteqrasiya edilməlidir.
+  </div>`;
+
+  $("chartInfo").textContent=
+  "TradingView OTC qiymətlərini əvəz etmir.";
+
+  return;
+ }
+
  if(typeof TradingView==="undefined")return;
 
  const market=$("market").value;
@@ -489,14 +869,16 @@ function updateChart(){
  });
 }
 
-/* DATA */
+/* BINANCE */
 
-async function fetchCrypto(interval,limit=1000){
+async function fetchCrypto(interval,limit=500){
+
  const symbol=$("asset").value;
 
- const url="https://api.binance.com/api/v3/klines?"+
-  "symbol="+encodeURIComponent(symbol)+
-  "&interval="+interval+"&limit="+limit;
+ const url=
+ "https://api.binance.com/api/v3/klines?"+
+ "symbol="+encodeURIComponent(symbol)+
+ "&interval="+interval+"&limit="+limit;
 
  const response=await fetch(url,{
   cache:"no-store",
@@ -519,12 +901,15 @@ async function fetchCrypto(interval,limit=1000){
  }));
 }
 
+/* FOREX */
+
 async function fetchForex(interval){
+
  const symbol=$("asset").value;
 
  const url=BACKEND_URL+"/api/forex?"+
-  "symbol="+encodeURIComponent(symbol)+
-  "&interval="+encodeURIComponent(interval);
+ "symbol="+encodeURIComponent(symbol)+
+ "&interval="+encodeURIComponent(interval);
 
  const response=await fetch(url,{
   cache:"no-store",
@@ -542,15 +927,17 @@ async function fetchForex(interval){
  }
 
  return data.values.map(c=>{
+
   const rawTime=String(c.datetime||"");
+
   const normalized=rawTime.includes("T")
    ?rawTime
    :rawTime.replace(" ","T");
 
   const time=Date.parse(
    /Z$|[+-]\d\d:\d\d$/.test(normalized)
-    ?normalized
-    :normalized+"Z"
+   ?normalized
+   :normalized+"Z"
   );
 
   return {
@@ -561,6 +948,7 @@ async function fetchForex(interval){
    close:Number(c.close),
    volume:Number(c.volume||0)
   };
+
  }).filter(c=>
   Number.isFinite(c.time)&&
   Number.isFinite(c.close)&&
@@ -568,16 +956,159 @@ async function fetchForex(interval){
  ).sort((a,b)=>a.time-b.time);
 }
 
+/*
+OTC ANDROID BRIDGE
+
+Android tərəfi bu funksiyaya real
+Pocket Option şamlarını ötürməlidir.
+
+Format:
+[
+ {time:timestamp,open:1,high:1,low:1,close:1,volume:0}
+]
+*/
+
+window.setOTCCandles=function(symbol,candles){
+
+ if(!Array.isArray(candles))return;
+
+ const valid=candles.map(c=>({
+  time:Number(c.time),
+  open:Number(c.open),
+  high:Number(c.high),
+  low:Number(c.low),
+  close:Number(c.close),
+  volume:Number(c.volume||0)
+ })).filter(c=>
+  Number.isFinite(c.time)&&
+  Number.isFinite(c.open)&&
+  Number.isFinite(c.high)&&
+  Number.isFinite(c.low)&&
+  Number.isFinite(c.close)&&
+  c.time>0
+ ).sort((a,b)=>a.time-b.time);
+
+ if(valid.length>=35){
+  otcCandles[symbol]=valid.slice(-1000);
+ }
+
+};
+
+async function fetchOTC(){
+
+ const symbol=$("asset").value;
+
+ /*
+ Android WebView JavaScript interface:
+ getCandles(symbol, interval, limit)
+
+ Return:
+ JSON string containing candle array.
+ */
+
+ const bridge=window.PocketOptionBridge;
+
+ if(bridge&&typeof bridge.getCandles==="function"){
+
+  const raw=bridge.getCandles(
+   symbol,"1m",500
+  );
+
+  const parsed=typeof raw==="string"
+   ?JSON.parse(raw)
+   :raw;
+
+  if(Array.isArray(parsed)){
+   window.setOTCCandles(symbol,parsed);
+  }
+
+ }
+
+ const candles=otcCandles[symbol];
+
+ if(!candles||candles.length<35){
+  throw new Error(
+   "OTC şam məlumatı yoxdur. Android inteqrasiyası tələb olunur."
+  );
+ }
+
+ return candles;
+}
+
+/* AGGREGATION */
+
+function aggregate(candles,minutes){
+
+ const size=minutes*60000;
+ const groups=new Map();
+
+ candles.forEach(c=>{
+
+  const bucket=Math.floor(c.time/size)*size;
+
+  if(!groups.has(bucket)){
+
+   groups.set(bucket,{
+    time:bucket,
+    open:c.open,
+    high:c.high,
+    low:c.low,
+    close:c.close,
+    volume:c.volume||0
+   });
+
+  }else{
+
+   const g=groups.get(bucket);
+
+   g.high=Math.max(g.high,c.high);
+   g.low=Math.min(g.low,c.low);
+   g.close=c.close;
+   g.volume+=(c.volume||0);
+
+  }
+
+ });
+
+ return [...groups.values()].sort(
+  (a,b)=>a.time-b.time
+ );
+}
+
+/* MARKET DATA */
+
 async function getMarketData(){
+
  const market=$("market").value;
 
+ if(market==="OTC"){
+
+  const one=await fetchOTC();
+
+  return {
+   one,
+   two:aggregate(one,2),
+   three:aggregate(one,3),
+   five:aggregate(one,5),
+   ten:aggregate(one,10),
+   thirty:aggregate(one,30),
+   sixty:aggregate(one,60),
+   oneTwenty:aggregate(one,120)
+  };
+
+ }
+
  if(market==="CRYPTO"){
-  const [one,five,thirty,hour,twoHour]=await Promise.all([
-   fetchCrypto("1m",1000),
+
+  const [one,five,thirty,hour,twoHour]=
+  await Promise.all([
+
+   fetchCrypto("1m",500),
    fetchCrypto("5m",300),
-   fetchCrypto("30m",250),
-   fetchCrypto("1h",250),
-   fetchCrypto("2h",250)
+   fetchCrypto("30m",200),
+   fetchCrypto("1h",200),
+   fetchCrypto("2h",200)
+
   ]);
 
   return {
@@ -590,14 +1121,18 @@ async function getMarketData(){
    sixty:hour,
    oneTwenty:twoHour
   };
+
  }
 
- const [one,five,thirty,hour,twoHour]=await Promise.all([
+ const [one,five,thirty,hour,twoHour]=
+ await Promise.all([
+
   fetchForex("1min"),
   fetchForex("5min"),
   fetchForex("30min"),
   fetchForex("1h"),
   fetchForex("2h")
+
  ]);
 
  return {
@@ -610,77 +1145,58 @@ async function getMarketData(){
   sixty:hour,
   oneTwenty:twoHour
  };
-}
 
-/* AGGREGATION */
-
-function aggregate(candles,minutes){
- const size=minutes*60000;
- const groups=new Map();
-
- candles.forEach(c=>{
-  const bucket=Math.floor(c.time/size)*size;
-
-  if(!groups.has(bucket)){
-   groups.set(bucket,{
-    time:bucket,
-    open:c.open,
-    high:c.high,
-    low:c.low,
-    close:c.close,
-    volume:c.volume||0
-   });
-  }else{
-   const g=groups.get(bucket);
-   g.high=Math.max(g.high,c.high);
-   g.low=Math.min(g.low,c.low);
-   g.close=c.close;
-   g.volume+=(c.volume||0);
-  }
- });
-
- return [...groups.values()].sort((a,b)=>a.time-b.time);
 }
 
 /* INDICATORS */
 
 function ema(values,period){
+
  if(values.length<period)return null;
 
  const multiplier=2/(period+1);
+
  let result=values.slice(0,period)
-  .reduce((a,b)=>a+b,0)/period;
+ .reduce((a,b)=>a+b,0)/period;
 
  for(let i=period;i<values.length;i++){
+
   result=values[i]*multiplier+
-   result*(1-multiplier);
+  result*(1-multiplier);
+
  }
 
  return result;
 }
 
 function rsi(values,period=14){
+
  if(values.length<period+1)return null;
 
  let gain=0,loss=0;
 
  for(let i=values.length-period;i<values.length;i++){
+
   const d=values[i]-values[i-1];
 
   if(d>0)gain+=d;
   else loss-=d;
+
  }
 
  if(loss===0)return 100;
 
  const rs=(gain/period)/(loss/period);
+
  return 100-100/(1+rs);
 }
 
 function bollinger(values){
+
  if(values.length<20)return null;
 
  const data=values.slice(-20);
+
  const middle=data.reduce((a,b)=>a+b,0)/20;
 
  const variance=data.reduce(
@@ -694,10 +1210,13 @@ function bollinger(values){
   upper:middle+2*sd,
   lower:middle-2*sd
  };
+
 }
 
 function macd(values){
+
  const recent=values.slice(-100);
+
  const e12=ema(recent,12);
  const e26=ema(recent,26);
 
@@ -707,11 +1226,13 @@ function macd(values){
 }
 
 function atr(candles){
+
  if(candles.length<15)return null;
 
  const values=[];
 
  for(let i=candles.length-14;i<candles.length;i++){
+
   const c=candles[i];
   const prev=candles[i-1].close;
 
@@ -720,6 +1241,7 @@ function atr(candles){
    Math.abs(c.high-prev),
    Math.abs(c.low-prev)
   ));
+
  }
 
  return values.reduce((a,b)=>a+b,0)/values.length;
@@ -728,75 +1250,106 @@ function atr(candles){
 /* ANALYSIS */
 
 function analyze(candles,minutes){
+
  const closed=candles.slice(0,-1);
 
  if(closed.length<35){
+
   return {
-   minutes,direction:"WAIT",score:0,
+   minutes,
+   direction:"WAIT",
+   score:0,
    quality:"Məlumat azdır",
-   reason:"Kifayət qədər bağlanmış şam yoxdur.",
-   call:0,put:0,rsi:null
+   reason:"Bağlanmış şam sayı kifayət deyil.",
+   call:0,
+   put:0,
+   stale:true
   };
+
  }
 
  const closes=closed.map(c=>c.close);
+
  const price=closes.at(-1);
 
  const e20=ema(closes,20);
  const e50=ema(closes,50);
  const e200=ema(closes,200);
+
  const rv=rsi(closes);
  const mv=macd(closes);
  const bb=bollinger(closes);
  const av=atr(closed);
 
- let call=0,put=0;
+ let call=0;
+ let put=0;
+
  const reasons=[];
 
  if(e20!==null&&e50!==null){
+
   if(e20>e50){
    call+=2;
-   reasons.push("EMA20 > EMA50");
-  }else if(e20<e50){
-   put+=2;
-   reasons.push("EMA20 < EMA50");
+   reasons.push("EMA20 bullish");
   }
+
+  if(e20<e50){
+   put+=2;
+   reasons.push("EMA20 bearish");
+  }
+
  }
 
  if(e200!==null){
+
   if(price>e200)call++;
   else if(price<e200)put++;
+
  }
 
  if(rv!==null){
+
   if(rv>55&&rv<70){
    call+=2;
    reasons.push("RSI bullish");
-  }else if(rv<45&&rv>30){
+  }
+
+  else if(rv<45&&rv>30){
    put+=2;
    reasons.push("RSI bearish");
-  }else if(rv>=70){
+  }
+
+  else if(rv>=70){
    put++;
    reasons.push("RSI overbought");
-  }else if(rv<=30){
+  }
+
+  else if(rv<=30){
    call++;
    reasons.push("RSI oversold");
   }
+
  }
 
  if(mv!==null){
+
   if(mv>0){
    call+=2;
    reasons.push("MACD positive");
-  }else if(mv<0){
+  }
+
+  else if(mv<0){
    put+=2;
    reasons.push("MACD negative");
   }
+
  }
 
  if(bb){
+
   if(price>bb.middle)call++;
   else if(price<bb.middle)put++;
+
  }
 
  const momentum=closes.at(-1)-closes.at(-6);
@@ -808,45 +1361,72 @@ function analyze(candles,minutes){
  const diff=Math.abs(call-put);
 
  if(total===0||diff<2){
+
   return {
-   minutes,direction:"WAIT",score:0,
+   minutes,
+   direction:"WAIT",
+   score:0,
    quality:"Təsdiq yoxdur",
    reason:reasons.join(" · "),
-   call,put,rsi:rv,price,e20,e50,e200,
-   macd:mv,atr:av
+   call,
+   put,
+   rsi:rv,
+   price,
+   e20,e50,e200,
+   macd:mv,
+   atr:av
   };
+
  }
 
  const direction=call>put?"CALL":"PUT";
+
  const dominant=Math.max(call,put);
 
  let score=Math.round(dominant/total*100);
 
- if(e200===null)score=Math.min(score,82);
+ if(e200===null){
+  score=Math.min(score,82);
+ }
 
  const last=closed.at(-1);
+
  const age=Date.now()-last.time;
+
  const maxAge=minutes*60000*3;
 
- if(age>maxAge)score=Math.min(score,50);
+ const stale=age>maxAge;
+
+ if(stale)score=Math.min(score,50);
 
  let quality="Zəif";
 
- if(score>=85)quality="Çox güclü texniki uyğunluq";
+ if(score>=85)quality="Yüksək texniki uyğunluq";
  else if(score>=75)quality="Yaxşı";
  else if(score>=65)quality="Orta";
 
  return {
-  minutes,direction,score,quality,
+  minutes,
+  direction,
+  score,
+  quality,
   reason:reasons.join(" · "),
-  call,put,rsi:rv,price,e20,e50,e200,
-  macd:mv,atr:av,stale:age>maxAge
+  call,
+  put,
+  rsi:rv,
+  price,
+  e20,e50,e200,
+  macd:mv,
+  atr:av,
+  stale
  };
+
 }
 
-/* DATA MAP */
+/* ANALYSIS MAP */
 
 function runAnalysis(data){
+
  const map=[
   [1,data.one],
   [3,data.three],
@@ -857,21 +1437,30 @@ function runAnalysis(data){
   [120,data.oneTwenty]
  ];
 
- const timeframeResults=map.map(([m,c])=>analyze(c,m));
+ const timeframeResults=map.map(
+  ([m,c])=>analyze(c,m)
+ );
 
  const expiryResults=[
+
   analyze(data.one,1),
   analyze(data.two,2),
   analyze(data.three,3),
   analyze(data.five,5)
+
  ];
 
- return {timeframeResults,expiryResults};
+ return {
+  timeframeResults,
+  expiryResults
+ };
+
 }
 
-/* EXPIRY SELECTION */
+/* BEST SIGNAL */
 
 function chooseBest(results){
+
  const valid=results.filter(r=>
   r.direction!=="WAIT"&&
   r.score>=65&&
@@ -883,19 +1472,66 @@ function chooseBest(results){
  valid.sort((a,b)=>b.score-a.score);
 
  const best=valid[0];
- const same=valid.filter(r=>r.direction===best.direction);
+
+ const same=valid.filter(
+  r=>r.direction===best.direction
+ );
 
  if(same.length<2)return null;
 
  return best;
+
 }
 
-/* RENDER */
+/* PRICE */
+
+function renderPrice(candles){
+
+ const valid=candles.filter(c=>
+  Number.isFinite(c.close)
+ );
+
+ if(!valid.length)return;
+
+ const current=valid.at(-1);
+ const previous=valid.at(-2);
+
+ $("price").textContent=
+ current.close.toFixed(
+  current.close<10?5:2
+ );
+
+ if(previous){
+
+  const change=
+  ((current.close-previous.close)/
+  previous.close)*100;
+
+  $("change").textContent=
+  (change>=0?"+":"")+change.toFixed(4)+"%";
+
+  $("change").className=
+  change>=0?"green":"red";
+
+ }
+
+ const market=$("market").value;
+
+ $("source").textContent=
+ market==="CRYPTO"?"BINANCE":
+ market==="FOREX"?"TWELVE DATA":
+ "POCKET OPTION OTC";
+
+}
+
+/* EXPIRY RENDER */
 
 function renderExpiry(results){
+
  const best=chooseBest(results);
 
  $("expiryCards").innerHTML=results.map(r=>{
+
   const selected=best&&best.minutes===r.minutes;
 
   const color=r.direction==="CALL"?"green":
@@ -903,110 +1539,179 @@ function renderExpiry(results){
 
   return `
   <div class="card ${selected?"best":""}">
-   <h3>${r.minutes} DƏQİQƏ ${selected?"🏆":""}</h3>
-   <div class="direction ${color}">${r.direction}</div>
-   <div class="score">${r.score}/100</div>
-   <div class="bar"><span style="width:${r.score}%"></span></div>
-   <div class="small">${r.quality}</div>
-   <div class="metrics">
-    <span>CALL ${r.call}</span>
-    <span>PUT ${r.put}</span>
-   </div>
+
+  <h3>${r.minutes} DƏQİQƏ ${selected?"🏆":""}</h3>
+
+  <div class="direction ${color}">
+  ${r.direction}
+  </div>
+
+  <div class="score">${r.score}/100</div>
+
+  <div class="bar">
+  <span style="width:${r.score}%"></span>
+  </div>
+
+  <div class="small">${r.quality}</div>
+
+  <div class="metrics">
+  <span>CALL ${r.call}</span>
+  <span>PUT ${r.put}</span>
+  </div>
+
   </div>`;
+
  }).join("");
 
  $("comparison").innerHTML=results.map(r=>{
-  const decision=r.direction==="WAIT"?"GÖZLƏ":
-   r.score>=85?"GÜCLÜ":
-   r.score>=75?"YAXŞI":"ORTA";
+
+  const decision=r.direction==="WAIT"
+   ?"GÖZLƏ"
+   :r.score>=85?"GÜCLÜ"
+   :r.score>=75?"YAXŞI":"ORTA";
 
   const color=r.direction==="CALL"?"green":
    r.direction==="PUT"?"red":"yellow";
 
-  return `<tr>
-   <td>${r.minutes} dəq.</td>
-   <td class="${color}">${r.direction}</td>
-   <td>${r.score}/100</td>
-   <td>${decision}</td>
+  return `
+  <tr>
+  <td>${r.minutes} dəq.</td>
+  <td class="${color}">${r.direction}</td>
+  <td>${r.score}/100</td>
+  <td>${decision}</td>
   </tr>`;
+
  }).join("");
 
  if(!best){
+
   $("bestExpiry").textContent="WAIT";
   $("bestDirection").textContent="Təsdiq yoxdur";
+
   $("bestReason").textContent=
-   "Müddətlər arasında kifayət qədər uyğunluq tapılmadı.";
+  "Müddətlər arasında kifayət qədər uyğunluq yoxdur.";
 
   $("entryStatus").textContent="WAIT";
   $("entryCountdown").textContent="--";
-  $("entryMessage").textContent="Yeni təsdiq gözlənilir.";
+
+  $("entryMessage").textContent=
+  "Yeni təsdiq gözlənilir.";
 
   $("advisorDirection").textContent="WAIT";
   $("advisorScore").textContent="--";
   $("advisorExpiry").textContent="--";
 
   clearInterval(countdownTimer);
+
   return;
+
  }
 
- $("bestExpiry").textContent=best.minutes+" DƏQİQƏ";
+ $("bestExpiry").textContent=
+ best.minutes+" DƏQİQƏ";
 
  $("bestDirection").textContent=
-  best.direction+" · "+best.score+"/100";
+ best.direction+" · "+best.score+"/100";
 
  $("bestReason").textContent=
-  "Ən yüksək texniki uyğunluq. "+best.quality+
-  ". İstiqamət ən azı iki müddətlə təsdiqlənib.";
-
- $("entryStatus").textContent=best.direction;
-
- $("entryMessage").textContent=
-  "Ən uyğun müddət "+best.minutes+
-  " dəqiqədir. 10 saniyəlik qərar pəncərəsi başladı.";
+ "Ən yüksək texniki uyğunluq. "+best.quality+
+ ". İstiqamət ən azı iki müddətlə təsdiqlənib.";
 
  $("advisorDirection").textContent=best.direction;
 
  $("advisorDirection").className=
-  "score "+(best.direction==="CALL"?"green":"red");
+ "score "+(best.direction==="CALL"?"green":"red");
 
  $("advisorScore").textContent=best.score+"/100";
- $("advisorExpiry").textContent=best.minutes+" dəq.";
+
+ $("advisorExpiry").textContent=
+ best.minutes+" dəq.";
+
+ $("entryStatus").textContent=best.direction;
+
+ $("entryMessage").textContent=
+ "Ən uyğun müddət "+best.minutes+
+ " dəqiqədir. Yeni analizə qədər siqnalı izləyin.";
 
  startCountdown();
+
 }
 
+/* TIMEFRAMES */
+
 function renderTimeframes(results){
+
  $("multiResults").innerHTML=results.map(r=>{
+
   const color=r.direction==="CALL"?"green":
    r.direction==="PUT"?"red":"yellow";
 
+  const name=r.minutes===60?"1 saat":
+   r.minutes===120?"2 saat":
+   r.minutes+" dəqiqə";
+
   return `
   <div class="history-item">
-   <b>${r.minutes===60?"1 saat":
-    r.minutes===120?"2 saat":r.minutes+" dəqiqə"}</b>
-   <span class="${color}">${r.direction}</span><br>
-   Texniki uyğunluq: ${r.score}/100 ·
-   RSI: ${r.rsi===null?"--":r.rsi.toFixed(1)}<br>
-   CALL: ${r.call} | PUT: ${r.put}<br>
-   ${r.reason||"Təsdiq yoxdur"}
+
+  <b>${name}</b>
+
+  <span class="${color}">
+  ${r.direction}
+  </span>
+
+  <br>
+
+  Texniki uyğunluq: ${r.score}/100
+
+  · RSI: ${r.rsi===undefined||r.rsi===null
+   ?"--":r.rsi.toFixed(1)}
+
+  <br>
+
+  CALL: ${r.call} | PUT: ${r.put}
+
+  <br>
+
+  ${r.reason||"Təsdiq yoxdur"}
+
   </div>`;
+
  }).join("");
 
  const top=results.filter(r=>
-  r.direction!=="WAIT"&&r.score>=65
+  r.direction!=="WAIT"&&
+  r.score>=65&&
+  !r.stale
  ).sort((a,b)=>b.score-a.score).slice(0,5);
 
- $("topSignals").innerHTML=top.length?top.map(r=>`
-  <div class="history-item">
-   <b>${r.minutes} dəqiqə</b>
-   <span class="${r.direction==="CALL"?"green":"red"}">${r.direction}</span><br>
-   Texniki bal: ${r.score}/100 · RSI:
-   ${r.rsi===null?"--":r.rsi.toFixed(1)}
-  </div>`).join(""):"Uyğun siqnal yoxdur.";
+ $("topSignals").innerHTML=top.length
+ ?top.map(r=>`
+
+ <div class="history-item">
+
+ <b>${r.minutes} dəqiqə</b>
+
+ <span class="${r.direction==="CALL"?"green":"red"}">
+ ${r.direction}
+ </span>
+
+ <br>
+
+ Texniki bal: ${r.score}/100
+
+ </div>
+
+ `).join("")
+ :"Uyğun siqnal yoxdur.";
+
 }
 
+/* DETAILS */
+
 function renderDetails(results){
+
  const selected=Number($("timeframe").value);
+
  const r=results.find(x=>x.minutes===selected);
 
  $("advisorTF").textContent=selected+" dəq.";
@@ -1014,58 +1719,285 @@ function renderDetails(results){
  if(!r)return;
 
  $("advisorMessage").textContent=
-  r.direction==="WAIT"
-  ?"Seçilmiş timeframe təsdiqlənməyib. Gözlə."
-  :r.direction+" siqnalı seçilmiş timeframe-də analiz edilib. Broker qrafikində qiyməti yoxla. Bu düymələr sifariş göndərmir.";
+ r.direction==="WAIT"
+ ?"Seçilmiş timeframe təsdiqlənməyib."
+ :r.direction+
+ " siqnalı seçilmiş timeframe-də analiz edilib. Broker qrafikində qiyməti yoxla.";
+
 }
 
-/* TIMER */
+/* ENTRY TIMER */
 
 function startCountdown(){
+
  clearInterval(countdownTimer);
 
  let seconds=10;
+
  $("entryCountdown").textContent="10";
 
  countdownTimer=setInterval(()=>{
+
   seconds--;
+
   $("entryCountdown").textContent=seconds;
 
   if(seconds<=0){
+
    clearInterval(countdownTimer);
 
-   $("entryStatus").textContent="PƏNCƏRƏ BAĞLANDI";
+   $("entryStatus").textContent=
+   "PƏNCƏRƏ BAĞLANDI";
+
    $("entryMessage").textContent=
-    "10 saniyə bitdi. Köhnə siqnala əsaslanma; yenidən analiz et.";
+   "Köhnə siqnala əsaslanma. Yenidən analiz et.";
+
   }
+
  },1000);
+
 }
 
 /* HISTORY */
 
-function saveHistory(expiryResults){
- const best=chooseBest(expiryResults);
+function saveHistory(results){
+
+ const best=chooseBest(results);
+
  const now=new Date().toLocaleTimeString();
 
  const record=best
-  ?`${now} | ${$("asset").value} | ${best.minutes} dəq. | ${best.direction} | ${best.score}`
-  :`${now} | ${$("asset").value} | WAIT | Təsdiq yoxdur`;
+ ?`${now} | ${$("market").value} | ${$("asset").value} | ${best.minutes} dəq. | ${best.direction} | ${best.score}/100`
+ :`${now} | ${$("market").value} | ${$("asset").value} | WAIT`;
 
  historyItems.unshift(record);
- historyItems=historyItems.slice(0,20);
+
+ historyItems=historyItems.slice(0,30);
 
  $("history").innerHTML=historyItems.map(x=>
-  `<div class="history-item">${x}</div>`
+ `<div class="history-item">${x}</div>`
  ).join("");
+
 }
 
 /* AUTO REFRESH */
 
 function getRefreshInterval(){
+
  return $("market").value==="CRYPTO"
-  ?15000
-  :60000;
+ ?15000
+ :$("market").value==="FOREX"
+ ?60000
+ :5000;
+
 }
 
 function updateAutoInfo(){
- const enabled=$
+
+ const enabled=$("autoRefresh").checked;
+
+ $("autoInfo").textContent=enabled
+ ?$("market").value==="OTC"
+ ?"OTC məlumatı 5 saniyədən bir yoxlanacaq. Yeni şam gəlməsə analiz yenilənməyəcək."
+ :"Avtomatik skan aktivdir. Növbəti yenilənmə gözlənilir."
+ :"Avtomatik yenilənmə söndürülüb.";
+
+}
+
+function stopAutoTimer(){
+
+ if(autoRefreshTimer){
+  clearTimeout(autoRefreshTimer);
+  autoRefreshTimer=null;
+ }
+
+}
+
+function scheduleAutoRefresh(){
+
+ stopAutoTimer();
+
+ if(!$("autoRefresh").checked||!running)return;
+
+ const delay=getRefreshInterval();
+
+ $("autoInfo").textContent=
+ "Növbəti skan: "+Math.round(delay/1000)+" saniyə sonra.";
+
+ autoRefreshTimer=setTimeout(async()=>{
+
+  if(!running)return;
+
+  await analyzeNow();
+
+  scheduleAutoRefresh();
+
+ },delay);
+
+}
+
+/* MAIN ANALYSIS */
+
+async function analyzeNow(){
+
+ if(isAnalyzing)return;
+
+ isAnalyzing=true;
+
+ const analysisId=++currentAnalysisId;
+
+ if(activeController){
+  activeController.abort();
+ }
+
+ activeController=new AbortController();
+
+ $("refreshButton").disabled=true;
+
+ $("systemStatus").textContent="SCANNING";
+
+ $("connectionStatus").textContent=
+ "Bazar məlumatları alınır və analiz edilir...";
+
+ try{
+
+  const data=await getMarketData();
+
+  if(analysisId!==currentAnalysisId)return;
+
+  const current=data.one;
+
+  if(!current||current.length<35){
+
+   throw new Error("Kifayət qədər şam məlumatı yoxdur.");
+
+  }
+
+  renderPrice(current);
+
+  const results=runAnalysis(data);
+
+  latestResults=results;
+
+  renderExpiry(results.expiryResults);
+
+  renderTimeframes(results.timeframeResults);
+
+  renderDetails(results.timeframeResults);
+
+  saveHistory(results.expiryResults);
+
+  lastSuccessfulUpdate=new Date();
+
+  $("dataStatus").textContent=
+  "Məlumat uğurla alındı. Şam sayı: "+current.length;
+
+  $("refreshStatus").textContent=
+  "Son yenilənmə: "+
+  lastSuccessfulUpdate.toLocaleTimeString();
+
+  $("connectionStatus").textContent=
+  "Analiz tamamlandı. "+$("asset").value;
+
+  $("systemStatus").textContent="SYSTEM LIVE";
+
+ }catch(error){
+
+  if(error.name==="AbortError")return;
+
+  $("systemStatus").textContent="DATA ERROR";
+
+  $("connectionStatus").textContent=
+  error.message;
+
+  $("dataStatus").textContent=
+  "Məlumat alınmadı: "+error.message;
+
+ }finally{
+
+  isAnalyzing=false;
+
+  $("refreshButton").disabled=false;
+
+  if($("autoRefresh").checked){
+   updateAutoInfo();
+  }
+
+ }
+
+}
+
+/* BUTTONS */
+
+$("refreshButton").addEventListener(
+ "click",analyzeNow
+);
+
+$("stopButton").addEventListener("click",()=>{
+
+ running=false;
+
+ stopAutoTimer();
+
+ clearInterval(countdownTimer);
+
+ if(activeController){
+  activeController.abort();
+ }
+
+ $("autoRefresh").checked=false;
+
+ updateAutoInfo();
+
+ $("systemStatus").textContent="STOPPED";
+
+ $("connectionStatus").textContent=
+ "Skan dayandırıldı.";
+
+});
+
+$("autoRefresh").addEventListener("change",()=>{
+
+ running=true;
+
+ if($("autoRefresh").checked){
+
+  analyzeNow();
+  scheduleAutoRefresh();
+
+ }else{
+
+  stopAutoTimer();
+
+ }
+
+ updateAutoInfo();
+
+});
+
+/* CALL / PUT */
+
+$("callButton").addEventListener("click",()=>{
+
+ $("advisorMessage").textContent=
+ "CALL seçildi. Bu düymə Pocket Option-a sifariş göndərmir.";
+
+});
+
+$("putButton").addEventListener("click",()=>{
+
+ $("advisorMessage").textContent=
+ "PUT seçildi. Bu düymə Pocket Option-a sifariş göndərmir.";
+
+});
+
+/* START */
+
+loadAssets();
+
+updateAutoInfo();
+
+</script>
+
+</body>
+</html>
