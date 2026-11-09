@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="az">
+<!DOCTYPE html><html lang="az">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#07101e">
 <link rel="manifest" href="./manifest.json">
-<title>POCKET OPTION AI V12 PRO</title>
-
-<style>
-
+<title>POCKET OPTION AI V13 FAST ENTRY</title><style>
 :root{
 --bg:#07101e;
 --panel:#101d30;
@@ -21,469 +17,122 @@
 --yellow:#ffc857;
 --blue:#45adff;
 }
-
-/* ENTRY TIMER */
-
+*{box-sizing:border-box}
+body{
+margin:0;padding:10px;background:var(--bg);
+color:var(--text);font-family:Arial,sans-serif
+}
+.container{max-width:1100px;margin:auto}
+.header{text-align:center;padding:16px 5px 18px}
+h1{font-size:22px;margin:0;color:var(--blue)}
+.subtitle{font-size:10px;color:var(--muted);margin-top:7px}
+.live-indicator{
+display:inline-flex;align-items:center;gap:7px;
+padding:6px 12px;border:1px solid var(--line);
+border-radius:20px;font-size:11px;margin-top:12px;
+background:var(--panel2)
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.dot.active{background:var(--green);box-shadow:0 0 9px var(--green)}
+.panel{
+background:var(--panel);border:1px solid var(--line);
+border-radius:13px;padding:14px;margin-bottom:12px
+}
+.panel-title{font-size:14px;font-weight:bold;margin:0 0 13px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+select{
+width:100%;padding:12px;border-radius:8px;
+border:1px solid var(--line);background:#091525;
+color:white;font-size:14px;margin-bottom:12px
+}
+button{border:0;border-radius:9px;padding:13px;font-size:13px;font-weight:bold}
+button:disabled{opacity:.4}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.start{background:var(--green);color:#041a14}
+.stop{background:var(--red);color:white}
+.blue-btn{background:var(--blue);color:#041525}
+.status{
+padding:12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:8px;font-size:12px;color:var(--yellow);
+line-height:1.6;margin-top:12px
+}
+.timeframes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:8px 0 14px}
+.tf{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:10px 3px}
+.tf.active{background:#17436a;border-color:var(--blue);color:white}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{
+background:var(--panel2);border:1px solid var(--line);
+border-radius:9px;padding:13px 4px;text-align:center;min-width:0
+}
+.stat strong{display:block;font-size:18px;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:9px;color:var(--muted)}
+.price-large{color:var(--blue)}
+.call-text{color:var(--green)}
+.put-text{color:var(--red)}
+.wait-text{color:var(--yellow)}
 .entry-panel{
 background:linear-gradient(145deg,#102944,#091525);
-border:1px solid var(--blue);
-border-radius:13px;
-padding:17px;
-margin-bottom:13px;
-text-align:center;
+border:1px solid var(--blue);border-radius:13px;
+padding:16px;margin-bottom:12px;text-align:center
 }
-
-.entry-title{
-font-size:14px;
-font-weight:bold;
-color:var(--blue);
-margin-bottom:12px;
-}
-
-.entry-status{
-font-size:21px;
-font-weight:bold;
-margin:12px 0;
-}
-
-.entry-count{
-font-size:42px;
-font-weight:bold;
-color:var(--green);
-margin:8px 0;
-}
-
-.entry-direction{
-font-size:17px;
-font-weight:bold;
-margin:8px 0;
-}
-
-.entry-info{
-font-size:11px;
-color:var(--muted);
-line-height:1.8;
-}
-
+.entry-title{font-size:13px;font-weight:bold;color:var(--blue)}
+.entry-status{font-size:17px;font-weight:bold;margin:12px 0}
+.entry-count{font-size:48px;font-weight:bold;color:var(--green)}
+.entry-direction{font-size:19px;font-weight:bold;margin:8px 0}
+.entry-info{font-size:11px;color:var(--muted);line-height:1.9}
 .entry-wait{color:var(--yellow)}
 .entry-ready{color:var(--green)}
 .entry-danger{color:var(--red)}
 .entry-blue{color:var(--blue)}
-
-/* GENERAL DESIGN */
-
-*{box-sizing:border-box}
-
-body{
-margin:0;
-padding:12px;
-background:var(--bg);
-color:var(--text);
-font-family:Arial,sans-serif;
-}
-
-.container{
-max-width:1100px;
-margin:auto;
-}
-
-.header{
-text-align:center;
-padding:16px 5px 20px;
-}
-
-h1{
-font-size:24px;
-margin:0;
-color:var(--blue);
-letter-spacing:.5px;
-}
-
-.subtitle{
-font-size:11px;
-color:var(--muted);
-margin-top:7px;
-}
-
-.live-indicator{
-display:inline-flex;
-align-items:center;
-gap:7px;
-padding:6px 12px;
-border:1px solid var(--line);
-border-radius:20px;
-font-size:11px;
-margin-top:12px;
-background:var(--panel2);
-}
-
-.dot{
-width:8px;
-height:8px;
-border-radius:50%;
-background:var(--red);
-}
-
-.dot.active{
-background:var(--green);
-box-shadow:0 0 9px var(--green);
-}
-
-.panel{
-background:var(--panel);
-border:1px solid var(--line);
-border-radius:13px;
-padding:15px;
-margin-bottom:13px;
-}
-
-.panel-title{
-font-size:14px;
-font-weight:bold;
-margin:0 0 14px;
-color:#d9eaff;
-}
-
-label{
-display:block;
-font-size:12px;
-color:var(--muted);
-margin-bottom:7px;
-}
-
-select{
-width:100%;
-padding:12px;
-border-radius:8px;
-border:1px solid var(--line);
-background:#091525;
-color:white;
-font-size:14px;
-margin-bottom:13px;
-outline:none;
-}
-
-select:focus{
-border-color:var(--blue);
-}
-
-.buttons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-button{
-border:0;
-border-radius:9px;
-padding:13px;
-font-size:13px;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:active{
-transform:scale(.98);
-}
-
-.start{
-background:var(--green);
-color:#041a14;
-}
-
-.stop{
-background:var(--red);
-color:white;
-}
-
-.status{
-padding:12px;
-background:var(--panel2);
-border:1px solid var(--line);
-border-radius:8px;
-font-size:12px;
-color:var(--yellow);
-line-height:1.6;
-margin-top:13px;
-}
-
-.timeframes{
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:7px;
-margin-bottom:15px;
-}
-
-.tf{
-background:var(--panel2);
-border:1px solid var(--line);
-color:var(--muted);
-padding:10px 3px;
-font-size:12px;
-}
-
-.tf.active{
-background:#17436a;
-border-color:var(--blue);
-color:white;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:9px;
-}
-
-.stat{
-background:var(--panel2);
-border:1px solid var(--line);
-border-radius:9px;
-padding:14px 5px;
-text-align:center;
-min-width:0;
-}
-
-.stat strong{
-display:block;
-font-size:19px;
-margin-bottom:6px;
-overflow:hidden;
-text-overflow:ellipsis;
-}
-
-.stat span{
-font-size:10px;
-color:var(--muted);
-}
-
-.call-text{color:var(--green)}
-.put-text{color:var(--red)}
-.wait-text{color:var(--yellow)}
-
-.price-large{
-color:var(--blue);
-}
-
-.api-panel{
-margin-top:12px;
-padding:13px;
-background:var(--panel2);
-border:1px solid var(--line);
-border-radius:9px;
-}
-
-.api-heading{
-font-size:11px;
-color:var(--muted);
-}
-
-.api-count{
-font-size:31px;
-font-weight:bold;
-color:var(--green);
-margin:5px 0;
-}
-
-.api-details{
-font-size:11px;
-color:var(--muted);
-line-height:1.9;
-}
-
-.progress{
-height:5px;
-background:#1d3048;
-border-radius:10px;
-overflow:hidden;
-margin-top:10px;
-}
-
-.progress-bar{
-height:100%;
-width:100%;
-background:var(--green);
-transition:width 1s linear;
-}
-
 .signal{
-border-radius:9px;
-padding:13px;
-background:var(--panel2);
-border:1px solid var(--line);
-border-left:4px solid var(--yellow);
-margin-bottom:8px;
+border-radius:9px;padding:12px;background:var(--panel2);
+border:1px solid var(--line);border-left:4px solid var(--yellow);
+margin-bottom:8px
 }
-
-.signal.call{
-border-left-color:var(--green);
-}
-
-.signal.put{
-border-left-color:var(--red);
-}
-
-.signal-head{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:8px;
-font-size:13px;
-font-weight:bold;
-margin-bottom:8px;
-}
-
-.signal-details{
-font-size:11px;
-color:var(--muted);
-line-height:1.8;
-}
-
-.badge{
-padding:5px 9px;
-border-radius:6px;
-font-size:11px;
-background:#192c42;
-}
-
-.badge.call{
-color:var(--green);
-}
-
-.badge.put{
-color:var(--red);
-}
-
-.badge.wait{
-color:var(--yellow);
-}
-
-.confidence{
-height:5px;
-background:#24364e;
-border-radius:10px;
-margin-top:9px;
-overflow:hidden;
-}
-
-.confidence-fill{
-height:100%;
-border-radius:10px;
-background:var(--blue);
-}
-
-.small{
-font-size:11px;
-color:var(--muted);
-line-height:1.7;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-font-size:11px;
-min-width:400px;
-}
-
-td,th{
-padding:10px 6px;
-border-bottom:1px solid var(--line);
-text-align:left;
-white-space:nowrap;
-}
-
-th{
-color:var(--muted);
-}
-
-#history{
-max-height:320px;
-overflow:auto;
-}
-
-.table-wrap{
-overflow-x:auto;
-}
-
-.notice{
-font-size:11px;
-color:var(--muted);
-line-height:1.8;
-}
-
-.section-divider{
-height:1px;
-background:var(--line);
-margin:13px 0;
-}
-
-.footer{
-text-align:center;
-font-size:10px;
-color:#637991;
-padding:15px 0;
-}
-
+.signal.call{border-left-color:var(--green)}
+.signal.put{border-left-color:var(--red)}
+.signal-head{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:bold;margin-bottom:8px}
+.signal-details{font-size:11px;color:var(--muted);line-height:1.9}
+.badge{padding:5px 9px;border-radius:6px;font-size:11px;background:#192c42}
+.badge.call{color:var(--green)}
+.badge.put{color:var(--red)}
+.badge.wait{color:var(--yellow)}
+.confidence{height:5px;background:#24364e;border-radius:10px;margin-top:9px;overflow:hidden}
+.confidence-fill{height:100%;background:var(--blue)}
+.small,.notice{font-size:11px;color:var(--muted);line-height:1.8}
+.section-divider{height:1px;background:var(--line);margin:13px 0}
+.api-panel{padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;margin-top:12px}
+.api-count{font-size:25px;font-weight:bold;color:var(--green);margin:5px 0}
+#chart{height:420px;width:100%;border-radius:9px;overflow:hidden;background:#091525}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:400px}
+td,th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--muted)}
+.table-wrap{overflow-x:auto}
+.footer{text-align:center;font-size:10px;color:#637991;padding:15px}
 @media(max-width:600px){
-
-body{padding:8px}
-
-h1{font-size:20px}
-
-.timeframes{
-grid-template-columns:repeat(4,1fr);
+body{padding:7px}h1{font-size:19px}
+.panel{padding:11px}
+#chart{height:350px}
+.stat strong{font-size:15px}
 }
-
-.stat strong{
-font-size:16px;
-}
-
-.panel{
-padding:12px;
-}
-
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="header">
-
-<h1>⚡ POCKET OPTION AI V12 PRO</h1>
-
-<div class="subtitle">
-PROFESSIONAL MULTI-TIMEFRAME TRADING TERMINAL
-</div>
-
+</style></head><body>
+<div class="container"><div class="header">
+<h1>⚡ POCKET OPTION AI V13</h1>
+<div class="subtitle">FAST ENTRY · MANUAL AI SCANNER · LIVE CHART</div>
 <div class="live-indicator">
 <span class="dot" id="liveDot"></span>
-<span id="liveLabel">SYSTEM OFFLINE</span>
+<span id="liveLabel">SYSTEM READY</span>
 </div>
-
-</div>
-
-
-<!-- CONTROL PANEL -->
-
-<div class="panel">
-
-<div class="panel-title">⚙️ TRADING CONTROL CENTER</div>
-
-<label>Bazar seçimi</label>
-
+</div><div class="panel">
+<div class="panel-title">⚙️ TRADING CONTROL CENTER</div><label>Bazar</label>
 <select id="market">
+
 <option value="CRYPTO">CRYPTO — BINANCE</option>
 <option value="FOREX">FOREX — TWELVE DATA</option>
-</select>
-
-<label>Aktiv / Valyuta cütü</label>
-
+</select><label>Aktiv / Valyuta cütü</label>
 <select id="asset"></select>
 
-<label>Əsas analiz timeframe</label>
+<label>Analiz timeframe</label>
 
 <div class="timeframes" id="timeframes">
 <button class="tf active" data-tf="60">1m</button>
@@ -493,2437 +142,655 @@ PROFESSIONAL MULTI-TIMEFRAME TRADING TERMINAL
 <button class="tf" data-tf="1800">30m</button>
 <button class="tf" data-tf="3600">1h</button>
 <button class="tf" data-tf="7200">2h</button>
+</div><div class="buttons">
+<button class="start" id="analyzeButton">⚡ ANALİZ ET</button>
+<button class="stop" id="stopButton">■ DAYANDIR</button>
+</div><div class="status" id="status">
+Sistem hazırdır. Aktiv və timeframe seçərək ANALİZ ET düyməsinə bas.
 </div>
-
-<div class="buttons">
-
-<button class="start" id="liveStart">
-▶ START LIVE
-</button>
-
-<button class="stop" id="liveStop">
-■ STOP
-</button>
-
+</div><div class="panel">
+<div class="panel-title">📈 LIVE TRADINGVIEW CHART</div>
+<div id="chart"></div>
+<div class="small" style="margin-top:8px">
+Qeyd: Qrafik TradingView-dən, skaner məlumatları isə Binance və Forex serverindən alınır. OTC qiymətləri ilə eyni olmaya bilər.
 </div>
-
-<div class="status" id="status">
-V12 PRO hazırdır. START düyməsinə basın.
-</div>
-
-</div>
-
-
-<!-- MARKET -->
-
-<div class="panel">
-
+</div><div class="panel">
 <div class="panel-title">📊 LIVE MARKET MONITOR</div>
-
 <div class="grid">
-
-<div class="stat">
-<strong class="price-large" id="price">---</strong>
-<span>CANLI QİYMƏT</span>
+<div class="stat"><strong class="price-large" id="price">---</strong><span>SON QİYMƏT</span></div>
+<div class="stat"><strong id="change">---</strong><span>ŞAM DƏYİŞMƏSİ</span></div>
+<div class="stat"><strong id="source">OFF</strong><span>MƏLUMAT MƏNBƏYİ</span></div>
 </div>
-
-<div class="stat">
-<strong id="change">---</strong>
-<span>QİYMƏT DƏYİŞMƏSİ</span>
-</div>
-
-<div class="stat">
-<strong id="source">OFF</strong>
-<span>MƏLUMAT MƏNBƏYİ</span>
-</div>
-
-</div>
-
 <div class="api-panel">
-
-<div class="api-heading">
-⏱ API / LIVE UPDATE COUNTDOWN
-</div>
-
-<div class="api-count" id="apiCountdown">60</div>
-
-<div class="api-details">
-
-Son yenilənmə:
-<span id="lastUpdate">---</span>
-
-<br>
-
-API statusu:
-<span id="apiState">Gözləyir</span>
-
-<br>
-
-Növbəti yenilənmə:
-<span id="nextUpdate">---</span>
-
-</div>
-
-<div class="progress">
-<div class="progress-bar" id="apiProgress"></div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- AI ENTRY TIMER -->
-
-<div class="entry-panel">
-
-    <div class="entry-title">
-        ⏱ AI ENTRY TIMER — GİRİŞ VAXTI
-    </div>
-
-    <div class="entry-status entry-wait" id="entryStatus">
-        ŞAMIN BAĞLANMASINI GÖZLƏ
-    </div>
-
-    <div class="entry-count" id="entryCountdown">
-        180
-    </div>
-
-    <div class="entry-direction" id="entryDirection">
-        WAIT
-    </div>
-
-    <div class="entry-info">
-
-        Seçilmiş timeframe:
-        <span id="entryTF">1 dəqiqə</span>
-
-        <br>
-
-        Tövsiyə olunan əməliyyat müddəti:
-        <span id="entryDuration">1 dəqiqə</span>
-
-        <br>
-
-        Giriş pəncərəsi:
-        <span id="entryWindow">Gözlənilir</span>
-
-    </div>
-
-</div>
-
-
-<!-- AI TRADE EXECUTION ADVISOR -->
-
-<div class="panel" id="tradeAdvisor">
-
-    <div class="panel-title">
-        🎯 AI TRADE EXECUTION ADVISOR
-    </div>
-
-    <div class="grid">
-
-        <div class="stat">
-            <strong id="tradeDirection" class="wait-text">
-                WAIT
-            </strong>
-            <span>ƏMƏLİYYAT İSTİQAMƏTİ</span>
-        </div>
-
-        <div class="stat">
-            <strong id="tradeScore">--</strong>
-            <span>AI TEXNİKİ BALI</span>
-        </div>
-
-        <div class="stat">
-            <strong id="recommendedExpiry">--</strong>
-            <span>TÖVSİYƏ EDİLƏN MÜDDƏT</span>
-        </div>
-
-    </div>
-
-    <div class="section-divider"></div>
-
-    <label>Əməliyyat müddəti</label>
-
-    <select id="expirySelect">
-        <option value="5">5 saniyə</option>
-        <option value="10">10 saniyə</option>
-        <option value="15">15 saniyə</option>
-        <option value="30">30 saniyə</option>
-        <option value="60" selected>1 dəqiqə</option>
-        <option value="180">3 dəqiqə</option>
-        <option value="300">5 dəqiqə</option>
-    </select>
-
-    <div class="buttons">
-
-        <button id="callButton" class="start" disabled>
-            ▲ CALL (AL)
-        </button>
-
-        <button id="putButton" class="stop" disabled>
-            ▼ PUT (SAT)
-        </button>
-
-    </div>
-
-    <div class="status" id="advisorStatus">
-        Canlı analiz gözlənilir.
-    </div>
-
-    <div class="small" style="margin-top:10px">
-        Analiz timeframe-i və əməliyyat müddəti ayrıdır.
-        CALL/PUT düymələri brokerə sifariş göndərmir.
-        Əməliyyatı Pocket Option-da özün əl ilə açmalısan.
-        AI balı qazanc ehtimalı və ya zəmanəti deyil.
-    </div>
-
-</div>
-
-
-<!-- AI MARKET SUMMARY -->
-
-<div class="panel">
-
-    <div class="panel-title">
-        🧠 AI MARKET SUMMARY
-    </div>
-
-    <div class="grid">
-
-        <div class="stat">
-            <strong id="calls" class="call-text">0</strong>
-            <span>CALL</span>
-        </div>
-
-        <div class="stat">
-            <strong id="puts" class="put-text">0</strong>
-            <span>PUT</span>
-        </div>
-
-        <div class="stat">
-            <strong id="waits" class="wait-text">0</strong>
-            <span>WAIT</span>
-        </div>
-
-    </div>
-
-    <div class="section-divider"></div>
-
-    <div id="selectedSignal" class="signal">
-
-        <div class="signal-head">
-            <span>SEÇİLMİŞ TIMEFRAME</span>
-            <span class="badge wait">WAIT</span>
-        </div>
-
-        <div class="signal-details">
-            Analiz gözləyir.
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- MULTI TIMEFRAME -->
-
-<div class="panel">
-
-<div class="panel-title">📈 MULTI-TIMEFRAME AI SCANNER</div>
-
-<div id="results">
-
+<div class="small">SON MƏLUMAT YENİLƏNMƏSİ</div>
+<div class="api-count" id="apiCountdown">---</div>
 <div class="small">
-Canlı analiz gözləyir.
+API statusu: <span id="apiState">Gözləyir</span><br>
+Son sorğu: <span id="lastUpdate">---</span>
 </div>
-
 </div>
-
+</div><div class="entry-panel">
+<div class="entry-title">⏱ FAST ENTRY AI — QƏRAR PƏNCƏRƏSİ</div>
+<div class="entry-status entry-wait" id="entryStatus">ANALİZ GÖZLƏNİLİR</div>
+<div class="entry-count" id="entryCountdown">10</div>
+<div class="entry-direction" id="entryDirection">WAIT</div>
+<div class="entry-info">
+Seçilmiş timeframe: <span id="entryTF">1 dəqiqə</span><br>
+Tövsiyə edilən müddət: <span id="entryDuration">---</span><br>
+Qərar pəncərəsi: 10 saniyə
 </div>
-
-
-<!-- TOP SIGNALS -->
-
-<div class="panel">
-
-<div class="panel-title">⭐ TOP 5 STRONG SIGNALS</div>
-
-<div id="topSignals" class="small">
-Hələ güclü siqnal yoxdur.
+</div><div class="panel">
+<div class="panel-title">🎯 AI TRADE ADVISOR</div>
+<div class="grid">
+<div class="stat"><strong id="tradeDirection" class="wait-text">WAIT</strong><span>İSTİQAMƏT</span></div>
+<div class="stat"><strong id="tradeScore">--</strong><span>TEXNİKİ BAL</span></div>
+<div class="stat"><strong id="recommendedExpiry">--</strong><span>ƏMƏLİYYAT MÜDDƏTİ</span></div>
 </div>
-
+<div class="section-divider"></div>
+<label>Əməliyyat müddəti</label>
+<select id="expirySelect">
+<option value="5">5 saniyə</option>
+<option value="10">10 saniyə</option>
+<option value="15">15 saniyə</option>
+<option value="30">30 saniyə</option>
+<option value="60" selected>1 dəqiqə</option>
+<option value="120">2 dəqiqə</option>
+<option value="180">3 dəqiqə</option>
+<option value="300">5 dəqiqə</option>
+<option value="600">10 dəqiqə</option>
+</select>
+<div class="buttons">
+<button id="callButton" class="start" disabled>▲ CALL</button>
+<button id="putButton" class="stop" disabled>▼ PUT</button>
 </div>
-
-
-<!-- HISTORY -->
-
-<div class="panel">
-
+<div class="status" id="advisorStatus">Əl ilə analiz gözlənilir.</div>
+<div class="small" style="margin-top:9px">
+Bu düymələr brokerə sifariş göndərmir. Əməliyyatı Pocket Option-da özün açmalısan. AI balı qazanc ehtimalı və zəmanəti deyil.
+</div>
+</div><div class="panel">
+<div class="panel-title">🧠 FAST ENTRY MULTI-TIMEFRAME</div>
+<div id="results" class="small">Analiz gözlənilir.</div>
+</div><div class="panel">
+<div class="panel-title">⭐ TOP SIGNALS</div>
+<div id="topSignals" class="small">Hələ siqnal yoxdur.</div>
+</div><div class="panel">
 <div class="panel-title">📜 SIGNAL HISTORY</div>
-
-<div id="history">
-
-<div class="small">
-Tarixçə boşdur.
-</div>
-
-</div>
-
-</div>
-
-
-<!-- INFO -->
-
-<div class="panel">
-
+<div id="history" class="small">Tarixçə boşdur.</div>
+</div><div class="panel">
 <div class="panel-title">ℹ️ SYSTEM INFORMATION</div>
-
 <div class="notice">
-
-• Crypto məlumatları Binance API və WebSocket vasitəsilə alınır.
-<br>
-• Analiz timeframe-ləri: 1m, 3m, 5m, 10m, 30m, 1h, 2h.
-<br>
-• Forex məlumatları Render backend və Twelve Data vasitəsilə alınır.
-<br>
-• Forex yenilənməsi təxminən 60 saniyədən bir həyata keçirilir.
-<br>
-• Forex 3m, 5m və 10m şamları 1m məlumatlardan yaradılır.
-<br>
-• Saniyəlik analiz bu versiyada aktiv deyil.
-
-<br>
-
-function formatExpiry(seconds){
-
-    if(seconds < 60){
-        return seconds + " saniyə";
-    }
-
-    const minutes = Math.floor(seconds / 60);
-
-    return minutes + " dəqiqə";
-}
-
-
-function updateTradeAdvisor(){
-
-const result=lastResults.find(
-x=>x.tf===selectedTF
-);
-
-if(!result){
-
-$("tradeDirection").textContent="WAIT";
-$("tradeScore").textContent="--";
-$("recommendedExpiry").textContent="--";
-
-$("callButton").disabled=true;
-$("putButton").disabled=true;
-
-return;
-
-}
-
-const side=result.side;
-
-$("tradeDirection").textContent=side;
-$("tradeScore").textContent=result.score+"/100";
-
-$("tradeDirection").className=
-side==="CALL"?"call-text":
-side==="PUT"?"put-text":"wait-text";
-
-const expiry=recommendExpiry(result);
-
-if(expiry===null){
-
-$("recommendedExpiry").textContent="TÖVSİYƏ YOXDUR";
-
-$("advisorStatus").textContent=
-"WAIT — güclü və təsdiqlənmiş siqnal yoxdur. Əməliyyat açma.";
-
-$("callButton").disabled=true;
-$("putButton").disabled=true;
-
-return;
-
-}
-
-$("recommendedExpiry").textContent=
-formatExpiry(expiry);
-
-$("expirySelect").value=String(expiry);
-
-$("advisorStatus").textContent=
-"AI "+side+" istiqamətini müəyyən etdi. "+
-"Analiz: "+tfNames[result.tf]+
-". Tövsiyə edilən əməliyyat müddəti: "+
-formatExpiry(expiry)+
-". Girişdən əvvəl yeni şamda siqnalı yenidən yoxla.";
-
-$("callButton").disabled=
-!running || side!=="CALL";
-
-$("putButton").disabled=
-!running || side!=="PUT";
-
-}
-
-• AI analiz EMA20/50/200, RSI, MACD, Bollinger Bands və ATR indikatorlarından istifadə edir.
-
-<br><br>
-
-• AI balı statistik uyğunluq göstəricisidir, qazanc ehtimalı və ya zəmanəti deyil.
-
+• Crypto məlumatları Binance API-dən alınır.<br>
+• Forex məlumatları mövcud Render backend vasitəsilə alınır.<br>
+• Analiz yalnız düyməyə basdıqda aparılır.<br>
+• Avtomatik təkrar skan aktiv deyil.<br>
+• FAST ENTRY 1m, 3m və 5m timeframe-lərini müqayisə edir.<br>
+• 10 saniyə qərar pəncərəsidir, əməliyyat müddəti deyil.<br>
+• OTC məlumatı bu versiyada birbaşa oxunmur.
 </div>
-
-</div>
-
-<div class="footer">
-POCKET OPTION LIVE AI V12 PRO
-</div>
-
-</div>
-
-
-<script>
-
+</div><div class="footer">POCKET OPTION AI V13 FAST ENTRY</div>
+</div><script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-
-const BACKEND_URL =
-"https://pocket-option-ai-v11.onrender.com";
-
-
-/* ASSETS */
+const BACKEND_URL = "https://pocket-option-ai-v11.onrender.com";
 
 const cryptoAssets = [
-"BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT",
-"XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT",
-"LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT",
-"NEARUSDT","APTUSDT","ARBUSDT","OPUSDT",
-"SUIUSDT","INJUSDT","FETUSDT","ATOMUSDT",
-"UNIUSDT","AAVEUSDT","ETCUSDT","FILUSDT",
-"ICPUSDT","TIAUSDT","JUPUSDT","ENAUSDT",
-"SEIUSDT","RENDERUSDT"
+"BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT",
+"ADAUSDT","DOGEUSDT","AVAXUSDT","LINKUSDT","DOTUSDT",
+"LTCUSDT","TRXUSDT","NEARUSDT","APTUSDT","ARBUSDT",
+"OPUSDT","SUIUSDT","INJUSDT","FETUSDT","ATOMUSDT",
+"UNIUSDT","AAVEUSDT","ETCUSDT","FILUSDT","ICPUSDT",
+"TIAUSDT","JUPUSDT","ENAUSDT","SEIUSDT","RENDERUSDT"
 ];
 
 const forexAssets = [
-"EUR/USD","GBP/USD","USD/JPY",
-"AUD/USD","USD/CAD","USD/CHF",
-"NZD/USD","EUR/GBP","EUR/JPY"
+"EUR/USD","GBP/USD","USD/JPY","AUD/USD",
+"USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"
 ];
 
-const timeframes = [
-60,180,300,600,1800,3600,7200
-];
+const timeframes = [60,180,300,600,1800,3600,7200];
 
 const tfNames = {
-60:"1 dəqiqə",
-180:"3 dəqiqə",
-300:"5 dəqiqə",
-600:"10 dəqiqə",
-1800:"30 dəqiqə",
-3600:"1 saat",
-7200:"2 saat"
+60:"1 dəqiqə",180:"3 dəqiqə",300:"5 dəqiqə",
+600:"10 dəqiqə",1800:"30 dəqiqə",
+3600:"1 saat",7200:"2 saat"
 };
 
-const nativeIntervals = {
-60:"1m",
-180:"3m",
-300:"5m",
-1800:"30m",
-3600:"1h",
-7200:"2h"
-}
-
-
-/* STATE */
-
 let selectedTF = 60;
-let running = false;
-
-let socket = null;
-let reconnectTimer = null;
-
-let refreshTimer = null;
-let scanTimer = null;
-let countdownTimer = null;
-
-let activeController = null;
-
-let runId = 0;
-
-let historyLists = {};
-
-let currentPrice = 0;
-let firstPrice = 0;
-
-let currentSymbol = "";
 let marketType = "CRYPTO";
-
-let signalHistory = [];
+let currentSymbol = "";
+let running = false;
+let requestController = null;
 let lastResults = [];
-
-let requestInProgress = false;
-
-let nextRefreshAt = 0;
-
-let apiSeconds = 60;
-
-// Son bazar məlumatının alınma vaxtı
-let lastMarketUpdateAt = 0;
-
-
-/* ASSET INITIALIZATION */
-
-function initAssets(){
-
-const market = $("market").value;
-
-const list =
-market === "CRYPTO"
-? cryptoAssets
-: forexAssets;
-
-$("asset").innerHTML = list.map(x =>
-`<option value="${x}">${x}</option>`
-).join("");
-
-}
-
-initAssets();
-
-
-/* UI */
+let signalHistory = [];
+let candlesByTF = {};
+let countdownTimer = null;
+let countdownValue = 10;
+let countdownEnd = 0;
+let lastAnalysis = null;
 
 function setStatus(message){
 $("status").textContent = message;
 }
 
-function setLiveState(active){
-
+function setLive(active){
 $("liveDot").classList.toggle("active",active);
-
-$("liveLabel").textContent =
-active ? "SYSTEM LIVE" : "SYSTEM OFFLINE";
-
+$("liveLabel").textContent = active ? "DATA CONNECTED" : "SYSTEM READY";
 }
 
-function formatPrice(price){
-
-if(marketType === "FOREX"){
-
-const decimals =
-currentSymbol.includes("JPY") ? 3 : 5;
-
-return Number(price).toFixed(decimals);
-
+function initAssets(){
+const list = $("market").value === "CRYPTO" ? cryptoAssets : forexAssets;
+$("asset").innerHTML = list.map(x=>`<option value="${x}">${x}</option>`).join("");
+updateChart();
 }
 
-return Number(price).toPrecision(8);
-
+function tradingViewSymbol(){
+if($("market").value === "CRYPTO"){
+return "BINANCE:" + $("asset").value;
+}
+return "FX:" + $("asset").value.replace("/","");
 }
 
-function updatePrice(price){
-
-currentPrice = price;
-
-$("price").textContent = formatPrice(price);
-
-if(firstPrice > 0){
-
-const change =
-((price-firstPrice)/firstPrice)*100;
-
-$("change").textContent =
-change.toFixed(3)+"%";
-
-$("change").style.color =
-change >= 0 ? "var(--green)" : "var(--red)";
-
+function updateChart(){
+const chart = $("chart");
+if(!chart)return;
+const symbol = tradingViewSymbol();
+chart.innerHTML = "";
+const script = document.createElement("script");
+script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+script.async = true;
+script.innerHTML = JSON.stringify({
+autosize:true,
+symbol:symbol,
+interval:"1",
+timezone:"Etc/UTC",
+theme:"dark",
+style:"1",
+locale:"en",
+allow_symbol_change:true,
+calendar:false,
+support_host:"https://www.tradingview.com"
+});
+chart.appendChild(script);
 }
-
-}
-
-function resetDisplay(){
-
-$("price").textContent="---";
-$("change").textContent="---";
-$("source").textContent="OFF";
-
-$("calls").textContent="0";
-$("puts").textContent="0";
-$("waits").textContent="0";
-
-$("results").innerHTML =
-'<div class="small">Analiz gözləyir.</div>';
-
-$("topSignals").textContent =
-"Hələ güclü siqnal yoxdur.";
-
-}
-
-
-/* SELECTORS */
 
 $("market").addEventListener("change",()=>{
-
-stopLive();
-
-signalHistory=[];
-
-$("history").innerHTML =
-'<div class="small">Tarixçə boşdur.</div>';
-
 initAssets();
-
-resetDisplay();
-
+resetResults();
 });
 
 $("asset").addEventListener("change",()=>{
-
-stopLive();
-
-signalHistory=[];
-
-$("history").innerHTML =
-'<div class="small">Tarixçə boşdur.</div>';
-
-resetDisplay();
-
+updateChart();
+resetResults();
 });
-
 
 $("timeframes").querySelectorAll("button").forEach(btn=>{
-
 btn.addEventListener("click",()=>{
-
-$("timeframes").querySelectorAll("button")
-.forEach(b=>b.classList.remove("active"));
-
+$("timeframes").querySelectorAll("button").forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
-
 selectedTF = Number(btn.dataset.tf);
-
+$("entryTF").textContent = tfNames[selectedTF];
 if(lastResults.length){
+renderAll(lastResults);
+}
+});
+});
 
-    renderSelectedSignal(lastResults);
-
-    updateTradeAdvisor();
-
-    updateEntryTimer();
-
+function resetResults(){
+lastResults = [];
+candlesByTF = {};
+$("price").textContent = "---";
+$("change").textContent = "---";
+$("source").textContent = "OFF";
+$("apiState").textContent = "Gözləyir";
+$("apiCountdown").textContent = "---";
+$("results").innerHTML = "Analiz gözlənilir.";
+$("topSignals").innerHTML = "Hələ siqnal yoxdur.";
+$("selectedSignal")?.remove();
+$("tradeDirection").textContent = "WAIT";
+$("tradeScore").textContent = "--";
+$("recommendedExpiry").textContent = "--";
+$("advisorStatus").textContent = "Yeni analiz gözlənilir.";
+$("callButton").disabled = true;
+$("putButton").disabled = true;
+stopDecisionCountdown();
 }
 
-});
-
-});
-
-
-/* REQUEST */
-
-async function getJson(url,token){
-
-const controller = activeController;
-
-const response = await fetch(url,{
-signal:controller ? controller.signal : undefined
-});
-
+async function getJson(url,signal){
+const response = await fetch(url,{signal});
 const data = await response.json();
-
-if(token !== runId || !running){
-throw new Error("Scanner dayandırılıb.");
-}
-
 if(!response.ok){
-
-throw new Error(
-data.error ||
-data.message ||
-data.msg ||
-"HTTP "+response.status
-);
-
+throw new Error(data.message || data.error || data.msg || "HTTP "+response.status);
 }
-
-if(data.code){
-throw new Error(data.msg || "API xətası");
+if(data.code || data.status === "error"){
+throw new Error(data.msg || data.message || "API xətası");
 }
-
-if(data.status==="error"){
-throw new Error(data.message || "API xətası");
-}
-
 return data;
-
 }
-
-
-/* DATA */
-
-function prepareLists(){
-
-historyLists={};
-
-timeframes.forEach(tf=>{
-historyLists[tf]=[];
-});
-
-}
-
 
 function aggregate(candles,seconds){
-
-const groups={};
-
-candles.forEach(c=>{
-
-const bucket =
-Math.floor(c.t/(seconds*1000))*seconds*1000;
-
+const groups = {};
+for(const c of candles){
+const bucket = Math.floor(c.t/(seconds*1000))*seconds*1000;
 if(!groups[bucket]){
-
-groups[bucket]={
-t:bucket,
-o:c.o,
-h:c.h,
-l:c.l,
-c:c.c,
-v:c.v
-};
-
+groups[bucket] = {t:bucket,o:c.o,h:c.h,l:c.l,c:c.c,v:c.v||0};
 }else{
-
 const g=groups[bucket];
-
 g.h=Math.max(g.h,c.h);
 g.l=Math.min(g.l,c.l);
 g.c=c.c;
-g.v+=c.v;
-
+g.v+=(c.v||0);
+}
+}
+return Object.values(groups).sort((a,b)=>a.t-b.t);
 }
 
-});
-
-return Object.values(groups)
-.sort((a,b)=>a.t-b.t);
-
-}
-
-
-/* BINANCE HISTORY */
-
-async function loadCryptoHistory(symbol,token){
-
-const requests =
-Object.entries(nativeIntervals).map(
-async([sec,interval])=>{
-
-const limit =
-Number(sec)===60 ? 1000 : 220;
-
-const url =
-"https://api.binance.com/api/v3/klines"+
-"?symbol="+symbol+
-"&interval="+interval+
-"&limit="+limit;
-
-const data = await getJson(url,token);
-
-historyLists[sec] = data.map(k=>({
-
-t:Number(k[0]),
-o:Number(k[1]),
-h:Number(k[2]),
-l:Number(k[3]),
-c:Number(k[4]),
-v:Number(k[5])
-
+async function loadCrypto(signal){
+const symbol = currentSymbol;
+const url = "https://api.binance.com/api/v3/klines?symbol="+symbol+
+"&interval=1m&limit=1000";
+const data = await getJson(url,signal);
+const oneMinute = data.map(k=>({
+t:Number(k[0]),o:Number(k[1]),h:Number(k[2]),
+l:Number(k[3]),c:Number(k[4]),v:Number(k[5])
 }));
-
+if(oneMinute.length < 220){
+throw new Error("Binance şam məlumatı kifayət deyil.");
+}
+candlesByTF[60]=oneMinute;
+[180,300,600,1800,3600,7200].forEach(tf=>{
+candlesByTF[tf]=aggregate(oneMinute,tf);
 });
-
-await Promise.all(requests);
-
-if(token!==runId || !running)return;
-
-historyLists[600] =
-aggregate(historyLists[60],600);
-
-const oneMinute = historyLists[60];
-
-if(oneMinute.length){
-
 const last=oneMinute[oneMinute.length-1];
-
-firstPrice=last.o;
-
-updatePrice(last.c);
-
+$("price").textContent=last.c;
+$("change").textContent=((last.c-last.o)/last.o*100).toFixed(3)+"%";
+$("change").style.color=last.c>=last.o?"var(--green)":"var(--red)";
+$("source").textContent="BINANCE";
 }
 
+async function loadForex(signal){
+const pair=currentSymbol;
+const url=BACKEND_URL+"/api/forex?symbol="+encodeURIComponent(pair)+"&interval=1min";
+const data=await getJson(url,signal);
+if(!Array.isArray(data.values) || data.values.length<40){
+throw new Error(data.message || data.error || "Forex məlumatı kifayət deyil.");
 }
-
-
-/* BINANCE WEBSOCKET */
-
-function connectSocket(symbol,token){
-
-if(token!==runId || !running)return;
-
-if(socket){
-
-socket.onclose=null;
-socket.close();
-socket=null;
-
+const oneMinute=data.values.slice().reverse().map(c=>({
+t:new Date(c.datetime.replace(" ","T")+"Z").getTime(),
+o:Number(c.open),h:Number(c.high),l:Number(c.low),
+c:Number(c.close),v:Number(c.volume)||0
+})).filter(c=>Number.isFinite(c.t)&&Number.isFinite(c.c));
+if(oneMinute.length<40){
+throw new Error("Forex şamları düzgün oxunmadı.");
 }
-
-const wsUrl =
-"wss://stream.binance.com:9443/ws/"+
-symbol.toLowerCase()+"@aggTrade";
-
-socket = new WebSocket(wsUrl);
-
-socket.onopen=()=>{
-
-if(token!==runId || !running)return;
-
-setStatus("Binance canlı bağlantısı aktivdir.");
-
-$("source").textContent="BINANCE LIVE";
-$("apiState").textContent="WEBSOCKET CONNECTED";
-
-};
-
-socket.onmessage=event=>{
-
-if(!running || token!==runId)return;
-
-try{
-
-const trade=JSON.parse(event.data);
-
-const price=Number(trade.p);
-const quantity=Number(trade.q);
-const timestamp=Number(trade.T);
-
-if(!Number.isFinite(price))return;
-
-if(!firstPrice){
-
-const oneMinute=historyLists[60]||[];
-
-firstPrice=oneMinute.length
-? oneMinute[oneMinute.length-1].o
-: price;
-
-}
-
-updatePrice(price,firstPrice);
-
-updateTrade(price,quantity,timestamp);
-
-}catch(error){
-
-console.error("Trade parse error:",error);
-
-}
-
-};
-
-socket.onerror=()=>{
-
-if(token!==runId || !running)return;
-
-$("apiState").textContent="WEBSOCKET ERROR";
-
-setStatus("Binance WebSocket bağlantı xətası.");
-
-};
-
-socket.onclose=()=>{
-
-if(token!==runId || !running)return;
-
-$("apiState").textContent="RECONNECTING";
-
-setStatus("WebSocket yenidən qoşulur...");
-
-if(reconnectTimer){
-clearTimeout(reconnectTimer);
-}
-
-reconnectTimer=setTimeout(()=>{
-
-if(running && token===runId){
-connectSocket(symbol,token);
-}
-
-},3000);
-
-};
-
-}
-
-
-/* LIVE CANDLE GENERATION */
-
-function updateTrade(price,quantity,timestamp){
-
-lastMarketUpdateAt = Date.now();
-
-timeframes.forEach(tf=>{
-
-const bucket =
-Math.floor(timestamp/(tf*1000))*tf*1000;
-
-const list=historyLists[tf];
-
-if(!list.length){
-
-list.push({
-t:bucket,
-o:price,
-h:price,
-l:price,
-c:price,
-v:quantity
+candlesByTF[60]=oneMinute;
+[180,300,600,1800,3600,7200].forEach(tf=>{
+candlesByTF[tf]=aggregate(oneMinute,tf);
 });
-
-return;
-
+const last=oneMinute[oneMinute.length-1];
+$("price").textContent=Number(last.c).toFixed(pair.includes("JPY")?3:5);
+$("change").textContent=((last.c-last.o)/last.o*100).toFixed(3)+"%";
+$("change").style.color=last.c>=last.o?"var(--green)":"var(--red)";
+$("source").textContent="FOREX API";
 }
-
-const last=list[list.length-1];
-
-if(last.t===bucket){
-
-last.h=Math.max(last.h,price);
-last.l=Math.min(last.l,price);
-last.c=price;
-last.v+=quantity;
-
-}else if(bucket>last.t){
-
-// Arada boş qalan şamları əvvəlki bağlanış qiyməti ilə tamamla
-let nextBucket=last.t+(tf*1000);
-
-while(nextBucket<bucket){
-
-list.push({
-t:nextBucket,
-o:last.c,
-h:last.c,
-l:last.c,
-c:last.c,
-v:0
-});
-
-nextBucket+=tf*1000;
-
-}
-
-list.push({
-t:bucket,
-o:price,
-h:price,
-l:price,
-c:price,
-v:quantity
-});
-
-if(list.length>1100){
-list.shift();
-}
-
-}
-
-});
-
-}
-
-/* FOREX */
-
-async function fetchForexCandles(pair,interval,token){
-
-const url =
-BACKEND_URL+
-"/api/forex?symbol="+encodeURIComponent(pair)+
-"&interval="+encodeURIComponent(interval);
-
-const data=await getJson(url,token);
-
-if(!Array.isArray(data.values)){
-throw new Error(
-data.error ||
-data.message ||
-"Forex şam məlumatı yoxdur."
-);
-}
-
-return data.values.slice().reverse().map(c=>({
-
-t:new Date(
-c.datetime.replace(" ","T")+"Z"
-).getTime(),
-
-o:Number(c.open),
-h:Number(c.high),
-l:Number(c.low),
-c:Number(c.close),
-v:Number(c.volume)||0
-
-}));
-
-}
-
-
-async function loadForexHistory(pair,token){
-
-const results=await Promise.all([
-
-fetchForexCandles(pair,"1min",token),
-fetchForexCandles(pair,"30min",token),
-fetchForexCandles(pair,"1h",token),
-fetchForexCandles(pair,"2h",token)
-
-]);
-
-if(token!==runId || !running)return;
-
-historyLists[60]=results[0];
-historyLists[1800]=results[1];
-historyLists[3600]=results[2];
-historyLists[7200]=results[3];
-
-historyLists[180]=aggregate(historyLists[60],180);
-historyLists[300]=aggregate(historyLists[60],300);
-historyLists[600]=aggregate(historyLists[60],600);
-
-
-const candles=historyLists[60];
-
-if(!candles.length){
-throw new Error("Forex şam məlumatı boşdur.");
-}
-
-const last=candles[candles.length-1];
-
-firstPrice=last.o;
-
-lastMarketUpdateAt=Date.now();
-
-updatePrice(last.c);
-
-$("source").textContent="TWELVE DATA";
-}
-
-
-/* API COUNTDOWN */
-
-function resetApiCountdown(){
-
-apiSeconds=60;
-
-nextRefreshAt=Date.now()+60000;
-
-$("apiCountdown").textContent="60";
-
-$("apiProgress").style.width="100%";
-
-$("lastUpdate").textContent =
-new Date().toLocaleTimeString();
-
-$("nextUpdate").textContent =
-new Date(nextRefreshAt).toLocaleTimeString();
-
-$("apiState").textContent="CONNECTED";
-
-}
-
-function startCountdown(){
-
-if(countdownTimer){
-clearInterval(countdownTimer);
-}
-
-countdownTimer=setInterval(()=>{
-
-if(!running || marketType!=="FOREX")return;
-
-const remaining=Math.max(
-0,
-Math.ceil((nextRefreshAt-Date.now())/1000)
-);
-
-apiSeconds=remaining;
-
-$("apiCountdown").textContent=remaining;
-
-$("apiProgress").style.width =
-(remaining/60*100)+"%";
-
-$("apiCountdown").style.color =
-remaining<=10
-? "var(--yellow)"
-: "var(--green)";
-
-},500);
-
-}
-
-
-/* INDICATORS */
 
 function ema(values,period){
-
 if(values.length<period)return null;
-
 const k=2/(period+1);
-
-let result =
-values.slice(0,period)
-.reduce((a,b)=>a+b,0)/period;
-
+let value=values.slice(0,period).reduce((a,b)=>a+b,0)/period;
 for(let i=period;i<values.length;i++){
-
-result =
-values[i]*k+
-result*(1-k);
-
+value=values[i]*k+value*(1-k);
 }
-
-return result;
-
+return value;
 }
-
 
 function rsi(values,period=14){
-
 if(values.length<=period)return null;
-
-let gains=0;
-let losses=0;
-
+let gain=0,loss=0;
 for(let i=1;i<=period;i++){
-
-const diff=values[i]-values[i-1];
-
-if(diff>0)gains+=diff;
-else losses-=diff;
-
+const d=values[i]-values[i-1];
+if(d>0)gain+=d;else loss-=d;
 }
-
-let avgGain=gains/period;
-let avgLoss=losses/period;
-
+let avgGain=gain/period,avgLoss=loss/period;
 for(let i=period+1;i<values.length;i++){
-
-const diff=values[i]-values[i-1];
-
-const gain=Math.max(diff,0);
-const loss=Math.max(-diff,0);
-
-avgGain =
-(avgGain*(period-1)+gain)/period;
-
-avgLoss =
-(avgLoss*(period-1)+loss)/period;
-
+const d=values[i]-values[i-1];
+avgGain=(avgGain*(period-1)+Math.max(d,0))/period;
+avgLoss=(avgLoss*(period-1)+Math.max(-d,0))/period;
 }
-
 if(avgLoss===0)return 100;
-
-const rs=avgGain/avgLoss;
-
-return 100-(100/(1+rs));
-
+return 100-(100/(1+avgGain/avgLoss));
 }
-
 
 function macd(values){
-
 if(values.length<35)return null;
-
-const fast=ema(values,12);
-const slow=ema(values,26);
-
-if(fast===null || slow===null)return null;
-
-return fast-slow;
-
+return ema(values,12)-ema(values,26);
 }
-
 
 function bollinger(values){
-
 if(values.length<20)return null;
-
-const last=values.slice(-20);
-
-const mean =
-last.reduce((a,b)=>a+b,0)/20;
-
-const variance =
-last.reduce(
-(a,b)=>a+Math.pow(b-mean,2),0
-)/20;
-
-const deviation=Math.sqrt(variance);
-
-return{
-
-upper:mean+2*deviation,
-middle:mean,
-lower:mean-2*deviation
-
-};
-
+const a=values.slice(-20);
+const mean=a.reduce((x,y)=>x+y,0)/a.length;
+const variance=a.reduce((x,y)=>x+Math.pow(y-mean,2),0)/a.length;
+const sd=Math.sqrt(variance);
+return {middle:mean,upper:mean+2*sd,lower:mean-2*sd};
 }
 
-
-function calculateATR(candles){
-
+function atr(candles){
 if(candles.length<15)return null;
-
 const ranges=[];
-
 for(let i=candles.length-14;i<candles.length;i++){
-
-const c=candles[i];
-const prev=candles[i-1];
-
-ranges.push(Math.max(
-
-c.h-c.l,
-Math.abs(c.h-prev.c),
-Math.abs(c.l-prev.c)
-
-));
-
+const c=candles[i],p=candles[i-1];
+ranges.push(Math.max(c.h-c.l,Math.abs(c.h-p.c),Math.abs(c.l-p.c)));
 }
-
 return ranges.reduce((a,b)=>a+b,0)/ranges.length;
-
 }
-
-/* EXPIRY FUNCTIONS */
-
-function formatExpiry(seconds){
-
-    if(!seconds || seconds <= 0){
-        return "Tövsiyə yoxdur";
-    }
-
-    if(seconds < 60){
-        return seconds + " saniyə";
-    }
-
-    const minutes = Math.floor(seconds / 60);
-
-    return minutes + " dəqiqə";
-}
-
-
-function recommendExpiry(result){
-
-    if(!result || result.side === "WAIT" || result.score < 65){
-        return null;
-    }
-
-    const expiryMap = {
-        60: 60,
-        180: 60,
-        300: 180,
-        600: 300,
-        1800: 300,
-        3600: 300,
-        7200: 300
-    };
-
-    return expiryMap[result.tf] || null;
-}
-
-/* TRADE ADVISOR */
-
-
-function updateTradeAdvisor(){
-
-    const validResults = lastResults.filter(r =>
-        r.tf >= 60 &&
-        r.side !== "WAIT" &&
-        r.score >= 65
-    );
-
-    const calls = validResults.filter(r => r.side === "CALL");
-    const puts = validResults.filter(r => r.side === "PUT");
-
-    const callCount = calls.length;
-    const putCount = puts.length;
-
-    const selected = lastResults.find(
-        r => r.tf === selectedTF
-    );
-
-    let direction = "WAIT";
-    let confirmations = 0;
-    let consensus = [];
-
-    if(callCount >= 3 && callCount > putCount){
-        direction = "CALL";
-        confirmations = callCount;
-        consensus = calls;
-    }
-
-    if(putCount >= 3 && putCount > callCount){
-        direction = "PUT";
-        confirmations = putCount;
-        consensus = puts;
-    }
-
-    const selectedConfirmed =
-        selected &&
-        selected.side === direction &&
-        selected.score >= 65;
-
-    $("tradeDirection").textContent =
-        direction === "WAIT"
-        ? "WAIT"
-        : direction + " TREND";
-
-    $("tradeDirection").className =
-        direction === "CALL" ? "call-text" :
-        direction === "PUT" ? "put-text" :
-        "wait-text";
-
-    $("tradeScore").textContent =
-        direction === "WAIT"
-        ? "--"
-        : Math.round(
-            consensus.reduce((sum,r)=>sum+r.score,0) /
-            consensus.length
-        ) + "/100";
-
-    if(direction === "WAIT"){
-
-        $("recommendedExpiry").textContent =
-            "TÖVSİYƏ YOXDUR";
-
-        $("advisorStatus").textContent =
-            "Ən azı 3 timeframe eyni istiqaməti təsdiqləmir. Gözlə.";
-
-        $("callButton").disabled = true;
-        $("putButton").disabled = true;
-
-        return;
-    }
-
-    const reference = selectedConfirmed
-        ? selected
-        : consensus[0];
-
-    const expiry = recommendExpiry({
-        ...reference,
-        market: marketType
-    });
-
-    $("recommendedExpiry").textContent =
-        formatExpiry(expiry);
-
-    if(!selectedConfirmed){
-
-        $("advisorStatus").textContent =
-            direction + " TREND TƏSDİQLƏNDİ (" +
-            confirmations +
-            " timeframe). Seçilmiş " +
-            tfNames[selectedTF] +
-            " hələ giriş siqnalı verməyib. Gözlə.";
-
-        $("callButton").disabled = true;
-        $("putButton").disabled = true;
-
-        return;
-    }
-
-    $("advisorStatus").textContent =
-        direction + " GİRİŞ SİQNALI TƏSDİQLƏNDİ. " +
-        confirmations +
-        " timeframe eyni istiqamətdədir. " +
-        "Seçilmiş timeframe: " +
-        tfNames[selectedTF] +
-        ". Müddət: " + formatExpiry(expiry);
-
-    $("callButton").disabled =
-        !running || direction !== "CALL";
-
-    $("putButton").disabled =
-        !running || direction !== "PUT";
-}
-
-/* AI ANALYSIS */
 
 function analyze(tf){
-
-const candles=historyLists[tf]||[];
-
+const candles=candlesByTF[tf]||[];
 if(candles.length<36){
-
-return{
-
-tf,
-side:"WAIT",
-score:0,
-reason:
-marketType==="FOREX" && tf<=30
-? "Forex saniyəlik məlumatı yoxdur"
-: "Məlumat toplanır"
-
-};
-
+return {tf,side:"WAIT",score:0,reason:"Bu timeframe üçün şam məlumatı kifayət deyil."};
 }
-
 const completed=candles.slice(0,-1);
-
-if(completed.length<35){
-
-return{
-
-tf,
-side:"WAIT",
-score:0,
-reason:"Şam məlumatı kifayət deyil"
-
-};
-
-}
-
 const closes=completed.map(c=>c.c);
-
 const last=completed[completed.length-1];
 const previous=completed[completed.length-2];
 
 const e20=ema(closes,20);
 const e50=ema(closes,50);
 const e200=ema(closes,200);
+const rv=rsi(closes);
+const mv=macd(closes);
+const bb=bollinger(closes);
+const av=atr(completed);
 
-const r=rsi(closes);
-const m=macd(closes);
-const b=bollinger(closes);
-const atr=calculateATR(completed);
-
-if(
-e20===null ||
-r===null ||
-m===null ||
-!b ||
-atr===null
-){
-
-return{
-
-tf,
-side:"WAIT",
-score:0,
-reason:"İndikator məlumatı kifayət deyil"
-
-};
-
+if(e20===null||e50===null||rv===null||mv===null||!bb||av===null){
+return {tf,side:"WAIT",score:0,reason:"İndikator məlumatı kifayət deyil."};
 }
 
-let call=0;
-let put=0;
+let call=0,put=0;
+const reasons=[];
 
-let reasons=[];
-
-
-/* EMA 20 */
-
-if(last.c>e20){
-
-call+=2;
-reasons.push("EMA20 bullish");
-
-}else{
-
-put+=2;
-reasons.push("EMA20 bearish");
-
-}
-
-
-/* EMA 50 */
-
-if(e50!==null){
-
-if(last.c>e50)call+=2;
-else put+=2;
-
-}
-
-
-/* EMA 200 */
+if(e20>e50){call+=2;reasons.push("EMA20 > EMA50");}
+else if(e20<e50){put+=2;reasons.push("EMA20 < EMA50");}
 
 if(e200!==null){
-
 if(last.c>e200)call+=2;
 else put+=2;
-
 }
 
+if(rv>=55&&rv<70){call+=1;reasons.push("RSI bullish");}
+else if(rv<=45&&rv>30){put+=1;reasons.push("RSI bearish");}
+else if(rv<30){call+=1;reasons.push("RSI oversold");}
+else if(rv>70){put+=1;reasons.push("RSI overbought");}
 
-/* RSI */
+if(mv>0){call+=2;reasons.push("MACD positive");}
+else{put+=2;reasons.push("MACD negative");}
 
-if(r<30){
+if(last.c>bb.middle)call++;
+else put++;
 
-call+=2;
-reasons.push("RSI oversold");
+if(last.c>last.o&&last.c>previous.c)call++;
+if(last.c<last.o&&last.c<previous.c)put++;
 
-}else if(r>70){
-
-put+=2;
-reasons.push("RSI overbought");
-
-}else if(r>55){
-
-call+=1;
-
-}else if(r<45){
-
-put+=1;
-
-}
-
-
-/* MACD */
-
-if(m>0){
-
-call+=2;
-reasons.push("MACD positive");
-
-}else{
-
-put+=2;
-reasons.push("MACD negative");
-
-}
-
-
-/* BOLLINGER */
-
-if(last.c>b.middle){
-
-call+=1;
-
-}else{
-
-put+=1;
-
-}
-
-
-/* CANDLE */
-
-if(last.c>last.o && last.c>previous.c){
-
-call+=1;
-reasons.push("Bullish candle");
-
-}
-
-if(last.c<last.o && last.c<previous.c){
-
-put+=1;
-reasons.push("Bearish candle");
-
-}
-
-
-/* VOLATILITY */
-
-if(atr>0 && last.h-last.l>atr*2){
-
+if(av>0&&(last.h-last.l)>av*2){
 call=Math.max(0,call-1);
 put=Math.max(0,put-1);
-
-reasons.push("High volatility");
-
+reasons.push("Volatility yüksəkdir");
 }
-
-
-/* SCORE */
 
 const total=call+put;
-
 const difference=Math.abs(call-put);
-
-const score=total
-? Math.round(50+(difference/total)*50)
-: 0;
-
+const score=total?Math.round(50+(difference/total)*50):0;
 let side="WAIT";
 
-if(
-call>put &&
-difference>=3 &&
-score>=65
-){
+if(call>put&&difference>=3&&score>=65)side="CALL";
+if(put>call&&difference>=3&&score>=65)side="PUT";
 
-side="CALL";
-
-}
-
-if(
-put>call &&
-difference>=3 &&
-score>=65
-){
-
-side="PUT";
-
-}
-
-return{
-
-tf,
-side,
-score,
-call,
-put,
-rsi:r.toFixed(1),
-price:last.c,
-candleTime:last.t,
-reason:reasons.join(", ")
-
+return {
+tf,side,score,call,put,rsi:rv.toFixed(1),
+price:last.c,candleTime:last.t,
+reason:reasons.join(" · ")
 };
-
 }
 
+function recommendExpiry(result){
+if(!result||result.side==="WAIT"||result.score<70)return null;
+const map={60:60,180:120,300:180,600:300,1800:600,3600:900,7200:1800};
+return map[result.tf]||null;
+}
 
-/* SIGNAL RENDER */
+function formatExpiry(seconds){
+if(!seconds)return "Tövsiyə yoxdur";
+if(seconds<60)return seconds+" saniyə";
+if(seconds%60===0)return (seconds/60)+" dəqiqə";
+return Math.floor(seconds/60)+" dəq "+(seconds%60)+" san";
+}
 
 function renderResults(results){
-
-$("results").innerHTML=results.map(r=>{
-
-const cls=r.side.toLowerCase();
-
-const badge=r.side.toLowerCase();
-
-const color =
-r.side==="CALL"
-? "call-text"
-: r.side==="PUT"
-? "put-text"
-: "wait-text";
-
-return`
-
-<div class="signal ${cls}">
-
+$("results").innerHTML=results.map(r=>`
+<div class="signal ${r.side.toLowerCase()}">
 <div class="signal-head">
-
 <span>${tfNames[r.tf]}</span>
-
-<span class="badge ${badge}">
-${r.side}
-</span>
-
+<span class="badge ${r.side.toLowerCase()}">${r.side}</span>
 </div>
-
 <div class="signal-details">
-
-AI uyğunluq: ${r.score}%
-
-<br>
-
-RSI: ${r.rsi||"--"}
-
-<br>
-
-CALL balı: ${r.call||0}
-
-|
-
-PUT balı: ${r.put||0}
-
-<br>
-
-<span class="${color}">
+Texniki uyğunluq: ${r.score}/100<br>
+RSI: ${r.rsi||"--"}<br>
+CALL balı: ${r.call||0} | PUT balı: ${r.put||0}<br>
 ${r.reason}
-</span>
-
 </div>
-
-<div class="confidence">
-
-<div class="confidence-fill"
-style="width:${r.score}%">
-</div>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
+<div class="confidence"><div class="confidence-fill" style="width:${r.score}%"></div></div>
+</div>`).join("");
 }
-
-
-/* SELECTED SIGNAL */
-
-function renderSelectedSignal(results){
-
-const result=results.find(x=>x.tf===selectedTF);
-
-if(!result)return;
-
-const cls=result.side.toLowerCase();
-
-const badge=result.side.toLowerCase();
-
-$("selectedSignal").className =
-"signal "+cls;
-
-$("selectedSignal").innerHTML=`
-
-<div class="signal-head">
-
-<span>${tfNames[result.tf]}</span>
-
-<span class="badge ${badge}">
-${result.side}
-</span>
-
-</div>
-
-<div class="signal-details">
-
-AI uyğunluq: ${result.score}%
-
-<br>
-
-RSI: ${result.rsi||"--"}
-
-<br>
-
-${result.reason}
-
-</div>
-
-<div class="confidence">
-
-<div class="confidence-fill"
-style="width:${result.score}%">
-</div>
-
-</div>
-
-`;
-
-}
-
-
-/* TOP SIGNALS */
 
 function renderTop(results){
-
-const strong=results
-
-.filter(r=>r.side!=="WAIT")
-
-.sort((a,b)=>b.score-a.score)
-
-.slice(0,5);
-
+const strong=results.filter(r=>r.side!=="WAIT").sort((a,b)=>b.score-a.score).slice(0,5);
 if(!strong.length){
-
-$("topSignals").innerHTML=
-"Güclü siqnal yoxdur. Bazar gözlənilir.";
-
+$("topSignals").textContent="Güclü siqnal yoxdur. WAIT.";
 return;
-
 }
-
 $("topSignals").innerHTML=strong.map(r=>`
-
 <div class="signal ${r.side.toLowerCase()}">
-
-<div class="signal-head">
-
-<span>${tfNames[r.tf]}</span>
-
-<span class="badge ${r.side.toLowerCase()}">
-${r.side}
-</span>
-
-</div>
-
-<div class="signal-details">
-
-AI uyğunluq: ${r.score}%
-
-|
-
-RSI: ${r.rsi||"--"}
-
-</div>
-
-</div>
-
-`).join("");
-
+<div class="signal-head"><span>${tfNames[r.tf]}</span><span class="badge ${r.side.toLowerCase()}">${r.side}</span></div>
+<div class="signal-details">Texniki bal: ${r.score}/100 · RSI: ${r.rsi}</div>
+</div>`).join("");
 }
 
+function renderAdvisor(results){
+const selected=results.find(r=>r.tf===selectedTF);
+const fast=results.filter(r=>[60,180,300].includes(r.tf)&&r.side!=="WAIT"&&r.score>=70);
+const calls=fast.filter(r=>r.side==="CALL");
+const puts=fast.filter(r=>r.side==="PUT");
 
-/* HISTORY */
+let direction="WAIT";
+if(calls.length>=2&&calls.length>puts.length)direction="CALL";
+if(puts.length>=2&&puts.length>calls.length)direction="PUT";
 
-function recordSignal(result){
+const confirmed=selected&&selected.side===direction&&selected.score>=70;
+const result=confirmed?selected:null;
 
-if(!result.candleTime)return;
+$("tradeDirection").textContent=direction;
+$("tradeDirection").className=direction==="CALL"?"call-text":direction==="PUT"?"put-text":"wait-text";
 
-const key=
-currentSymbol+"_"+
-result.tf+"_"+
-result.side+"_"+
-result.candleTime;
+$("callButton").disabled=!(confirmed&&direction==="CALL");
+$("putButton").disabled=!(confirmed&&direction==="PUT");
 
+if(!confirmed){
+$("tradeScore").textContent="--";
+$("recommendedExpiry").textContent="TÖVSİYƏ YOXDUR";
+$("advisorStatus").textContent="1m, 3m və 5m istiqamətləri kifayət qədər uyğun deyil və ya seçilmiş timeframe siqnalı təsdiqləmir. WAIT.";
+$("entryDirection").textContent="WAIT";
+$("entryDuration").textContent="Tövsiyə yoxdur";
+return;
+}
+
+const expiry=recommendExpiry(result);
+$("tradeScore").textContent=result.score+"/100";
+$("recommendedExpiry").textContent=formatExpiry(expiry);
+$("expirySelect").value=String(expiry||60);
+$("advisorStatus").textContent=direction+" siqnalı seçilmiş timeframe-də təsdiqləndi. Digər qısa timeframe-lərdə uyğunluq: "+fast.length+". Qiyməti broker qrafikində yoxla.";
+$("entryDirection").textContent=direction+" | "+result.score+"/100";
+$("entryDuration").textContent=formatExpiry(expiry);
+}
+
+function addHistory(result){
+if(!result||result.side==="WAIT"||!result.candleTime)return;
+const key=currentSymbol+"-"+result.tf+"-"+result.candleTime+"-"+result.side;
 if(signalHistory.some(x=>x.key===key))return;
-
 signalHistory.unshift({
-
-key,
-symbol:currentSymbol,
-tf:tfNames[result.tf],
-side:result.side,
-score:result.score,
-time:new Date().toLocaleTimeString()
-
+key,symbol:currentSymbol,tf:tfNames[result.tf],
+side:result.side,score:result.score,time:new Date().toLocaleTimeString()
 });
-
-signalHistory=signalHistory.slice(0,50);
-
-$("history").innerHTML=`
-
-<div class="table-wrap">
-
-<table>
-
-<tr>
-<th>Saat</th>
-<th>Aktiv</th>
-<th>TF</th>
-<th>Siqnal</th>
-<th>Bal</th>
-</tr>
-
-${signalHistory.map(x=>`
-
-<tr>
-
-<td>${x.time}</td>
-
-<td>${x.symbol}</td>
-
-<td>${x.tf}</td>
-
-<td class="${x.side==="CALL"?"call-text":"put-text"}">
-${x.side}
-</td>
-
-<td>${x.score}%</td>
-
-</tr>
-
-`).join("")}
-
-</table>
-
-</div>
-
-`;
-
+signalHistory=signalHistory.slice(0,40);
+$("history").innerHTML=`<div class="table-wrap"><table>
+<tr><th>Saat</th><th>Aktiv</th><th>TF</th><th>Siqnal</th><th>Bal</th></tr>
+${signalHistory.map(x=>`<tr><td>${x.time}</td><td>${x.symbol}</td><td>${x.tf}</td><td class="${x.side==="CALL"?"call-text":"put-text"}">${x.side}</td><td>${x.score}</td></tr>`).join("")}
+</table></div>`;
 }
 
-/* ENTRY TIMER — IMPROVED */
-
-let entryTimer = null;
-let previousBoundary = 0;
-let entryWindowUntil = 0;
-
-function updateEntryTimer(){
-
-    if(!running){
-
-        $("entryStatus").textContent="SİSTEM DAYANIB";
-        $("entryStatus").className="entry-status entry-danger";
-        $("entryCountdown").textContent="---";
-        $("entryDirection").textContent="WAIT";
-
-        return;
-    }
-
-    const now = Date.now();
-    const duration = selectedTF * 1000;
-
-    const boundary =
-        Math.floor(now / duration) * duration;
-
-    const remaining =
-        Math.ceil((boundary + duration - now) / 1000);
-
-    const selectedResult = lastResults.find(
-        item => item.tf === selectedTF
-    );
-
-    $("entryTF").textContent = tfNames[selectedTF];
-
-    const expiry = recommendExpiry(selectedResult);
-
-    $("entryDuration").textContent =
-        expiry === null
-        ? "Tövsiyə yoxdur"
-        : formatExpiry(expiry);
-
-    $("entryCountdown").textContent = remaining;
-
-    /* Yeni şam başlayanda */
-
-    if(previousBoundary === 0){
-        previousBoundary = boundary;
-    }
-
-    if(boundary !== previousBoundary){
-
-        previousBoundary = boundary;
-        entryWindowUntil = now + 10000;
-
-    }
-
-    /* Giriş pəncərəsi */
-
-    $("entryWindow").textContent =
-        entryWindowUntil > now
-        ? "10 saniyəlik yoxlama pəncərəsi"
-        : "Növbəti şam gözlənilir";
-
-    /* Siqnal yoxdursa */
-
-    if(!selectedResult || selectedResult.side === "WAIT"){
-
-        $("entryStatus").textContent =
-            "SİQNAL YOXDUR — GÖZLƏ";
-
-        $("entryStatus").className =
-            "entry-status entry-danger";
-
-        $("entryDirection").textContent = "WAIT";
-
-        return;
-    }
-
-    /* Şam bağlanmağa yaxındır */
-
-    if(remaining <= 5){
-
-        $("entryStatus").textContent =
-            "ŞAM BAĞLANIR — GÖZLƏ";
-
-        $("entryStatus").className =
-            "entry-status entry-wait";
-
-        $("entryDirection").textContent =
-            selectedResult.side;
-
-        return;
-    }
-
-    /* Məlumatın təzəliyini yoxla */
-
-    const expectedCandle = boundary - duration;
-
-    const dataAge = now - lastMarketUpdateAt;
-
-    const maxAge =
-        marketType === "CRYPTO" ? 30000 : 75000;
-
-    const dataFresh =
-        lastMarketUpdateAt > 0 &&
-        dataAge <= maxAge;
-
-    /* Giriş pəncərəsi */
-
-    if(entryWindowUntil > now){
-
-        if(
-            selectedResult.candleTime === expectedCandle &&
-            dataFresh
-        ){
-
-            $("entryStatus").textContent =
-                "GİRİŞƏ HAZIR — SİQNALI YOXLА";
-
-            $("entryStatus").className =
-                "entry-status entry-ready";
-
-        }else{
-
-            $("entryStatus").textContent =
-                "MƏLUMAT GÖZLƏNİLİR — GİRİŞ ETMƏ";
-
-            $("entryStatus").className =
-                "entry-status entry-wait";
-
-        }
-
-    }else{
-
-        $("entryStatus").textContent =
-            "NÖVBƏTİ ŞAMI GÖZLƏ";
-
-        $("entryStatus").className =
-            "entry-status entry-blue";
-
-    }
-
-    $("entryDirection").textContent =
-        selectedResult.side + " | " +
-        selectedResult.score + "%";
-
+function renderAll(results){
+renderResults(results);
+renderTop(results);
+renderAdvisor(results);
+addHistory(results.find(r=>r.tf===selectedTF));
+$("apiCountdown").textContent="ANALİZ TAMAMLANDI";
+$("lastUpdate").textContent=new Date().toLocaleTimeString();
 }
 
-
-function startEntryTimer(){
-
-if(entryTimer){
-clearInterval(entryTimer);
+function stopDecisionCountdown(){
+if(countdownTimer){
+clearInterval(countdownTimer);
+countdownTimer=null;
+}
+countdownEnd=0;
 }
 
-previousBoundary=0;
-entryWindowUntil=0;
+function startDecisionCountdown(){
+stopDecisionCountdown();
+countdownValue=10;
+countdownEnd=Date.now()+10000;
+$("entryCountdown").textContent="10";
+$("entryStatus").textContent="QƏRAR PƏNCƏRƏSİ AÇILDI";
+$("entryStatus").className="entry-status entry-ready";
 
-entryTimer=setInterval(updateEntryTimer,250);
-
+countdownTimer=setInterval(()=>{
+const remaining=Math.max(0,Math.ceil((countdownEnd-Date.now())/1000));
+$("entryCountdown").textContent=remaining;
+if(remaining<=0){
+stopDecisionCountdown();
+$("entryStatus").textContent="QƏRAR PƏNCƏRƏSİ BAĞLANDI";
+$("entryStatus").className="entry-status entry-wait";
+$("entryDirection").textContent="YENİ ANALİZ ET";
+$("callButton").disabled=true;
+$("putButton").disabled=true;
+}
+},200);
 }
 
-
-function stopEntryTimer(){
-
-if(entryTimer){
-
-clearInterval(entryTimer);
-
-entryTimer=null;
-
+function stopAnalysis(){
+running=false;
+if(requestController){
+requestController.abort();
+requestController=null;
 }
-
-$("entryStatus").textContent="SİSTEM DAYANIB";
+stopDecisionCountdown();
+setLive(false);
+$("apiState").textContent="DAYANDIRILDI";
+$("entryStatus").textContent="SİSTEM DAYANDIRILDI";
 $("entryStatus").className="entry-status entry-danger";
 $("entryCountdown").textContent="---";
 $("entryDirection").textContent="WAIT";
-
+$("callButton").disabled=true;
+$("putButton").disabled=true;
+setStatus("Analiz dayandırıldı.");
 }
 
-/* SCAN */
-
-function scanAll(){
-
-    if(!running) return;
-
-    const results = timeframes.map(tf => analyze(tf));
-
-    lastResults = results;
-
-    $("calls").textContent =
-        results.filter(x=>x.side==="CALL").length;
-
-    $("puts").textContent =
-        results.filter(x=>x.side==="PUT").length;
-
-    $("waits").textContent =
-        results.filter(x=>x.side==="WAIT").length;
-
-    renderResults(results);
-
-    renderTop(results);
-
-    renderSelectedSignal(results);
-
-    // Hər skanda Advisor yenilə
-    updateTradeAdvisor();
-
-    // Hər skanda giriş vaxtını yenilə
-    updateEntryTimer();
-
-    const selected = results.find(
-        x => x.tf === selectedTF
-    );
-
-    if(selected && selected.side !== "WAIT"){
-        recordSignal(selected);
-    }
-}
-
-/* CRYPTO START */
-
-async function startCrypto(token){
-
-prepareLists();
-
-setStatus("Binance tarixçə məlumatları yüklənir...");
-
-await loadCryptoHistory(currentSymbol,token);
-
-if(token!==runId || !running)return;
-
-connectSocket(currentSymbol,token);
-
-$("apiState").textContent="WEBSOCKET LIVE";
-
-$("apiCountdown").textContent="LIVE";
-
-$("lastUpdate").textContent =
-new Date().toLocaleTimeString();
-
-$("nextUpdate").textContent =
-"Davamlı canlı məlumat";
-
-$("apiProgress").style.width="100%";
-
-}
-
-
-/* FOREX REFRESH */
-
-function scheduleForexRefresh(token){
-
-    if(refreshTimer){
-        clearTimeout(refreshTimer);
-    }
-
-    if(token !== runId || !running) return;
-
-    nextRefreshAt = Date.now() + 60000;
-
-    $("nextUpdate").textContent =
-        new Date(nextRefreshAt).toLocaleTimeString();
-
-    refreshTimer = setTimeout(async()=>{
-
-        if(!running || token !== runId) return;
-
-        if(requestInProgress){
-            scheduleForexRefresh(token);
-            return;
-        }
-
-        requestInProgress = true;
-
-        $("apiState").textContent = "REFRESHING";
-
-        setStatus("Forex məlumatları yenilənir...");
-
-        try{
-
-            await loadForexHistory(currentSymbol,token);
-
-            if(token !== runId || !running) return;
-
-            $("apiState").textContent = "CONNECTED";
-
-            resetApiCountdown();
-
-            scanAll();
-
-            updateTradeAdvisor();
-
-            setStatus("Forex məlumatları yeniləndi.");
-
-        }catch(error){
-
-            if(token !== runId || !running) return;
-
-            $("apiState").textContent = "ERROR";
-
-            setStatus("Forex yenilənmə xətası: " + error.message);
-
-            resetApiCountdown();
-
-        }finally{
-
-            requestInProgress = false;
-
-            if(running && token === runId){
-                scheduleForexRefresh(token);
-            }
-
-        }
-
-    },60000);
-updateTradeAdvisor();
-
-}
-
-/* FOREX START */
-
-async function startForex(token){
-
-prepareLists();
-
-setStatus("Twelve Data Forex məlumatları alınır...");
-
-await loadForexHistory(currentSymbol,token);
-
-if(token!==runId || !running)return;
-
-resetApiCountdown();
-
-startCountdown();
-
-setStatus(
-"Forex API aktivdir. Yenilənmə təxminən 60 saniyədir."
-);
-
-scheduleForexRefresh(token);
-
-}
-
-
-/* START LIVE */
-
-async function startLive(){
-
+async function analyzeNow(){
 if(running)return;
-
+stopDecisionCountdown();
 running=true;
-
-const token=++runId;
-
-activeController=new AbortController();
-
 marketType=$("market").value;
-
 currentSymbol=$("asset").value;
+selectedTF=Number(selectedTF);
+requestController=new AbortController();
+const signal=requestController.signal;
 
-firstPrice=0;
-currentPrice=0;
-
-signalHistory=[];
-lastResults=[];
-
-requestInProgress=false;
-
-$("history").innerHTML =
-'<div class="small">Tarixçə boşdur.</div>';
-
-$("source").textContent="LOADING";
-
-$("apiState").textContent="CONNECTING";
-
+$("callButton").disabled=true;
+$("putButton").disabled=true;
+$("apiState").textContent="SORĞU GÖNDƏRİLİR";
 $("apiCountdown").textContent="...";
+$("entryStatus").textContent="BAZAR MƏLUMATI ALINIR";
+$("entryStatus").className="entry-status entry-blue";
+$("entryCountdown").textContent="...";
+$("entryDirection").textContent="WAIT";
+setLive(true);
+setStatus("Bazar məlumatları alınır. Zəhmət olmasa gözlə...");
 
-setLiveState(true);
-
-startEntryTimer();
 try{
-
 if(marketType==="CRYPTO"){
-
-await startCrypto(token);
-
+await loadCrypto(signal);
 }else{
-
-await startForex(token);
-
+await loadForex(signal);
 }
+if(!running)return;
 
-if(token!==runId || !running)return;
+$("apiState").textContent="CONNECTED";
 
-scanAll();
+const results=timeframes.map(tf=>analyze(tf));
+lastResults=results;
+renderAll(results);
 
-if(scanTimer){
-clearInterval(scanTimer);
+const selected=results.find(r=>r.tf===selectedTF);
+if(!selected||selected.side==="WAIT"){
+$("entryStatus").textContent="GÜCLÜ SİQNAL YOXDUR — WAIT";
+$("entryStatus").className="entry-status entry-wait";
+$("entryDirection").textContent="WAIT";
+}else{
+$("entryStatus").textContent="ANALİZ HAZIR — 10 SANİYƏ";
+startDecisionCountdown();
 }
-
-scanTimer=setInterval(scanAll,3000);
-
+setStatus("Analiz tamamlandı. Nəticəni yoxla və qərarını özün ver.");
 }catch(error){
-
-if(token!==runId)return;
-
-if(error.name==="AbortError")return;
-
-const errorMessage=error.message;
-
-stopLive();
-
-setStatus("XƏTA: "+errorMessage);
-
-$("source").textContent="ERROR";
-
+if(error.name==="AbortError"){
+setStatus("Sorğu dayandırıldı.");
+}else{
+setStatus("XƏTA: "+error.message);
 $("apiState").textContent="ERROR";
-
+$("entryStatus").textContent="MƏLUMAT ALINMADI";
+$("entryStatus").className="entry-status entry-danger";
 }
-
-}
-
-
-/* STOP */
-
-function stopLive(){
-
+}finally{
 running=false;
-
-runId++;
-
-// ENTRY TIMER DAYANDIR
-stopEntryTimer();
-
-if(activeController){
-
-activeController.abort();
-
-activeController=null;
-
+requestController=null;
+}
 }
 
-if(socket){
-
-socket.onclose=null;
-socket.onerror=null;
-
-socket.close();
-
-socket=null;
-
-}
-
-if(reconnectTimer){
-
-clearTimeout(reconnectTimer);
-
-reconnectTimer=null;
-
-}
-
-if(refreshTimer){
-
-clearTimeout(refreshTimer);
-
-refreshTimer=null;
-
-}
-
-if(scanTimer){
-
-clearInterval(scanTimer);
-
-scanTimer=null;
-
-}
-
-if(countdownTimer){
-
-clearInterval(countdownTimer);
-
-countdownTimer=null;
-
-}
-
-requestInProgress=false;
-
-setLiveState(false);
-
-$("source").textContent="OFF";
-
-$("apiCountdown").textContent="STOP";
-
-$("apiState").textContent="DISCONNECTED";
-
-$("nextUpdate").textContent="---";
-
-$("apiProgress").style.width="0%";
-
-setStatus("Scanner dayandırıldı.");
-
-}
+$("analyzeButton").addEventListener("click",analyzeNow);
+$("stopButton").addEventListener("click",stopAnalysis);
 
 $("callButton").addEventListener("click",()=>{
-
-const result=lastResults.find(
-x=>x.tf===selectedTF
-);
-
-if(!running || !result || result.side!=="CALL"){
-return;
-}
-
-$("advisorStatus").textContent=
-"CALL seçildi. Müddət: "+
-formatExpiry(Number($("expirySelect").value))+
-". Pocket Option qrafikində qiyməti yoxla və əməliyyatı əl ilə aç.";
-
+const r=lastResults.find(x=>x.tf===selectedTF);
+if(!r||r.side!=="CALL")return;
+$("advisorStatus").textContent="CALL seçildi. Müddət: "+formatExpiry(Number($("expirySelect").value))+". Pocket Option-da qiyməti yoxla və əməliyyatı əl ilə aç.";
 });
 
-
 $("putButton").addEventListener("click",()=>{
-
-const result=lastResults.find(
-x=>x.tf===selectedTF
-);
-
-if(!running || !result || result.side!=="PUT"){
-return;
-}
-
-$("advisorStatus").textContent=
-"PUT seçildi. Müddət: "+
-formatExpiry(Number($("expirySelect").value))+
-". Pocket Option qrafikində qiyməti yoxla və əməliyyatı əl ilə aç.";
-
+const r=lastResults.find(x=>x.tf===selectedTF);
+if(!r||r.side!=="PUT")return;
+$("advisorStatus").textContent="PUT seçildi. Müddət: "+formatExpiry(Number($("expirySelect").value))+". Pocket Option-da qiyməti yoxla və əməliyyatı əl ilə aç.";
 });
 
 $("expirySelect").addEventListener("change",()=>{
-
-$("advisorStatus").textContent=
-"Seçilmiş əməliyyat müddəti: "+
-formatExpiry(Number($("expirySelect").value));
-
+$("advisorStatus").textContent="Seçilmiş müddət: "+formatExpiry(Number($("expirySelect").value));
 });
 
-
-/* BUTTONS */
-
-$("liveStart").addEventListener("click",startLive);
-
-$("liveStop").addEventListener("click",stopLive);
-
-
-/* PWA */
+initAssets();
+$("entryTF").textContent=tfNames[selectedTF];
 
 if("serviceWorker" in navigator){
-
 window.addEventListener("load",()=>{
-
-navigator.serviceWorker
-.register("./sw.js")
-.catch(error=>console.log("SW:",error));
-
+navigator.serviceWorker.register("./sw.js").catch(()=>{});
 });
-
 }
-
-</script>
-
-</body>
+</script></body>
 </html>
