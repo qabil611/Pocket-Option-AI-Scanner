@@ -6,9 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.TWELVE_DATA_API_KEY;
 
-app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN || "*"
-}));
+app.use(cors());
 
 const CACHE_TTL = 65000;
 const cache = new Map();
