@@ -585,77 +585,6 @@ STATİSTİKANI SIFIRLA
 
 </section>
 
-
-<section class="panel">
-
-<h2>⏱ FAST ENTRY AI</h2>
-
-<div class="row">
-
-<div>
-<div class="muted">QƏRAR SAYĞACI</div>
-<div class="score" id="entryCountdown">--</div>
-</div>
-
-<div>
-<div class="muted">GİRİŞ VƏZİYYƏTİ</div>
-<div class="direction" id="entryStatus">WAIT</div>
-</div>
-
-</div>
-
-<div class="small" id="entryMessage">
-Yeni analiz aparılmayıb.
-</div>
-
-</section>
-
-<section class="panel">
-
-<h2>🎯 AI TRADE ADVISOR</h2>
-
-<div class="grid">
-
-<div class="card">
-<div class="muted">İSTİQAMƏT</div>
-<div class="score" id="advisorDirection">WAIT</div>
-</div>
-
-<div class="card">
-<div class="muted">TEXNİKİ BAL</div>
-<div class="score" id="advisorScore">--</div>
-</div>
-
-<div class="card">
-<div class="muted">ƏMƏLİYYAT MÜDDƏTİ</div>
-<div class="score" id="advisorExpiry">--</div>
-</div>
-
-<div class="card">
-<div class="muted">TIMEFRAME</div>
-<div class="score" id="advisorTF">--</div>
-</div>
-
-</div>
-
-<div class="actions">
-
-<button id="callButton" class="primary">
-▲ CALL
-</button>
-
-<button id="putButton">
-▼ PUT
-</button>
-
-</div>
-
-<div class="status" id="advisorMessage">
-Bu düymələr brokerə sifariş göndərmir.
-</div>
-
-</section>
-
 <section class="panel">
 
 <h2>🧠 MULTI-TIMEFRAME ANALYSIS</h2>
@@ -743,7 +672,6 @@ const otcAssets=[
 ];
 
 let activeController=null;
-let countdownTimer=null;
 let autoRefreshTimer=null;
 let latestResults=null;
 let historyItems=[];
@@ -1083,17 +1011,6 @@ function resetDisplay(){
  $("multiResults").textContent="Yeni analiz gözlənilir.";
  $("topSignals").textContent="Yeni analiz gözlənilir.";
 
- $("advisorDirection").textContent="WAIT";
- $("advisorScore").textContent="--";
- $("advisorExpiry").textContent="--";
-
- $("entryCountdown").textContent="--";
- $("entryStatus").textContent="WAIT";
- $("entryMessage").textContent="Yeni analiz gözlənilir.";
-
- latestResults=null;
-
- clearInterval(countdownTimer);
 }
 
 function updateChart(){
@@ -1864,12 +1781,6 @@ function renderExpiry(results){
   $("bestReason").textContent=
   "Müddətlər arasında kifayət qədər uyğunluq yoxdur.";
 
-  $("advisorDirection").textContent="WAIT";
-  $("advisorScore").textContent="--";
-  $("advisorExpiry").textContent="--";
-
-  clearInterval(countdownTimer);
-
   return;
 
  }
@@ -1883,22 +1794,6 @@ function renderExpiry(results){
  $("bestReason").textContent=
  "Ən yüksək texniki uyğunluq. "+best.quality+
  ". İstiqamət ən azı iki müddətlə təsdiqlənib.";
-
- $("advisorDirection").textContent=best.direction;
-
- $("advisorDirection").className=
- "score "+(best.direction==="CALL"?"green":"red");
-
- $("advisorScore").textContent=best.score+"/100";
-
- $("advisorExpiry").textContent=
- best.minutes+" dəq.";
-
- $("entryStatus").textContent=best.direction;
-
- $("entryMessage").textContent=
- "Ən uyğun müddət "+best.minutes+
- " dəqiqədir. Yeni analizə qədər siqnalı izləyin.";
 
 }
 
@@ -2180,8 +2075,6 @@ $("stopButton").addEventListener("click",()=>{
  running=false;
 
  stopAutoTimer();
-
- clearInterval(countdownTimer);
 
  if(activeController){
   activeController.abort();
