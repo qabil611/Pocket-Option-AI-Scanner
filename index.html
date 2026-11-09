@@ -1863,12 +1863,6 @@ function renderExpiry(results){
   $("bestReason").textContent=
   "Müddətlər arasında kifayət qədər uyğunluq yoxdur.";
 
-  $("entryStatus").textContent="WAIT";
-  $("entryCountdown").textContent="--";
-
-  $("entryMessage").textContent=
-  "Yeni təsdiq gözlənilir.";
-
   $("advisorDirection").textContent="WAIT";
   $("advisorScore").textContent="--";
   $("advisorExpiry").textContent="--";
@@ -1904,8 +1898,6 @@ function renderExpiry(results){
  $("entryMessage").textContent=
  "Ən uyğun müddət "+best.minutes+
  " dəqiqədir. Yeni analizə qədər siqnalı izləyin.";
-
- startCountdown();
 
 }
 
@@ -1995,38 +1987,6 @@ function renderDetails(results){
  ?"Seçilmiş timeframe təsdiqlənməyib."
  :r.direction+
  " siqnalı seçilmiş timeframe-də analiz edilib. Broker qrafikində qiyməti yoxla.";
-
-}
-
-/* ENTRY TIMER */
-
-function startCountdown(){
-
- clearInterval(countdownTimer);
-
- let seconds=10;
-
- $("entryCountdown").textContent="10";
-
- countdownTimer=setInterval(()=>{
-
-  seconds--;
-
-  $("entryCountdown").textContent=seconds;
-
-  if(seconds<=0){
-
-   clearInterval(countdownTimer);
-
-   $("entryStatus").textContent=
-   "PƏNCƏRƏ BAĞLANDI";
-
-   $("entryMessage").textContent=
-   "Köhnə siqnala əsaslanma. Yenidən analiz et.";
-
-  }
-
- },1000);
 
 }
 
@@ -2264,21 +2224,6 @@ $("autoRefresh").addEventListener("change",()=>{
 
 });
 
-/* CALL / PUT */
-
-$("callButton").addEventListener("click",()=>{
-
- $("advisorMessage").textContent=
- "CALL seçildi. Bu düymə Pocket Option-a sifariş göndərmir.";
-
-});
-
-$("putButton").addEventListener("click",()=>{
-
- $("advisorMessage").textContent=
- "PUT seçildi. Bu düymə Pocket Option-a sifariş göndərmir.";
-
-});
 
 /* START */
 
