@@ -520,6 +520,52 @@ Məlumat gözlənilir.
 
 <h2>📋 MÜDDƏTLƏRİN MÜQAYİSƏSİ</h2>
 
+<section class="panel">
+
+<h2>📊 REAL AI PERFORMANCE</h2>
+
+<div class="small">
+Siqnalların faktiki nəticələrinin statistikası.
+</div>
+
+<div class="grid" id="performanceCards">
+
+<div class="card">
+<h3>1 DƏQİQƏ</h3>
+<div class="score" id="winrate1">--%</div>
+<div class="small" id="stats1">WIN 0 | LOSS 0</div>
+</div>
+
+<div class="card">
+<h3>2 DƏQİQƏ</h3>
+<div class="score" id="winrate2">--%</div>
+<div class="small" id="stats2">WIN 0 | LOSS 0</div>
+</div>
+
+<div class="card">
+<h3>3 DƏQİQƏ</h3>
+<div class="score" id="winrate3">--%</div>
+<div class="small" id="stats3">WIN 0 | LOSS 0</div>
+</div>
+
+<div class="card">
+<h3>5 DƏQİQƏ</h3>
+<div class="score" id="winrate5">--%</div>
+<div class="small" id="stats5">WIN 0 | LOSS 0</div>
+</div>
+
+</div>
+
+<div class="status" id="performanceStatus">
+Real nəticələr gözlənilir.
+</div>
+
+<button id="clearPerformance">
+STATİSTİKANI SIFIRLA
+</button>
+
+</section>
+
 <table>
 
 <thead>
@@ -706,6 +752,229 @@ let running=true;
 let lastSuccessfulUpdate=null;
 
 let otcCandles={};
+/* REAL PERFORMANCE ENGINE */
+
+const PERFORMANCE_KEY="POCKET_AI_V17_PERFORMANCE";
+
+let performanceData=[];
+
+try{
+ performanceData=JSON.parse(
+  localStorage.getItem(PERFORMANCE_KEY)||"[]"
+ );
+
+ if(!Array.isArray(performanceData)){
+  performanceData=[];
+ }
+
+}catch(e){
+ performanceData=[];
+}
+
+function savePerformance(){
+
+ performanceData=performanceData.slice(-2000);
+
+ localStorage.setItem(
+  PERFORMANCE_KEY,
+  JSON.stringify(performanceData)
+ );
+
+ renderPerformance();
+}
+
+function recordPerformance(results,candles){
+
+ const base=candles.slice(0,-1);
+
+ if(!base.length)return;
+
+ const entryCandle=candles.at(-1);
+
+ if(!entryCandle)return;
+
+ const market=$("market").value;
+ const asset=$("asset").value;
+
+ results.forEach(r=>{
+
+  if(
+   r.direction==="WAIT"||
+   r.score<65||
+   r.stale
+  )return;
+
+  const id=[
+   market,
+   asset,
+   r.minutes,
+   entryCandle.time,
+   r.direction
+  ].join("_");
+
+  const exists=performanceData.some(
+   x=>x.id===id
+  );
+
+  if(exists)return;
+
+  performanceData.push({
+
+   id,
+   market,
+   asset,
+   expiry:r.minutes,
+   direction:r.direction,
+   score:r.score,
+
+   entryTime:entryCandle.time,
+   entryPrice:entryCandle.open,
+
+   exitPrice:null,
+   result:"PENDING",
+
+   createdAt:Date.now()
+
+  });
+
+ });
+
+ savePerformance();
+}
+
+/* CHECK FUTURE PRICE */
+
+function resolvePerformance(candles){
+
+ const closed=candles.slice(0,-1);
+
+ if(!closed.length)return;
+
+ let changed=false;
+
+ performanceData.forEach(signal=>{
+
+  if(signal.result!=="PENDING")return;
+
+  if(
+   signal.market!==$("market").value||
+   signal.asset!==$("asset").value
+  )return;
+
+  const targetTime=
+   signal.entryTime+
+   signal.expiry*60000;
+
+  const exitCandle=closed.find(c=>
+   c.time>=targetTime
+  );
+
+  if(!exitCandle)return;
+
+  if(exitCandle.time-targetTime>60000)return;
+
+  const exitPrice=exitCandle.open;
+
+  if(!Number.isFinite(exitPrice))return;
+
+  signal.exitPrice=exitPrice;
+
+  if(exitPrice===signal.entryPrice){
+
+   signal.result="DRAW";
+
+  }else if(
+   signal.direction==="CALL"
+   ?exitPrice>signal.entryPrice
+   :exitPrice<signal.entryPrice
+  ){
+
+   signal.result="WIN";
+
+  }else{
+
+   signal.result="LOSS";
+
+  }
+
+  signal.resolvedAt=Date.now();
+
+  changed=true;
+
+ });
+
+ if(changed)savePerformance();
+
+}
+
+/* PERFORMANCE DISPLAY */
+
+function renderPerformance(){
+
+ [1,2,3,5].forEach(minutes=>{
+
+  const records=performanceData.filter(x=>
+   x.market===$("market").value&&
+   x.asset===$("asset").value&&
+   x.expiry===minutes
+  );
+
+  const wins=records.filter(
+   x=>x.result==="WIN"
+  ).length;
+
+  const losses=records.filter(
+   x=>x.result==="LOSS"
+  ).length;
+
+  const draws=records.filter(
+   x=>x.result==="DRAW"
+  ).length;
+
+  const pending=records.filter(
+   x=>x.result==="PENDING"
+  ).length;
+
+  const completed=wins+losses;
+
+  const rate=completed
+   ?wins/completed*100
+   :null;
+
+  $("winrate"+minutes).textContent=
+   rate===null?"--%":rate.toFixed(1)+"%";
+
+  $("stats"+minutes).textContent=
+   "WIN "+wins+
+   " | LOSS "+losses+
+   " | DRAW "+draws+
+   " | GÖZLƏYİR "+pending;
+
+ });
+
+ $("performanceStatus").textContent=
+ "Statistika: "+$("market").value+
+ " · "+$("asset").value+
+ " · Yalnız tamamlanmış nəticələr hesablanır.";
+
+}
+
+/* RESET PERFORMANCE */
+
+$("clearPerformance").onclick=()=>{
+
+ if(!confirm("Bütün performans statistikası silinsin?")){
+  return;
+ }
+
+ performanceData= [];
+
+ savePerformance();
+
+ $("performanceStatus").textContent=
+ "Statistika sıfırlandı.";
+
+};
 
 function loadAssets(){
 
@@ -1383,7 +1652,10 @@ function analyze(candles,minutes){
 
  const dominant=Math.max(call,put);
 
- let score=Math.round(dominant/total*100);
+ let score=Math.min(
+ 90,
+ Math.round(50+diff*5)
+);
 
  if(e200===null){
   score=Math.min(score,82);
@@ -1877,7 +2149,24 @@ async function analyzeNow(){
 
   const results=runAnalysis(data);
 
-  latestResults=results;
+latestResults=results;
+
+/* REAL PERFORMANCE */
+
+resolvePerformance(data.one);
+
+recordPerformance(
+ results.expiryResults,
+ data.one
+);
+
+renderPerformance();
+
+loadAssets();
+
+renderPerformance();
+
+updateAutoInfo();
 
   renderExpiry(results.expiryResults);
 
