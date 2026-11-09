@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101e">
 <link rel="manifest" href="./manifest.json">
-<title>POCKET OPTION AI V14 PRO</title>
+<title>POCKET OPTION AI V15 PRO</title>
 
 <style>
 :root{
@@ -49,15 +49,22 @@ font-size:13px
 }
 button{font-weight:bold;cursor:pointer}
 button.primary{background:#087b65;border-color:#087b65}
+button.refresh{background:#15518b;border-color:#15518b}
 button:disabled{opacity:.5}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.actions{
+display:grid;grid-template-columns:1fr 1fr;
+gap:9px;margin-top:12px
+}
 .price{font-size:26px;font-weight:bold;margin:7px 0}
 .status{font-size:12px;margin-top:9px;line-height:1.5}
 .green{color:var(--green)}
 .red{color:var(--red)}
 .yellow{color:var(--yellow)}
 .blue{color:var(--blue)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.grid{
+display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px
+}
 .card{
 background:var(--panel2);border:1px solid var(--line);
 border-radius:10px;padding:11px;min-width:0
@@ -66,9 +73,15 @@ border-radius:10px;padding:11px;min-width:0
 .card h3{font-size:13px;margin:0 0 9px}
 .score{font-size:24px;font-weight:bold;margin:6px 0}
 .direction{font-size:14px;font-weight:bold}
-.bar{height:6px;background:#263950;border-radius:8px;overflow:hidden;margin:9px 0}
+.bar{
+height:6px;background:#263950;border-radius:8px;
+overflow:hidden;margin:9px 0
+}
 .bar span{display:block;height:100%;background:var(--blue)}
-.metrics{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
+.metrics{
+display:flex;justify-content:space-between;
+font-size:10px;color:var(--muted)
+}
 .recommend{
 background:#0b2630;border:1px solid #17614f;
 border-radius:11px;text-align:center;padding:15px
@@ -76,13 +89,38 @@ border-radius:11px;text-align:center;padding:15px
 .big{font-size:25px;font-weight:bold;margin:8px 0}
 .small{font-size:11px;color:var(--muted);line-height:1.55}
 table{width:100%;border-collapse:collapse;font-size:12px}
-td,th{padding:9px 5px;border-bottom:1px solid var(--line);text-align:left}
+td,th{
+padding:9px 5px;border-bottom:1px solid var(--line);
+text-align:left
+}
 th{color:var(--muted);font-weight:normal}
 .chart{width:100%;height:390px}
-.history-item{padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
+.history-item{
+padding:8px 0;border-bottom:1px solid var(--line);
+font-size:11px
+}
+.auto-box{
+background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;padding:12px;margin-top:11px
+}
+.auto-line{
+display:flex;align-items:center;
+justify-content:space-between;gap:10px
+}
+.toggle{
+width:21px;height:21px;min-height:21px;
+accent-color:var(--green)
+}
+.auto-label{font-size:12px;font-weight:bold}
+.refresh-info{
+margin-top:9px;font-size:11px;color:var(--muted);
+line-height:1.6
+}
 @media(max-width:480px){
-body{padding:8px}h1{font-size:16px}
-.grid{gap:7px}.card{padding:9px}
+body{padding:8px}
+h1{font-size:16px}
+.grid{gap:7px}
+.card{padding:9px}
 .chart{height:330px}
 }
 </style>
@@ -93,14 +131,15 @@ body{padding:8px}h1{font-size:16px}
 
 <header>
 <div>
-<h1>⚡ POCKET OPTION AI V14 PRO</h1>
-<div class="sub">AI EXPIRY ANALYZER · MULTI TIMEFRAME · FAST ENTRY</div>
+<h1>⚡ POCKET OPTION AI V15 PRO</h1>
+<div class="sub">SMART REFRESH · AUTO SCAN · MULTI TIMEFRAME</div>
 </div>
 <div class="badge" id="systemStatus">SYSTEM READY</div>
 </header>
 
 <section class="panel">
 <h2>⚙️ TRADING CONTROL CENTER</h2>
+
 <div class="row">
 <div>
 <label>Bazar</label>
@@ -128,6 +167,7 @@ body{padding:8px}h1{font-size:16px}
 <option value="120">2 saat</option>
 </select>
 </div>
+
 <div>
 <label>Əməliyyat müddəti</label>
 <select id="manualExpiry">
@@ -140,17 +180,34 @@ body{padding:8px}h1{font-size:16px}
 </div>
 
 <div class="actions">
-<button class="primary" id="analyzeButton">🔍 ANALİZ ET</button>
+<button class="refresh" id="refreshButton">
+🔄 QRAFİKİ YENİLƏ & SKAN ET
+</button>
 <button id="stopButton">■ DAYANDIR</button>
 </div>
-<div class="status" id="connectionStatus">Analiz üçün hazırdır.</div>
+
+<div class="auto-box">
+<div class="auto-line">
+<label class="auto-label" for="autoRefresh">
+⚡ AVTOMATİK YENİLƏMƏ
+</label>
+<input class="toggle" type="checkbox" id="autoRefresh">
+</div>
+<div class="refresh-info" id="autoInfo">
+Avtomatik yenilənmə söndürülüb.
+</div>
+</div>
+
+<div class="status" id="connectionStatus">
+Analiz üçün hazırdır.
+</div>
 </section>
 
 <section class="panel">
 <h2>📈 LIVE TRADINGVIEW CHART</h2>
 <div id="tradingview_chart" class="chart"></div>
 <div class="small">
-Qrafik TradingView-dən, skaner məlumatları isə Binance və Forex serverindən alınır.
+Qrafik TradingView-dən, skaner məlumatları Binance və Forex serverindən alınır.
 OTC qiymətləri ilə eyni olmaya bilər.
 </div>
 </section>
@@ -158,23 +215,40 @@ OTC qiymətləri ilə eyni olmaya bilər.
 <section class="panel">
 <h2>📊 LIVE MARKET MONITOR</h2>
 <div class="price" id="price">---</div>
+
 <div class="row">
-<div><div class="muted">ŞAM DƏYİŞMƏSİ</div><b id="change">---</b></div>
-<div><div class="muted">MƏLUMAT MƏNBƏYİ</div><b id="source">---</b></div>
+<div>
+<div class="muted">ŞAM DƏYİŞMƏSİ</div>
+<b id="change">---</b>
 </div>
-<div class="status" id="dataStatus">Məlumat gözlənilir.</div>
+<div>
+<div class="muted">MƏLUMAT MƏNBƏYİ</div>
+<b id="source">---</b>
+</div>
+</div>
+
+<div class="status" id="dataStatus">
+Məlumat gözlənilir.
+</div>
+<div class="status blue" id="refreshStatus">
+Son yenilənmə: hələ yoxdur
+</div>
 </section>
 
 <section class="panel">
 <h2>🏆 AI EXPIRY ANALYZER — ƏN YAXŞI MÜDDƏT</h2>
+
 <div class="recommend">
 <div class="muted">AI TÖVSİYƏSİ</div>
 <div class="big" id="bestExpiry">WAIT</div>
-<div class="direction" id="bestDirection">Analiz gözlənilir</div>
+<div class="direction" id="bestDirection">
+Analiz gözlənilir
+</div>
 <div class="small" id="bestReason">
 1, 2, 3 və 5 dəqiqəlik müqayisə aparılacaq.
 </div>
 </div>
+
 <div style="height:12px"></div>
 <div class="grid" id="expiryCards">
 <div class="card"><h3>1 DƏQİQƏ</h3>--</div>
@@ -187,9 +261,14 @@ OTC qiymətləri ilə eyni olmaya bilər.
 <section class="panel">
 <h2>📋 MÜDDƏTLƏRİN MÜQAYİSƏSİ</h2>
 <table>
-<thead><tr>
-<th>Müddət</th><th>İstiqamət</th><th>Bal</th><th>Qərar</th>
-</tr></thead>
+<thead>
+<tr>
+<th>Müddət</th>
+<th>İstiqamət</th>
+<th>Bal</th>
+<th>Qərar</th>
+</tr>
+</thead>
 <tbody id="comparison">
 <tr><td colspan="4">Analiz gözlənilir</td></tr>
 </tbody>
@@ -233,6 +312,7 @@ Yeni analiz aparılmayıb.
 <div class="score" id="advisorTF">--</div>
 </div>
 </div>
+
 <div class="actions">
 <button id="callButton" class="primary">▲ CALL</button>
 <button id="putButton">▼ PUT</button>
@@ -244,25 +324,32 @@ Bu düymələr brokerə sifariş göndərmir.
 
 <section class="panel">
 <h2>🧠 MULTI-TIMEFRAME ANALYSIS</h2>
-<div id="multiResults" class="small">Analiz gözlənilir.</div>
+<div id="multiResults" class="small">
+Analiz gözlənilir.
+</div>
 </section>
 
 <section class="panel">
 <h2>⭐ TOP SIGNALS</h2>
-<div id="topSignals" class="small">Analiz gözlənilir.</div>
+<div id="topSignals" class="small">
+Analiz gözlənilir.
+</div>
 </section>
 
 <section class="panel">
 <h2>📜 SIGNAL HISTORY</h2>
-<div id="history" class="small">Hələ nəticə yoxdur.</div>
+<div id="history" class="small">
+Hələ nəticə yoxdur.
+</div>
 </section>
 
 <section class="panel">
 <h2>ℹ️ SYSTEM INFORMATION</h2>
 <div class="small">
 • Crypto məlumatları Binance API-dən alınır.<br>
-• Forex məlumatları mövcud Render backend vasitəsilə alınır.<br>
-• 1, 2, 3 və 5 dəqiqəlik müddətlər ayrıca müqayisə edilir.<br>
+• Forex məlumatları Render backend vasitəsilə alınır.<br>
+• Yenilənmə yeni məlumatları alır və analizi təkrarlayır.<br>
+• Forex avtomatik yenilənməsi minimum 60 saniyədir.<br>
 • Texniki bal real qazanc ehtimalı deyil.<br>
 • OTC məlumatı birbaşa oxunmur.<br>
 • CALL və PUT düymələri brokerə sifariş göndərmir.
@@ -292,9 +379,12 @@ const forexAssets=[
 
 let activeController=null;
 let countdownTimer=null;
-let latestResults=[];
+let autoRefreshTimer=null;
+let latestResults=null;
 let historyItems=[];
 let currentAnalysisId=0;
+let isAnalyzing=false;
+let lastSuccessfulUpdate=null;
 
 function loadAssets(){
  const list=$("market").value==="CRYPTO"
@@ -305,17 +395,79 @@ function loadAssets(){
  ).join("");
 
  updateChart();
+ resetDisplay();
+ updateAutoInfo();
 }
 
-$("market").addEventListener("change",loadAssets);
-$("asset").addEventListener("change",updateChart);
+$("market").addEventListener("change",()=>{
+ stopAutoTimer();
+ loadAssets();
+
+ if($("autoRefresh").checked){
+  scheduleAutoRefresh();
+ }
+});
+
+$("asset").addEventListener("change",()=>{
+ updateChart();
+ resetDisplay();
+
+ if($("autoRefresh").checked){
+  analyzeNow();
+ }
+});
+
+$("timeframe").addEventListener("change",()=>{
+ updateChart();
+
+ if(latestResults){
+  renderDetails(latestResults.timeframeResults);
+ }
+});
+
 loadAssets();
+
+function resetDisplay(){
+ $("price").textContent="---";
+ $("change").textContent="---";
+ $("source").textContent="---";
+ $("dataStatus").textContent="Yeni aktiv üçün məlumat gözlənilir.";
+
+ $("bestExpiry").textContent="WAIT";
+ $("bestDirection").textContent="Yeni analiz gözlənilir";
+ $("bestReason").textContent="Yeni aktiv seçildi. Yenidən skan et.";
+
+ $("expiryCards").innerHTML=`
+ <div class="card"><h3>1 DƏQİQƏ</h3>--</div>
+ <div class="card"><h3>2 DƏQİQƏ</h3>--</div>
+ <div class="card"><h3>3 DƏQİQƏ</h3>--</div>
+ <div class="card"><h3>5 DƏQİQƏ</h3>--</div>`;
+
+ $("comparison").innerHTML=
+  `<tr><td colspan="4">Yeni analiz gözlənilir</td></tr>`;
+
+ $("multiResults").textContent="Yeni analiz gözlənilir.";
+ $("topSignals").textContent="Yeni analiz gözlənilir.";
+
+ $("advisorDirection").textContent="WAIT";
+ $("advisorScore").textContent="--";
+ $("advisorExpiry").textContent="--";
+ $("advisorTF").textContent=$("timeframe").value+" dəq.";
+
+ $("entryCountdown").textContent="--";
+ $("entryStatus").textContent="WAIT";
+ $("entryMessage").textContent="Yeni analiz gözlənilir.";
+
+ latestResults=null;
+ clearInterval(countdownTimer);
+}
 
 function updateChart(){
  if(typeof TradingView==="undefined")return;
 
  const market=$("market").value;
  const asset=$("asset").value;
+ const tf=$("timeframe").value;
 
  const symbol=market==="CRYPTO"
   ?"BINANCE:"+asset
@@ -326,7 +478,7 @@ function updateChart(){
  new TradingView.widget({
   autosize:true,
   symbol,
-  interval:"1",
+  interval:tf,
   timezone:"Etc/UTC",
   theme:"dark",
   style:"1",
@@ -341,6 +493,7 @@ function updateChart(){
 
 async function fetchCrypto(interval,limit=1000){
  const symbol=$("asset").value;
+
  const url="https://api.binance.com/api/v3/klines?"+
   "symbol="+encodeURIComponent(symbol)+
   "&interval="+interval+"&limit="+limit;
@@ -350,7 +503,9 @@ async function fetchCrypto(interval,limit=1000){
   signal:activeController.signal
  });
 
- if(!response.ok)throw new Error("Binance: "+response.status);
+ if(!response.ok){
+  throw new Error("Binance: "+response.status);
+ }
 
  const raw=await response.json();
 
@@ -376,7 +531,9 @@ async function fetchForex(interval){
   signal:activeController.signal
  });
 
- if(!response.ok)throw new Error("Forex backend: "+response.status);
+ if(!response.ok){
+  throw new Error("Forex backend: "+response.status);
+ }
 
  const data=await response.json();
 
@@ -384,22 +541,32 @@ async function fetchForex(interval){
   throw new Error(data.message||"Forex məlumatı gəlmədi.");
  }
 
- return data.values.map(c=>({
-  time:new Date(c.datetime.replace(" ","T")+"Z").getTime(),
-  open:Number(c.open),
-  high:Number(c.high),
-  low:Number(c.low),
-  close:Number(c.close),
-  volume:Number(c.volume||0)
- })).filter(c=>Number.isFinite(c.close))
- .sort((a,b)=>a.time-b.time);
-}
+ return data.values.map(c=>{
+  const rawTime=String(c.datetime||"");
+  const normalized=rawTime.includes("T")
+   ?rawTime
+   :rawTime.replace(" ","T");
 
-/*
- Binance native intervals are used for longer charts.
- Unsupported 10m is aggregated from 1m.
- Forex uses the backend's supported intervals.
-*/
+  const time=Date.parse(
+   /Z$|[+-]\d\d:\d\d$/.test(normalized)
+    ?normalized
+    :normalized+"Z"
+  );
+
+  return {
+   time,
+   open:Number(c.open),
+   high:Number(c.high),
+   low:Number(c.low),
+   close:Number(c.close),
+   volume:Number(c.volume||0)
+  };
+ }).filter(c=>
+  Number.isFinite(c.time)&&
+  Number.isFinite(c.close)&&
+  c.close>0
+ ).sort((a,b)=>a.time-b.time);
+}
 
 async function getMarketData(){
  const market=$("market").value;
@@ -424,12 +591,6 @@ async function getMarketData(){
    oneTwenty:twoHour
   };
  }
-
- /*
- Forex backend interval support may vary.
- Separate requests use the backend's existing interval parameter.
- This can consume additional API credits depending on the provider.
- */
 
  const [one,five,thirty,hour,twoHour]=await Promise.all([
   fetchForex("1min"),
@@ -505,6 +666,7 @@ function rsi(values,period=14){
 
  for(let i=values.length-period;i<values.length;i++){
   const d=values[i]-values[i-1];
+
   if(d>0)gain+=d;
   else loss-=d;
  }
@@ -527,7 +689,11 @@ function bollinger(values){
 
  const sd=Math.sqrt(variance);
 
- return {middle,upper:middle+2*sd,lower:middle-2*sd};
+ return {
+  middle,
+  upper:middle+2*sd,
+  lower:middle-2*sd
+ };
 }
 
 function macd(values){
@@ -588,8 +754,13 @@ function analyze(candles,minutes){
  const reasons=[];
 
  if(e20!==null&&e50!==null){
-  if(e20>e50){call+=2;reasons.push("EMA20 > EMA50");}
-  else if(e20<e50){put+=2;reasons.push("EMA20 < EMA50");}
+  if(e20>e50){
+   call+=2;
+   reasons.push("EMA20 > EMA50");
+  }else if(e20<e50){
+   put+=2;
+   reasons.push("EMA20 < EMA50");
+  }
  }
 
  if(e200!==null){
@@ -598,15 +769,29 @@ function analyze(candles,minutes){
  }
 
  if(rv!==null){
-  if(rv>55&&rv<70){call+=2;reasons.push("RSI bullish");}
-  else if(rv<45&&rv>30){put+=2;reasons.push("RSI bearish");}
-  else if(rv>=70){put++;reasons.push("RSI overbought");}
-  else if(rv<=30){call++;reasons.push("RSI oversold");}
+  if(rv>55&&rv<70){
+   call+=2;
+   reasons.push("RSI bullish");
+  }else if(rv<45&&rv>30){
+   put+=2;
+   reasons.push("RSI bearish");
+  }else if(rv>=70){
+   put++;
+   reasons.push("RSI overbought");
+  }else if(rv<=30){
+   call++;
+   reasons.push("RSI oversold");
+  }
  }
 
  if(mv!==null){
-  if(mv>0){call+=2;reasons.push("MACD positive");}
-  else if(mv<0){put+=2;reasons.push("MACD negative");}
+  if(mv>0){
+   call+=2;
+   reasons.push("MACD positive");
+  }else if(mv<0){
+   put+=2;
+   reasons.push("MACD negative");
+  }
  }
 
  if(bb){
@@ -625,8 +810,10 @@ function analyze(candles,minutes){
  if(total===0||diff<2){
   return {
    minutes,direction:"WAIT",score:0,
-   quality:"Təsdiq yoxdur",reason:reasons.join(" · "),
-   call,put,rsi:rv,price,e20,e50,e200,macd:mv,atr:av
+   quality:"Təsdiq yoxdur",
+   reason:reasons.join(" · "),
+   call,put,rsi:rv,price,e20,e50,e200,
+   macd:mv,atr:av
   };
  }
 
@@ -644,6 +831,7 @@ function analyze(candles,minutes){
  if(age>maxAge)score=Math.min(score,50);
 
  let quality="Zəif";
+
  if(score>=85)quality="Çox güclü texniki uyğunluq";
  else if(score>=75)quality="Yaxşı";
  else if(score>=65)quality="Orta";
@@ -671,12 +859,6 @@ function runAnalysis(data){
 
  const timeframeResults=map.map(([m,c])=>analyze(c,m));
 
- /*
- Expiry comparison:
- 1,2,3,5 minute candle series.
- The 2m and 3m candles are aggregated from 1m.
- */
-
  const expiryResults=[
   analyze(data.one,1),
   analyze(data.two,2),
@@ -701,7 +883,6 @@ function chooseBest(results){
  valid.sort((a,b)=>b.score-a.score);
 
  const best=valid[0];
-
  const same=valid.filter(r=>r.direction===best.direction);
 
  if(same.length<2)return null;
@@ -716,6 +897,7 @@ function renderExpiry(results){
 
  $("expiryCards").innerHTML=results.map(r=>{
   const selected=best&&best.minutes===r.minutes;
+
   const color=r.direction==="CALL"?"green":
    r.direction==="PUT"?"red":"yellow";
 
@@ -768,6 +950,7 @@ function renderExpiry(results){
  }
 
  $("bestExpiry").textContent=best.minutes+" DƏQİQƏ";
+
  $("bestDirection").textContent=
   best.direction+" · "+best.score+"/100";
 
@@ -776,11 +959,13 @@ function renderExpiry(results){
   ". İstiqamət ən azı iki müddətlə təsdiqlənib.";
 
  $("entryStatus").textContent=best.direction;
+
  $("entryMessage").textContent=
   "Ən uyğun müddət "+best.minutes+
   " dəqiqədir. 10 saniyəlik qərar pəncərəsi başladı.";
 
  $("advisorDirection").textContent=best.direction;
+
  $("advisorDirection").className=
   "score "+(best.direction==="CALL"?"green":"red");
 
@@ -848,6 +1033,7 @@ function startCountdown(){
 
   if(seconds<=0){
    clearInterval(countdownTimer);
+
    $("entryStatus").textContent="PƏNCƏRƏ BAĞLANDI";
    $("entryMessage").textContent=
     "10 saniyə bitdi. Köhnə siqnala əsaslanma; yenidən analiz et.";
@@ -873,105 +1059,13 @@ function saveHistory(expiryResults){
  ).join("");
 }
 
-/* MAIN */
+/* AUTO REFRESH */
 
-async function analyzeNow(){
- if(activeController)activeController.abort();
-
- activeController=new AbortController();
- const id=++currentAnalysisId;
-
- $("analyzeButton").disabled=true;
- $("systemStatus").textContent="ANALYZING";
- $("connectionStatus").textContent="Bazar məlumatları alınır...";
- $("connectionStatus").className="status yellow";
-
- clearInterval(countdownTimer);
-
- try{
-  const data=await getMarketData();
-
-  if(id!==currentAnalysisId)return;
-
-  const source=data.one.filter(c=>c.close>0);
-  if(source.length<40)throw new Error("Məlumat kifayət deyil.");
-
-  const closed=source.slice(0,-1);
-  const last=closed.at(-1);
-  const prev=closed.at(-2);
-
-  $("price").textContent=last.close.toLocaleString(
-   "en-US",{maximumFractionDigits:8}
-  );
-
-  const pct=(last.close-prev.close)/prev.close*100;
-  $("change").textContent=pct.toFixed(3)+"%";
-  $("change").className=pct>=0?"green":"red";
-
-  $("source").textContent=$("market").value==="CRYPTO"
-   ?"BINANCE API":"FOREX API";
-
-  $("dataStatus").textContent=
-   "SON MƏLUMAT: "+new Date(last.time).toLocaleTimeString()+
-   " · ŞAM SAYI: "+closed.length;
-
-  const result=runAnalysis(data);
-  latestResults=result;
-
-  renderExpiry(result.expiryResults);
-  renderTimeframes(result.timeframeResults);
-  renderDetails(result.timeframeResults);
-  saveHistory(result.expiryResults);
-
-  $("systemStatus").textContent="CONNECTED";
-  $("connectionStatus").textContent=
-   "Analiz tamamlandı. Nəticəni yoxla və qərarını özün ver.";
-  $("connectionStatus").className="status green";
-
- }catch(error){
-  if(error.name==="AbortError")return;
-
-  console.error(error);
-  $("systemStatus").textContent="ERROR";
-  $("connectionStatus").textContent="Xəta: "+error.message;
-  $("connectionStatus").className="status red";
-
-  $("bestExpiry").textContent="WAIT";
-  $("bestDirection").textContent="Məlumat alınmadı";
-  $("bestReason").textContent=error.message;
-
- }finally{
-  if(id===currentAnalysisId){
-   $("analyzeButton").disabled=false;
-  }
- }
+function getRefreshInterval(){
+ return $("market").value==="CRYPTO"
+  ?15000
+  :60000;
 }
 
-$("analyzeButton").addEventListener("click",analyzeNow);
-
-$("stopButton").addEventListener("click",()=>{
- currentAnalysisId++;
-
- if(activeController)activeController.abort();
-
- clearInterval(countdownTimer);
-
- $("analyzeButton").disabled=false;
- $("systemStatus").textContent="STOPPED";
- $("connectionStatus").textContent="Analiz dayandırıldı.";
- $("entryStatus").textContent="DAYANDIRILDI";
- $("entryCountdown").textContent="--";
-});
-
-$("callButton").addEventListener("click",()=>{
- $("advisorMessage").textContent=
-  "CALL seçildi. Bu düymə Pocket Option-a sifariş göndərmir. Broker qrafikini yoxla.";
-});
-
-$("putButton").addEventListener("click",()=>{
- $("advisorMessage").textContent=
-  "PUT seçildi. Bu düymə Pocket Option-a sifariş göndərmir. Broker qrafikini yoxla.";
-});
-</script>
-</body>
-</html>
+function updateAutoInfo(){
+ const enabled=$
