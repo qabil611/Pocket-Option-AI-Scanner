@@ -1978,15 +1978,12 @@ function renderDetails(results){
 
  const r=results.find(x=>x.minutes===selected);
 
- $("advisorTF").textContent=selected+" dəq.";
-
  if(!r)return;
 
- $("advisorMessage").textContent=
- r.direction==="WAIT"
- ?"Seçilmiş timeframe təsdiqlənməyib."
- :r.direction+
- " siqnalı seçilmiş timeframe-də analiz edilib. Broker qrafikində qiyməti yoxla.";
+ $("chartInfo").textContent=
+ "TradingView qrafiki · "+selected+
+ " dəqiqə · "+r.direction+
+ " · Texniki bal: "+r.score+"/100";
 
 }
 
@@ -2121,11 +2118,6 @@ recordPerformance(
 );
 
 renderPerformance();
-
-loadAssets();
-
-renderPerformance();
-
 updateAutoInfo();
 
   renderExpiry(results.expiryResults);
