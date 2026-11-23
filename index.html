@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101e">
 <link rel="manifest" href="./manifest.json">
-<title>POCKET FOREX + CRYPTO AI V18 PRO</title>
+<title>POCKET FOREX + CRYPTO AI V19 PRO</title>
 <style>
 :root{--bg:#07101e;--p:#101d30;--p2:#0a1728;--line:#263950;--t:#edf4ff;--m:#91a4bd;--g:#00d69a;--r:#ff5573;--y:#ffcc66;--b:#55aaff}
 *{box-sizing:border-box}
@@ -46,7 +46,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <div class="app">
 
 <header>
-<div><h1>💱 POCKET FOREX + CRYPTO AI V18 PRO</h1><div class="small">FOREX + KRİPTO · ÇOXBAZARLI TEXNİKİ ANALİZ</div></div>
+<div><h1>💱 POCKET FOREX + CRYPTO AI V19 PRO</h1><div class="small">FOREX + KRİPTO · ÇOXBAZARLI TEXNİKİ ANALİZ</div></div>
 <div class="badge" id="systemStatus">READY</div>
 </header>
 
@@ -131,7 +131,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <section class="panel"><div class="small">
 • 0–100 texniki uyğunluq balıdır, qazanc ehtimalı deyil.<br>
 • Forex: Twelve Data; Kripto: Binance Spot public API.<br>• Mənbə qiymətləri Pocket Option qiymətindən fərqlənə bilər.<br>
-• Backend `outputsize` parametrini Twelve Data-ya ötürməlidir (1000 şam üçün).
+• Backend `outputsize` parametrini Twelve Data-ya ötürməlidir (1000 şam üçün).<br>• 9–10 dəqiqəlik analizdə daha qısa tarixçə üçün adaptiv minimum tətbiq edilir.
 </div></section>
 
 </div>
@@ -144,6 +144,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const FOREX_PAIRS=["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"];
 const CRYPTO_PAIRS=["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT","LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT","TONUSDT","SUIUSDT","APTUSDT","OPUSDT","ARBUSDT","NEARUSDT","INJUSDT","FETUSDT"];
 const DAILY_LIMIT=780,MIN_CANDLES=60;
+const MIN_CANDLES_LONG_EXPIRY=40; // 9–10 dəq. aqreqasiya üçün 500 1m şamla işləyə bilsin
 let ctrl=null,timer=null,runId=0,running=true,latest=null,hist=[];
 let lastRequestAt=0;
 const MIN_REQUEST_GAP=8000; // Twelve Data limitinə qarşı ehtiyatlı fasilə
@@ -300,7 +301,8 @@ function wait(minutes,quality,reason,extra={}){return {minutes,direction:"WAIT",
 
 function analyze(candles,minutes,symbol){
  const closed=candles.slice(0,-1);
- if(closed.length<MIN_CANDLES)return wait(minutes,"Məlumat azdır","Bağlanmış şam sayı kifayət deyil.");
+ const required=minutes>=8?MIN_CANDLES_LONG_EXPIRY:MIN_CANDLES;
+ if(closed.length<required)return wait(minutes,"Məlumat azdır",`Bağlanmış şam sayı kifayət deyil (${closed.length}/${required}).`);
  const cl=closed.map(c=>c.close),price=cl.at(-1);
  const e20=ema(cl,20),e50=ema(cl,50),e200=cl.length>=200?ema(cl,200):null;
  const rv=rsi(cl),mv=macd(cl),bm=bollMid(cl),av=atr(closed),ax=adx(closed);
@@ -348,38 +350,44 @@ function runAnalysis(one,symbol){
 }
 
 function chooseBest(res,asset=$("asset").value){
- // Yalnız 5 və 15 dəqiqəlik trend təsdiqi olan, vaxtı köhnəlməmiş siqnallar.
- const v=res.filter(r=>r.direction!=="WAIT"&&r.score>=65&&!r.stale&&r.confirmed);
- if(!v.length)return null;
- // Ən azı iki müddət eyni istiqaməti göstərməlidir; tək müddətli sıçrayış seçilmir.
- const counts={CALL:0,PUT:0};v.forEach(r=>counts[r.direction]++);
- const direction=counts.CALL>=2&&counts.CALL>=counts.PUT?"CALL":counts.PUT>=2&&counts.PUT>counts.CALL?"PUT":null;
+ // Yalnız təzə, 5/15 dəq trend təsdiqli və ən azı 65 balı olan variantlar.
+ const valid=res.filter(r=>r.direction!=="WAIT"&&r.score>=65&&!r.stale&&r.confirmed);
+ if(!valid.length)return null;
+ const votes={CALL:0,PUT:0};
+ valid.forEach(r=>votes[r.direction]++);
+ const direction=votes.CALL>=2&&votes.CALL>votes.PUT?"CALL":votes.PUT>=2&&votes.PUT>votes.CALL?"PUT":null;
  if(!direction)return null;
- const same=v.filter(r=>r.direction===direction);
+ const same=valid.filter(r=>r.direction===direction);
  const ranked=same.map(r=>{
   const rec=perf.filter(x=>x.asset===asset&&x.expiry===r.minutes&&(x.result==="WIN"||x.result==="LOSS"));
   const n=rec.length,w=rec.filter(x=>x.result==="WIN").length;
-  // Tarixçə azdırsa ona etibar etmirik; n>=20 olduqda Wilson aşağı həddi ilə cüzi bonus.
   const ci=n>=20?wilson(w,n):null;
-  const historyBonus=ci?Math.max(-4,Math.min(4,(ci[0]-50)*0.12)):0;
-  return {...r,selectionScore:r.score+historyBonus,historyN:n,historyBonus};
- }).sort((a,b)=>b.selectionScore-a.selectionScore||b.score-a.score);
+  const historyBonus=ci?Math.max(-3,Math.min(3,(ci[0]-50)*0.10)):0;
+  // Eyni istiqamətli müddətlərin sayı və siqnal gücü əlavə etibarlılıq balıdır.
+  const consensusBonus=Math.min(6,(same.length-1)*2);
+  const shortExpiryPenalty=r.minutes>=8?2:0;
+  return {...r,selectionScore:r.score+historyBonus+consensusBonus-shortExpiryPenalty,
+    historyN:n,historyBonus,consensusCount:same.length,consensusBonus};
+ }).sort((a,b)=>b.selectionScore-a.selectionScore||a.minutes-b.minutes);
  return ranked[0]||null;
 }
 
 /* ---------- performance ---------- */
-const PKEY="POCKET_FX_V18_PERF";
+const PKEY="POCKET_FX_V18_PERF"; // V18 statistikası V19-da saxlanılır
 let perf=store.get(PKEY,[]);if(!Array.isArray(perf))perf=[];
 function savePerf(){perf=perf.slice(-2000);store.set(PKEY,perf);renderPerf();}
 
 function recordPerf(res,candles,asset){
- const closed=candles.slice(0,-1),f=candles.at(-1);
- if(!closed.length||!f)return;const bucket=closed.at(-1).time;
+ // Siqnal bağlanmış 1m şamdan sonra qeydə alınır; giriş qiyməti həmin şamın bağlanışıdır.
+ // Beləliklə simulyasiya cari, hələ formalaşan şamın qiymətindən istifadə etmir.
+ const closed=candles.slice(0,-1),entry=closed.at(-1);
+ if(!entry)return;
+ const entryTime=entry.time+60000,bucket=entry.time;
  res.forEach(r=>{
   if(r.direction==="WAIT"||r.score<65||r.stale||!r.confirmed)return;
   const id=[asset,r.minutes,bucket,r.direction].join("_");
   if(perf.some(x=>x.id===id))return;
-  perf.push({id,asset,expiry:r.minutes,direction:r.direction,score:r.score,entryTime:Date.now(),entryPrice:f.close,result:"PENDING",method:"candle-simulation"});
+  perf.push({id,asset,expiry:r.minutes,direction:r.direction,score:r.score,entryTime,entryPrice:entry.close,result:"PENDING",method:"closed-candle-simulation"});
  });
  savePerf();
 }
@@ -437,7 +445,7 @@ function renderSignal(res,block){
  if(!best){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Uyğun müddət tapılmadı";$("bestReason").textContent="1–10 dəqiqəlik variantlarda ən azı iki eyni istiqamətli siqnal və 5/15 dəq trend təsdiqi yoxdur.";return;}
  $("bestExpiry").textContent="AUTO · "+best.minutes+" DƏQ";
  $("bestDirection").textContent=best.direction+" · "+best.score+"/100";
- $("bestReason").textContent=best.quality+". Seçim texniki uyğunluğa əsaslanır; bu, qazanc ehtimalı və ya zəmanət deyil."+(best.historyN>=20?" Tarixçə nümunəsi: "+best.historyN:" Tarixçə nümunəsi hələ azdır.");
+ $("bestReason").textContent=best.quality+" · 5/15 dəq trend təsdiqli · "+best.consensusCount+" müddət eyni istiqamətdə. Seçim texniki uyğunluğa əsaslanır; qazanc zəmanəti deyil."+(best.historyN>=20?" Tarixçə nümunəsi: "+best.historyN:" Tarixçə nümunəsi hələ azdır.");
  return best;
 }
 function saveHistory(asset,best,block){
