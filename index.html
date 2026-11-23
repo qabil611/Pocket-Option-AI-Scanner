@@ -1,1802 +1,596 @@
-<!DOCTYPE html>
-<html lang="az">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#07101e">
-<link rel="manifest" href="./manifest.json">
-<title>POCKET FOREX + CRYPTO AI V21 PRO</title>
-
-<style>
-:root{
---bg:#07101e;--p:#101d30;--p2:#0a1728;
---line:#263950;--t:#edf4ff;--m:#91a4bd;
---g:#00d69a;--r:#ff5573;--y:#ffcc66;--b:#55aaff
-}
-*{box-sizing:border-box}
-body{
-margin:0;padding:11px;background:var(--bg);
-color:var(--t);font-family:Arial,sans-serif
-}
-.app{max-width:950px;margin:auto}
-header{
-display:flex;justify-content:space-between;
-align-items:center;gap:10px;margin-bottom:12px
-}
-h1{font-size:18px;margin:0}
-h2{font-size:14px;margin:0 0 12px}
-h3{font-size:13px;margin:0 0 8px}
-.badge{
-border:1px solid var(--line);border-radius:20px;
-padding:7px 10px;font-size:10px;color:var(--g)
-}
-.panel{
-background:var(--p);border:1px solid var(--line);
-border-radius:13px;padding:13px;margin-bottom:11px
-}
-.row,.grid{
-display:grid;grid-template-columns:1fr 1fr;gap:9px
-}
-.row3{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:8px;margin-top:10px
-}
-label{
-display:block;font-size:11px;color:var(--m);
-margin-bottom:6px
-}
-select,button,textarea{
-width:100%;min-height:43px;padding:10px;
-border-radius:9px;border:1px solid var(--line);
-background:var(--p2);color:var(--t);font-size:13px
-}
-textarea{min-height:70px;font-size:12px}
-button{font-weight:bold;cursor:pointer}
-button.go{background:#15518b;border-color:#15518b}
-button:disabled{opacity:.5}
-.chk{
-display:flex;align-items:center;justify-content:space-between;
-gap:10px;background:var(--p2);border:1px solid var(--line);
-border-radius:9px;padding:10px;margin-top:10px;font-size:12px
-}
-.chk input{width:20px;height:20px;accent-color:var(--g)}
-.green{color:var(--g)}
-.red{color:var(--r)}
-.yellow{color:var(--y)}
-.blue{color:var(--b)}
-.small{font-size:11px;color:var(--m);line-height:1.55}
-.status{font-size:12px;margin-top:9px;line-height:1.5}
-.price{font-size:26px;font-weight:bold;margin:6px 0}
-.card{
-background:var(--p2);border:1px solid var(--line);
-border-radius:10px;padding:11px;min-width:0
-}
-.card.best{border:2px solid var(--g)}
-.score{font-size:22px;font-weight:bold;margin:6px 0}
-.bar{
-height:6px;background:#263950;border-radius:8px;
-overflow:hidden;margin:8px 0
-}
-.bar span{display:block;height:100%;background:var(--b)}
-.rec{
-background:#0b2630;border:1px solid #17614f;
-border-radius:11px;text-align:center;padding:15px;
-margin-bottom:11px
-}
-.big{font-size:25px;font-weight:bold;margin:8px 0}
-.item{padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
-.chart{width:100%;height:360px}
-.toprow{
-display:flex;justify-content:space-between;
-gap:8px;align-items:center
-}
-.rank{font-size:18px;font-weight:bold;min-width:28px}
-.topitem{
-display:grid;grid-template-columns:30px 1fr auto;
-gap:8px;align-items:center;padding:10px 0;
-border-bottom:1px solid var(--line)
-}
-.warn{
-background:#2b2111;border:1px solid #8a6a2a;
-border-radius:9px;padding:10px;font-size:11px;
-line-height:1.6;margin-top:10px
-}
-.metric{
-display:grid;grid-template-columns:1fr 1fr;
-gap:8px;margin-top:10px
-}
-.metric .card{text-align:center}
-.metric b{font-size:17px}
-.signalLine{
-display:flex;justify-content:space-between;
-padding:7px 0;border-bottom:1px solid var(--line);
-font-size:11px
-}
-@media(max-width:480px){
-body{padding:8px}
-.chart{height:300px}
-}
-</style>
-</head>
-
-<body>
-<div class="app">
-
-<header>
-<div>
-<h1>💱 POCKET FOREX + CRYPTO AI V21 PRO</h1>
-<div class="small">FOREX + KRİPTO · MULTI-TIMEFRAME AI · V21</div>
-</div>
-<div class="badge" id="systemStatus">READY</div>
-</header>
-
-<section class="panel">
-<h2>⚙️ İDARƏETMƏ</h2>
-
-<div class="row">
-<div>
-<label>Bazar</label>
-<select id="marketType">
-<option value="forex">FOREX</option>
-<option value="crypto">KRİPTO</option>
-</select>
-</div>
-<div>
-<label>Aktiv / valyuta cütü</label>
-<select id="asset"></select>
-</div>
-</div>
-
-<div class="row" style="margin-top:9px">
-<div>
-<label>Avto-yeniləmə</label>
-<select id="autoSec">
-<option value="60">60 san.</option>
-<option value="90" selected>90 san.</option>
-<option value="120">120 san.</option>
-</select>
-</div>
-</div>
-
-<div class="chk">
-<span>⏰ Yalnız likvid saatlarda (07:00–17:00 UTC)</span>
-<input type="checkbox" id="sessionOnly" checked>
-</div>
-
-<div class="chk">
-<span>⚡ Avtomatik yeniləmə</span>
-<input type="checkbox" id="autoRefresh">
-</div>
-
-<div class="row3">
-<button class="go" id="scanBtn">🔄 SKAN ET</button>
-<button id="allBtn">🌐 BÜTÜN CÜTLƏR</button>
-<button id="stopBtn">■ DAYANDIR</button>
-</div>
-
-<div class="status" id="marketStatus"></div>
-<div class="status blue" id="usageStatus"></div>
-
-<div class="small">
-Siqnallar texniki analiz üçündür. Qazanc zəmanəti və avtomatik Pocket Option əməliyyatı deyil.
-</div>
-
-<div class="status" id="connectionStatus">Analiz üçün hazırdır.</div>
-</section>
-
-<section class="panel">
-<h2>📈 QRAFİK</h2>
-<div id="tradingview_chart" class="chart"></div>
-</section>
-
-<section class="panel">
-<h2>📊 MONİTOR</h2>
-<div class="price" id="price">---</div>
-
-<div class="row">
-<div>
-<div class="small">ŞAM DƏYİŞMƏSİ</div>
-<b id="change">---</b>
-</div>
-<div>
-<div class="small">1 DƏQ ATR</div>
-<b id="atrPips">---</b>
-</div>
-</div>
-
-<div class="metric">
-<div class="card">
-<div class="small">5 DƏQ TREND</div>
-<b id="trend5">---</b>
-</div>
-<div class="card">
-<div class="small">15 DƏQ TREND</div>
-<b id="trend15">---</b>
-</div>
-<div class="card">
-<div class="small">1 SAAT TREND</div>
-<b id="trend60">---</b>
-</div>
-<div class="card">
-<div class="small">GİRİŞ SAYĞACI</div>
-<b id="entryTimer">--:--</b>
-</div>
-</div>
-
-<div class="status" id="dataStatus">Məlumat gözlənilir.</div>
-</section>
-
-<section class="panel">
-<h2>🏆 AI AUTO SIGNAL V21</h2>
-
-<div class="rec">
-<div class="small">AUTO EXPIRY · 1–10 DƏQİQƏ</div>
-<div class="big" id="bestExpiry">WAIT</div>
-<b id="bestDirection">Analiz gözlənilir</b>
-<div class="small" id="bestReason" style="margin-top:8px">
-Məlumat gözlənilir.
-</div>
-</div>
-
-<div class="grid" id="expiryCards"></div>
-</section>
-
-<section class="panel">
-<h2>📊 SİQNAL TEST STATİSTİKASI</h2>
-
-<div class="small">
-1 dəqiqəlik şam məlumatı ilə aparılan simulyasiyadır.
-85% ödənişdə nəzəri break-even təxminən 54%-dir.
-Statistika real Pocket Option nəticəsi deyil.
-</div>
-
-<div style="height:10px"></div>
-<div class="grid" id="performanceGrid"></div>
-
-<div style="height:10px"></div>
-<button id="clearPerf">STATİSTİKANI SIFIRLA</button>
-</section>
-
-<section class="panel">
-<h2>🌐 BÜTÜN CÜTLƏR SKANI</h2>
-<div id="scanResults" class="small">Skan etməyə hazırdır.</div>
-</section>
-
-<section class="panel">
-<div class="toprow">
-<h2>🏆 FOREX + KRİPTO TOP 10</h2>
-<button class="go" id="top10Btn" style="width:auto">
-TOP 10 SKAN ET
-</button>
-</div>
-
-<div class="small">
-Forex və Kripto ayrı yoxlanılır.
-Hər bazarda ən güclü 10 siqnal göstərilir.
-Minimum 70 bal və trend təsdiqi tələb olunur.
-</div>
-
-<div id="top10Status" class="status">Skan başlamayıb.</div>
-<div id="top10Results" class="small">Nəticələr burada görünəcək.</div>
-</section>
-
-<section class="panel">
-<h2>📰 XƏBƏR VAXTLARI (UTC)</h2>
-<div class="small">
-Hər sətirdə bir vaxt: YYYY-MM-DD HH:MM.
-Bu vaxtdan ±15 dəqiqə siqnal bloklanır.
-</div>
-<textarea id="news" placeholder="2026-12-04 13:30"></textarea>
-</section>
-
-<section class="panel">
-<h2>📜 TARİXÇƏ</h2>
-<div id="history" class="small">Hələ nəticə yoxdur.</div>
-</section>
-
-<section class="panel">
-<div class="small">
-• 0–100 texniki uyğunluq balıdır, qazanc ehtimalı deyil.<br>
-• Forex: Twelve Data backend.<br>
-• Kripto: Binance Spot public API.<br>
-• Mənbə qiymətləri Pocket Option qiymətindən fərqlənə bilər.<br>
-• Backend Twelve Data üçün outputsize parametrini dəstəkləməlidir.
-</div>
-</section>
-
-</div>
-
-<script src="https://s3.tradingview.com/tv.js"></script>
-
-<script>
-"use strict";
-
-/* ================= CONFIG ================= */
-
-const BACKEND_URL="https://pocket-option-ai-v11.onrender.com";
-
-const $=id=>document.getElementById(id);
-
-const FOREX_PAIRS=[
-"EUR/USD","GBP/USD","USD/JPY","AUD/USD",
-"USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"
-];
-
-const CRYPTO_PAIRS=[
-"BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT",
-"XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT",
-"LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT",
-"TONUSDT","SUIUSDT","APTUSDT","OPUSDT",
-"ARBUSDT","NEARUSDT","INJUSDT","FETUSDT"
-];
-
-const DAILY_LIMIT=780;
-const MIN_CANDLES=60;
-const MIN_SIGNAL_SCORE=70;
-const MIN_REQUEST_GAP=8000;
-
-let ctrl=null;
-let timer=null;
-let runId=0;
-let running=true;
-let latest=null;
-let hist=[];
-let lastRequestAt=0;
-let perf=loadPerf();
-
-/* ================= STORAGE ================= */
-
+<!DOCTYPE html>  <html lang="az">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width,initial-scale=1">  
+<meta name="theme-color" content="#07101e">  
+<link rel="manifest" href="./manifest.json">  
+<title>POCKET FOREX + CRYPTO AI V20 PRO</title>  
+<style>  
+:root{--bg:#07101e;--p:#101d30;--p2:#0a1728;--line:#263950;--t:#edf4ff;--m:#91a4bd;--g:#00d69a;--r:#ff5573;--y:#ffcc66;--b:#55aaff}  
+*{box-sizing:border-box}  
+body{margin:0;padding:11px;background:var(--bg);color:var(--t);font-family:Arial,sans-serif}  
+.app{max-width:950px;margin:auto}  
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}  
+h1{font-size:18px;margin:0}h2{font-size:14px;margin:0 0 12px}  
+.badge{border:1px solid var(--line);border-radius:20px;padding:7px 10px;font-size:10px;color:var(--g)}  
+.panel{background:var(--p);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:11px}  
+.row,.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}  
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}  
+label{display:block;font-size:11px;color:var(--m);margin-bottom:6px}  
+select,button,textarea{width:100%;min-height:43px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--p2);color:var(--t);font-size:13px}  
+textarea{min-height:70px;font-size:12px}  
+button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color:#15518b}button:disabled{opacity:.5}  
+.chk{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--p2);border:1px solid var(--line);border-radius:9px;padding:10px;margin-top:10px;font-size:12px}  
+.chk input{width:20px;height:20px;accent-color:var(--g)}  
+.green{color:var(--g)}.red{color:var(--r)}.yellow{color:var(--y)}.blue{color:var(--b)}  
+.small{font-size:11px;color:var(--m);line-height:1.55}  
+.status{font-size:12px;margin-top:9px;line-height:1.5}  
+.price{font-size:26px;font-weight:bold;margin:6px 0}  
+.card{background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:11px;min-width:0}  
+.card.best{border:2px solid var(--g)}  
+.card h3{font-size:13px;margin:0 0 8px}  
+.score{font-size:22px;font-weight:bold;margin:6px 0}  
+.bar{height:6px;background:#263950;border-radius:8px;overflow:hidden;margin:8px 0}  
+.bar span{display:block;height:100%;background:var(--b)}  
+.rec{background:#0b2630;border:1px solid #17614f;border-radius:11px;text-align:center;padding:15px;margin-bottom:11px}  
+.big{font-size:25px;font-weight:bold;margin:8px 0}  
+.item{padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}  
+.chart{width:100%;height:360px}  
+.toprow{display:flex;justify-content:space-between;gap:8px;align-items:center}.rank{font-size:18px;font-weight:bold;min-width:28px}.topitem{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}  
+.warn{background:#2b2111;border:1px solid #8a6a2a;border-radius:9px;padding:10px;font-size:11px;line-height:1.6;margin-top:10px}  
+@media(max-width:480px){body{padding:8px}.chart{height:300px}}  
+</style>  
+</head>  
+<body>  
+<div class="app">  <header>  
+<div><h1>💱 POCKET FOREX + CRYPTO AI V20 PRO</h1><div class="small">FOREX + KRİPTO · ÇOXBAZARLI TEXNİKİ ANALİZ · V20</div></div>  
+<div class="badge" id="systemStatus">READY</div>  
+</header>  <section class="panel">  
+<h2>⚙️ İDARƏETMƏ</h2>  
+<div class="row">  
+<div><label>Bazar</label><select id="marketType"><option value="forex">FOREX</option><option value="crypto">KRİPTO</option></select></div>  
+<div><label>Aktiv / valyuta cütü</label><select id="asset"></select></div>  
+</div>  
+<div class="row" style="margin-top:9px">  
+<div><label>Avto-yeniləmə aralığı</label>  
+<select id="autoSec"><option value="60">60 san.</option><option value="90" selected>90 san.</option><option value="120">120 san.</option></select></div>  
+</div>  
+<div class="chk"><span>⏰ Yalnız likvid saatlarda (07:00–17:00 UTC)</span><input type="checkbox" id="sessionOnly" checked></div>  
+<div class="chk"><span>⚡ Avtomatik yeniləmə</span><input type="checkbox" id="autoRefresh"></div>  
+<div class="row3">  
+<button class="go" id="scanBtn">🔄 SKAN ET</button>  
+<button id="allBtn">🌐 BÜTÜN CÜTLƏR</button>  
+<button id="stopBtn">■ DAYANDIR</button>  
+</div>  
+<div class="status" id="marketStatus"></div>  
+<div class="status blue" id="usageStatus"></div>  
+ <div class="small">Siqnallar texniki indikatorlara əsaslanır; qazanc zəmanəti və ya avtomatik Pocket Option əməliyyatı deyil.</div>  
+<div class="status" id="connectionStatus">Analiz üçün hazırdır.</div>  
+</section>  <section class="panel">  
+<h2>📈 QRAFİK</h2>  
+<div id="tradingview_chart" class="chart"></div>  
+</section>  <section class="panel">  
+<h2>📊 MONİTOR</h2>  
+<div class="price" id="price">---</div>  
+<div class="row"><div><div class="small">ŞAM DƏYİŞMƏSİ</div><b id="change">---</b></div>  
+<div><div class="small">1 DƏQ ATR (FOREX: PİP / KRİPTO: %)</div><b id="atrPips">---</b></div></div>  
+<div class="status" id="dataStatus">Məlumat gözlənilir.</div>  
+</section>  <section class="panel">  
+<h2>🏆 SİQNAL</h2>  
+<div class="rec">  
+<div class="small">AI AUTO EXPIRY V20 · 1–10 DƏQİQƏ · MİNİMUM 70/100</div>  
+<div class="big" id="bestExpiry">WAIT</div>  
+<b id="bestDirection">Analiz gözlənilir</b>  
+<div class="small" id="bestReason" style="margin-top:8px">Məlumat gözlənilir.</div>  
+</div>  
+<div class="grid" id="expiryCards"></div>  
+</section>  <section class="panel">  
+<h2>📊 SİQNAL TEST STATİSTİKASI</h2>  
+<div class="small">Bu, 1 dəqiqəlik şam məlumatı ilə aparılan simulyasiyadır; Pocket Option-da faktiki əməliyyat deyil. 85% ödənişdə nəzəri break-even təxminən 54%-dir. Az nümunə etibarlı nəticə vermir.</div>  
+<div style="height:10px"></div>  
+<div class="small">Hər müddətin nəticəsi ayrıca hesablanır. Yalnız 70+ texniki bal və 5/15 dəq təsdiqi olan siqnallar statistikaya yazılır. Ən azı 20 tamamlanmış nümunə olduqda tarixçə seçimə kiçik əlavə çəki verir.</div>  
+<div class="grid" id="performanceGrid"></div>  
+<div style="height:10px"></div>  
+<button id="clearPerf">STATİSTİKANI SIFIRLA</button>  
+</section>  <section class="panel">  
+<h2>🌐 BÜTÜN CÜTLƏR SKANI</h2>  
+<div id="scanResults" class="small">Skan 1 sorğu/cüt istifadə edir (cüt başına ~8 san. fasilə ilə).</div>  
+</section>  <section class="panel">  
+<div class="toprow"><h2>🏆 FOREX + KRİPTO · TOP 10 SİQNAL</h2><button class="go" id="top10Btn" style="width:auto">TOP 10 SKAN ET</button></div>  
+<div class="small">Forex və Kripto ayrıca yoxlanılır. Hər bazar üçün ən güclü 10 təsdiqlənmiş siqnal göstərilir. Minimum 70 texniki bal, iki müddət konsensusu və 5/15 dəq trend təsdiqi tələb olunur. Nəticə zəmanət deyil.</div>  
+<div id="top10Status" class="status">Skan başlamayıb.</div>  
+<div id="top10Results" class="small">TOP 10 nəticələri burada görünəcək.</div>  
+</section>  <section class="panel">  
+<h2>📰 XƏBƏR VAXTLARI (UTC)</h2>  
+<div class="small">Hər sətirdə bir vaxt: YYYY-MM-DD HH:MM. Bu vaxtdan ±15 dəq. siqnal bloklanır.</div>  
+<div style="height:8px"></div>  
+<textarea id="news" placeholder="2026-12-04 13:30"></textarea>  
+</section>  <section class="panel"><h2>📜 TARİXÇƏ</h2><div id="history" class="small">Hələ nəticə yoxdur.</div></section>  <section class="panel"><div class="small">  
+• 0–100 texniki uyğunluq balıdır, qazanc ehtimalı deyil; 70 bal da 70% uğur demək deyil.<br>  
+• Forex: Twelve Data; Kripto: Binance Spot public API.<br>• Mənbə qiymətləri Pocket Option qiymətindən fərqlənə bilər.<br>  
+• Backend `outputsize` parametrini Twelve Data-ya ötürməlidir (1000 şam üçün).  
+</div></section>  </div>  
+<script src="https://s3.tradingview.com/tv.js"></script>  
+<script>  
+"use strict";  
+const BACKEND_URL="https://pocket-option-ai-v11.onrender.com";  
+const $=id=>document.getElementById(id);  
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));  
+const FOREX_PAIRS=["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"];  
+const CRYPTO_PAIRS=["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT","LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT","TONUSDT","SUIUSDT","APTUSDT","OPUSDT","ARBUSDT","NEARUSDT","INJUSDT","FETUSDT"];  
+const DAILY_LIMIT=780,MIN_CANDLES=60,MIN_SIGNAL_SCORE=70;  
+// V20: 70+ bal, iki müddət konsensusu və 5m/15m trend uyğunluğu.  
+let ctrl=null,timer=null,runId=0,running=true,latest=null,hist=[];  
+let lastRequestAt=0;  
+const MIN_REQUEST_GAP=8000; // Twelve Data limitinə qarşı ehtiyatlı fasilə  /* ---------- storage ---------- */
 const store={
- get(k,d){
-  try{
-   const v=localStorage.getItem(k);
-   return v?JSON.parse(v):d;
-  }catch(e){return d;}
- },
- set(k,v){
-  try{localStorage.setItem(k,JSON.stringify(v));}
-  catch(e){}
- }
+get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 };
 
-function loadPerf(){
- const p=store.get("POCKET_FX_V21_PERF",[]);
- return Array.isArray(p)?p:[];
-}
-
-function savePerf(){
- perf=perf.slice(-2000);
- store.set("POCKET_FX_V21_PERF",perf);
- renderPerf();
-}
-
-/* ================= USAGE ================= */
-
+/* ---------- request budget (local safety cap; actual plan limits depend on API account) ---------- */
 const utcDay=()=>new Date().toISOString().slice(0,10);
+function usage(){const u=store.get("FX_USAGE",{});return u.d===utcDay()?u:{d:utcDay(),n:0};}
+function bump(){const u=usage();u.n++;store.set("FX_USAGE",u);renderUsage();}
+function renderUsage(){const n=usage().n;$("usageStatus").textContent="Bu gün sorğu: "+n+" / 800 (təhlükəsiz hədd "+DAILY_LIMIT+")";}
 
-function usage(){
- const u=store.get("FX_USAGE",{});
- return u.d===utcDay()?u:{d:utcDay(),n:0};
-}
-
-function bump(){
- const u=usage();
- u.n++;
- store.set("FX_USAGE",u);
- renderUsage();
-}
-
-function renderUsage(){
- const n=usage().n;
- $("usageStatus").textContent=
- "Bu gün Forex sorğusu: "+n+" / 800";
-}
-
-/* ================= MARKET ================= */
-
+/* ---------- market state ---------- /
 function marketOpen(d=new Date()){
- const w=d.getUTCDay();
- const h=d.getUTCHours();
-
- if(w===6)return false;
- if(w===5&&h>=22)return false;
- if(w===0&&h<22)return false;
-
- return true;
+const w=d.getUTCDay(),h=d.getUTCHours();
+if(w===6)return false;
+if(w===5&&h>=22)return false;
+if(w===0&&h<22)return false;
+return true;
 }
-
-function inSession(d=new Date()){
- const h=d.getUTCHours();
- return h>=7&&h<17;
-}
-
+function inSession(d=new Date()){const h=d.getUTCHours();return h>=7&&h<17;}
 function newsBlock(){
- const now=Date.now();
-
- for(const line of $("news").value.split("\n")){
-  const t=Date.parse(
-   line.trim().replace(" ","T")+":00Z"
-  );
-
-  if(Number.isFinite(t)&&Math.abs(now-t)<900000){
-   return "Xəbər vaxtı: "+line.trim()+" UTC";
-  }
- }
-
- return null;
+const now=Date.now();
+for(const line of $("news").value.split("\n")){
+const t=Date.parse(line.trim().replace(" ","T")+":00Z");
+if(Number.isFinite(t)&&Math.abs(now-t)<1560000)return "Xəbər vaxtı: "+line.trim()+" UTC";
 }
-
+return null;
+}
 function blockReason(){
- if($("marketType").value==="forex"){
-  if(!marketOpen())return "Forex bazarı bağlıdır.";
-  if($("sessionOnly").checked&&!inSession()){
-   return "Likvid sessiyadan kənardır.";
-  }
- }
- return newsBlock();
+if($("marketType").value==="forex") {
+if(!marketOpen())return "Forex bazarı bağlıdır (həftəsonu).";
+if($("sessionOnly").checked&&!inSession())return "Likvid saatlardan kənardır (07–17 UTC).";
 }
-
+return newsBlock();
+}
 function renderMarket(){
- const crypto=$("marketType").value==="crypto";
- const open=crypto||marketOpen();
-
- $("marketStatus").innerHTML=
- (open?'<span class="green">● Bazar açıqdır</span>':
- '<span class="red">● Bazar bağlıdır</span>')+
- " · UTC "+new Date().toISOString().slice(11,16);
+const open=$("marketType").value==="crypto"?true:marketOpen();
+$("marketStatus").innerHTML=(open?'<span class="green">● Bazar açıqdır</span>':'<span class="red">● Bazar bağlıdır</span>')+
+" · UTC "+new Date().toISOString().slice(11,16)+" · "+($("marketType").value==="crypto"?"24/7 aktiv bazar":(inSession()?"likvid sessiya":"zəif likvidlik"));
 }
-
 setInterval(renderMarket,30000);
 
-/* ================= REQUEST CONTROL ================= */
-
+/* ---------- data ---------- */
 async function waitForRequestSlot(signal){
- const delay=Math.max(
-  0,MIN_REQUEST_GAP-(Date.now()-lastRequestAt)
- );
-
- if(!delay)return;
-
- await new Promise((resolve,reject)=>{
-  const t=setTimeout(resolve,delay);
-
-  const abort=()=>{
-   clearTimeout(t);
-   reject(new DOMException("Dayandırıldı","AbortError"));
-  };
-
-  if(signal){
-   if(signal.aborted)return abort();
-   signal.addEventListener("abort",abort,{once:true});
-  }
- });
+const delay=Math.max(0,MIN_REQUEST_GAP-(Date.now()-lastRequestAt));
+if(!delay)return;
+await new Promise((resolve,reject)=>{
+const finish=()=>{if(signal)signal.removeEventListener("abort",abort);resolve();};
+const abort=()=>{clearTimeout(t);if(signal)signal.removeEventListener("abort",abort);reject(new DOMException("Sorğu dayandırıldı","AbortError"));};
+const t=setTimeout(finish,delay);
+if(signal){
+if(signal.aborted){abort();return;}
+signal.addEventListener("abort",abort,{once:true});
 }
-
-/* ================= FOREX DATA ================= */
-
+});
+}
 async function fetchFx(symbol,signal){
-
- const u=usage();
-
- if(u.n>=DAILY_LIMIT){
-  throw new Error("Gündəlik Forex sorğu limiti bitib.");
- }
-
- await waitForRequestSlot(signal);
-
- if(signal?.aborted){
-  throw new DOMException("Dayandırıldı","AbortError");
- }
-
- bump();
- lastRequestAt=Date.now();
-
- const url=BACKEND_URL+
- "/api/forex?symbol="+encodeURIComponent(symbol)+
- "&interval=1min&outputsize=1000";
-
- const r=await fetch(url,{
-  cache:"no-store",
-  signal
- });
-
- if(!r.ok){
-  throw new Error("Forex backend HTTP "+r.status);
- }
-
- const d=await r.json();
-
- if(!Array.isArray(d.values)){
-  throw new Error(d.message||"Forex məlumatı gəlmədi.");
- }
-
- const rows=d.values.map(c=>{
-  const raw=String(c.datetime||"");
-  const n=raw.includes("T")?raw:raw.replace(" ","T");
-
-  return{
-   time:Date.parse(
-    /Z$|[+-]\d\d:\d\d$/.test(n)?n:n+"Z"
-   ),
-   open:+c.open,
-   high:+c.high,
-   low:+c.low,
-   close:+c.close
-  };
- }).filter(c=>
-  [c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&
-  c.close>0&&c.high>=c.low
- );
-
- const unique=new Map(rows.map(c=>[c.time,c]));
-
- return [...unique.values()].sort((a,b)=>a.time-b.time);
+const u=usage();
+if(u.n>=DAILY_LIMIT)throw new Error("Gündəlik təhlükəsiz sorğu limiti çatdı. Limit sıfırlanana qədər gözləyin.");
+await waitForRequestSlot(signal);
+if(signal?.aborted)throw new DOMException("Sorğu dayandırıldı","AbortError");
+bump();
+lastRequestAt=Date.now();
+const slow=setTimeout(()=>{$("connectionStatus").textContent="Backend cavab verir... İlk sorğu 30+ saniyə çəkə bilər.";},8000);
+try{
+const r=await fetch(BACKEND_URL+"/api/forex?symbol="+encodeURIComponent(symbol)+"&interval=1min&outputsize=1000",{cache:"no-store",signal});
+if(!r.ok)throw new Error("Forex backend xətası: HTTP "+r.status);
+const d=await r.json();
+if(!Array.isArray(d.values))throw new Error(d.message||"Forex məlumatı gəlmədi.");
+const rows=d.values.map(c=>{
+const raw=String(c.datetime||""),n=raw.includes("T")?raw:raw.replace(" ","T");
+return {time:Date.parse(/Z$|[+-]\d\d:\d\d$/.test(n)?n:n+"Z"),open:+c.open,high:+c.high,low:+c.low,close:+c.close};
+}).filter(c=>[c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.close>0&&c.high>=c.low);
+const unique=new Map(rows.map(c=>[c.time,c]));
+return [...unique.values()].sort((a,b)=>a.time-b.time);
+}finally{clearTimeout(slow);}
 }
 
-/* ================= CRYPTO DATA ================= */
-
+/* Binance spot public API: kripto 24/7, Twelve Data limitindən ayrı. */
 async function fetchCrypto(symbol,signal){
-
- const url=
- "https://api.binance.com/api/v3/klines?symbol="+
- encodeURIComponent(symbol)+
- "&interval=1m&limit=1000";
-
- const r=await fetch(url,{
-  cache:"no-store",
-  signal
- });
-
- if(!r.ok){
-  throw new Error("Binance HTTP "+r.status);
- }
-
- const rows=await r.json();
-
- if(!Array.isArray(rows)){
-  throw new Error("Binance məlumatı gəlmədi.");
- }
-
- return rows.map(k=>({
-  time:Number(k[0]),
-  open:+k[1],
-  high:+k[2],
-  low:+k[3],
-  close:+k[4]
- })).filter(c=>
-  [c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&
-  c.close>0&&c.high>=c.low
- ).sort((a,b)=>a.time-b.time);
+const url="https://api.binance.com/api/v3/klines?symbol="+encodeURIComponent(symbol)+"&interval=1m&limit=1000";
+const r=await fetch(url,{cache:"no-store",signal});
+if(!r.ok)throw new Error("Binance API xətası: HTTP "+r.status);
+const rows=await r.json();
+if(!Array.isArray(rows))throw new Error("Binance kripto məlumatı gəlmədi.");
+return rows.map(k=>({time:Number(k[0]),open:+k[1],high:+k[2],low:+k[3],close:+k[4]}))
+.filter(c=>[c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.close>0&&c.high>=c.low)
+.sort((a,b)=>a.time-b.time);
 }
-
 async function fetchMarket(symbol,signal,market=$("marketType").value){
- return market==="crypto"?
-  fetchCrypto(symbol,signal):
-  fetchFx(symbol,signal);
+return market==="crypto"?fetchCrypto(symbol,signal):fetchFx(symbol,signal);
 }
-
-/* ================= AGGREGATION ================= */
 
 function aggregate(cs,min){
- const size=min*60000;
- const g=new Map();
-
- cs.forEach(c=>{
-  const b=Math.floor(c.time/size)*size;
-  const x=g.get(b);
-
-  if(!x){
-   g.set(b,{
-    time:b,
-    open:c.open,
-    high:c.high,
-    low:c.low,
-    close:c.close
-   });
-  }else{
-   x.high=Math.max(x.high,c.high);
-   x.low=Math.min(x.low,c.low);
-   x.close=c.close;
-  }
- });
-
- return [...g.values()].sort((a,b)=>a.time-b.time);
+const size=min*60000,g=new Map();
+cs.forEach(c=>{
+const b=Math.floor(c.time/size)*size,x=g.get(b);
+if(!x)g.set(b,{time:b,open:c.open,high:c.high,low:c.low,close:c.close});
+else{x.high=Math.max(x.high,c.high);x.low=Math.min(x.low,c.low);x.close=c.close;}
+});
+return [...g.values()].sort((a,b)=>a.time-b.time);
 }
 
-/* ================= INDICATORS ================= */
-
+/* ---------- indicators ---------- /
 function emaSeries(v,p){
- const o=new Array(v.length).fill(null);
-
- if(v.length<p)return o;
-
- const k=2/(p+1);
-
- let e=v.slice(0,p).reduce((a,b)=>a+b,0)/p;
- o[p-1]=e;
-
- for(let i=p;i<v.length;i++){
-  e=v[i]*k+e*(1-k);
-  o[i]=e;
- }
-
- return o;
+const o=new Array(v.length).fill(null);if(v.length<p)return o;
+const k=2/(p+1);let e=v.slice(0,p).reduce((a,b)=>a+b,0)/p;o[p-1]=e;
+for(let i=p;i<v.length;i++){e=v[i]k+e(1-k);o[i]=e;}return o;
 }
-
-function ema(v,p){
- return emaSeries(v,p).at(-1)??null;
-}
-
+const ema=(v,p)=>emaSeries(v,p).at(-1)??null;
 function rsi(v,p=14){
- if(v.length<p+1)return null;
-
- let g=0,l=0;
-
- for(let i=1;i<=p;i++){
-  const d=v[i]-v[i-1];
-  d>0?g+=d:l-=d;
- }
-
- g/=p;
- l/=p;
-
- for(let i=p+1;i<v.length;i++){
-  const d=v[i]-v[i-1];
-  g=(g*(p-1)+(d>0?d:0))/p;
-  l=(l*(p-1)+(d<0?-d:0))/p;
- }
-
- return l===0?100:100-100/(1+g/l);
+if(v.length<p+1)return null;let g=0,l=0;
+for(let i=1;i<=p;i++){const d=v[i]-v[i-1];d>0?g+=d:l-=d;}g/=p;l/=p;
+for(let i=p+1;i<v.length;i++){const d=v[i]-v[i-1];g=(g(p-1)+(d>0?d:0))/p;l=(l*(p-1)+(d<0?-d:0))/p;}
+return l===0?100:100-100/(1+g/l);
 }
-
 function macd(v){
- const a=emaSeries(v,12);
- const b=emaSeries(v,26);
- const line=[];
-
- for(let i=0;i<v.length;i++){
-  if(a[i]!==null&&b[i]!==null){
-   line.push(a[i]-b[i]);
-  }
- }
-
- if(line.length<9)return null;
-
- const s=ema(line,9);
-
- return s===null?null:{
-  line:line.at(-1),
-  signal:s,
-  hist:line.at(-1)-s
- };
+const a=emaSeries(v,12),b=emaSeries(v,26),line=[];
+for(let i=0;i<v.length;i++)if(a[i]!==null&&b[i]!==null)line.push(a[i]-b[i]);
+if(line.length<9)return null;const s=ema(line,9);
+return s===null?null:{line:line.at(-1),signal:s,hist:line.at(-1)-s};
 }
-
+function bollMid(v){return v.length<20?null:v.slice(-20).reduce((a,b)=>a+b,0)/20;}
+const tr=(c,p)=>Math.max(c.high-c.low,Math.abs(c.high-p.close),Math.abs(c.low-p.close));
 function atr(cs,p=14){
- if(cs.length<p+1)return null;
-
- let s=0;
-
- for(let i=cs.length-p;i<cs.length;i++){
-  const c=cs[i];
-  const prev=cs[i-1];
-
-  s+=Math.max(
-   c.high-c.low,
-   Math.abs(c.high-prev.close),
-   Math.abs(c.low-prev.close)
-  );
- }
-
- return s/p;
+if(cs.length<p+1)return null;let s=0;
+for(let i=cs.length-p;i<cs.length;i++)s+=tr(cs[i],cs[i-1]);return s/p;
 }
-
 function adx(c,p=14){
- if(c.length<2*p+1)return null;
-
- const T=[],P=[],M=[];
-
- for(let i=1;i<c.length;i++){
-  const up=c[i].high-c[i-1].high;
-  const dn=c[i-1].low-c[i].low;
-
-  P.push(up>dn&&up>0?up:0);
-  M.push(dn>up&&dn>0?dn:0);
-
-  T.push(Math.max(
-   c[i].high-c[i].low,
-   Math.abs(c[i].high-c[i-1].close),
-   Math.abs(c[i].low-c[i-1].close)
-  ));
- }
-
- const sum=a=>a.slice(0,p).reduce((x,y)=>x+y,0);
-
- let st=sum(T),sp=sum(P),sm=sum(M);
- const dx=[];
-
- const push=()=>{
-  const pd=st?100*sp/st:0;
-  const md=st?100*sm/st:0;
-  dx.push(100*Math.abs(pd-md)/((pd+md)||1));
- };
-
- push();
-
- for(let i=p;i<T.length;i++){
-  st=st-st/p+T[i];
-  sp=sp-sp/p+P[i];
-  sm=sm-sm/p+M[i];
-  push();
- }
-
- if(dx.length<p)return null;
-
- let a=dx.slice(0,p).reduce((x,y)=>x+y,0)/p;
-
- for(let i=p;i<dx.length;i++){
-  a=(a*(p-1)+dx[i])/p;
- }
-
- return a;
+if(c.length<2p+1)return null;const T=[],P=[],M=[];
+for(let i=1;i<c.length;i++){
+const up=c[i].high-c[i-1].high,dn=c[i-1].low-c[i].low;
+P.push(up>dn&&up>0?up:0);M.push(dn>up&&dn>0?dn:0);T.push(tr(c[i],c[i-1]));
+}
+const sum=a=>a.slice(0,p).reduce((x,y)=>x+y,0);
+let sT=sum(T),sP=sum(P),sM=sum(M);const dx=[];
+const push=()=>{const pd=sT?100sP/sT:0,md=sT?100sM/sT:0;dx.push(100Math.abs(pd-md)/((pd+md)||1));};
+push();
+for(let i=p;i<T.length;i++){sT=sT-sT/p+T[i];sP=sP-sP/p+P[i];sM=sM-sM/p+M[i];push();}
+if(dx.length<p)return null;
+let a=dx.slice(0,p).reduce((x,y)=>x+y,0)/p;
+for(let i=p;i<dx.length;i++)a=(a*(p-1)+dx[i])/p;return a;
 }
 
-/* ================= ANALYSIS ================= */
-
-const isCrypto=s=>/USDT$/.test(s);
-
-const pipSize=s=>
- isCrypto(s)?1:(s.includes("JPY")?0.01:0.0001);
-
-function waitResult(minutes,quality,reason){
- return{
-  minutes,
-  direction:"WAIT",
-  score:0,
-  quality,
-  reason,
-  call:0,
-  put:0,
-  stale:true,
-  confirmed:false
- };
-}
+/* ---------- analysis ---------- */
+const isCrypto=sym=>/USDT$/.test(sym);
+const pipSize=sym=>isCrypto(sym)?1:(sym.includes("JPY")?0.01:0.0001);
+function wait(minutes,quality,reason,extra={}){return {minutes,direction:"WAIT",score:0,quality,reason,call:0,put:0,stale:true,confirmed:false,...extra};}
 
 function analyze(candles,minutes,symbol){
-
- const closed=candles.slice(0,-1);
-
- if(closed.length<MIN_CANDLES){
-  return waitResult(
-   minutes,
-   "Məlumat azdır",
-   "Bağlanmış şam sayı kifayət deyil."
-  );
- }
-
- const cl=closed.map(c=>c.close);
- const price=cl.at(-1);
-
- const e20=ema(cl,20);
- const e50=ema(cl,50);
- const e200=cl.length>=200?ema(cl,200):null;
-
- const rv=rsi(cl);
- const mv=macd(cl);
- const av=atr(closed);
- const ax=adx(closed);
-
- const atrPips=av===null?null:av/pipSize(symbol);
- const atrPct=av===null?null:av/price*100;
-
- const base={
-  minutes,
-  rsi:rv,
-  adx:ax,
-  atrPips,
-  atrPct
- };
-
- if(ax!==null&&ax<16){
-  return{
-   ...waitResult(minutes,"Yan bazar","ADX "+ax.toFixed(0)+" < 16"),
-   ...base
-  };
- }
-
- if(isCrypto(symbol)&&atrPct!==null&&atrPct<0.025){
-  return{
-   ...waitResult(minutes,"Aşağı volatillik","ATR aşağıdır"),
-   ...base
-  };
- }
-
- if(!isCrypto(symbol)&&atrPips!==null&&atrPips<0.7*Math.sqrt(minutes)){
-  return{
-   ...waitResult(minutes,"Aşağı volatillik","ATR aşağıdır"),
-   ...base
-  };
- }
-
- let call=0,put=0;
- const reasons=[];
-
- if(e20>e50){
-  call+=2;
-  reasons.push("EMA20>50");
- }else{
-  put+=2;
-  reasons.push("EMA20<50");
- }
-
- if(e200!==null){
-  price>e200?call+=2:put+=2;
- }
-
- if(rv!==null){
-  if(rv>55&&rv<70){
-   call+=2;
-   reasons.push("RSI+");
-  }else if(rv<45&&rv>30){
-   put+=2;
-   reasons.push("RSI-");
-  }else if(rv>=70){
-   put++;
-   reasons.push("RSI overbought");
-  }else if(rv<=30){
-   call++;
-   reasons.push("RSI oversold");
-  }
- }
-
- if(mv){
-  if(mv.hist>0&&mv.line>mv.signal){
-   call+=2;
-   reasons.push("MACD+");
-  }else if(mv.hist<0&&mv.line<mv.signal){
-   put+=2;
-   reasons.push("MACD-");
-  }
- }
-
- if(cl.length>=6){
-  const mo=cl.at(-1)-cl.at(-6);
-  mo>0?call++:put++;
- }
-
- if(ax!==null){
-  reasons.push("ADX "+ax.toFixed(0));
- }
-
- const diff=Math.abs(call-put);
-
- if(diff<3){
-  return{
-   ...waitResult(minutes,"Təsdiq yoxdur",reasons.join(" · ")),
-   ...base,call,put
-  };
- }
-
- let score=Math.min(90,Math.round(50+diff*4));
-
- if(e200===null)score=Math.min(score,78);
-
- const age=Date.now()-closed.at(-1).time;
- const stale=age>180000;
-
- if(stale)score=Math.min(score,45);
-
- return{
-  ...base,
-  direction:call>put?"CALL":"PUT",
-  score,
-  quality:score>=82?"Yüksək":
-          score>=75?"Yaxşı":
-          score>=70?"Orta":"Zəif",
-  reason:reasons.join(" · "),
-  call,put,stale,
-  confirmed:false
- };
+const closed=candles.slice(0,-1);
+if(closed.length<MIN_CANDLES)return wait(minutes,"Məlumat azdır","Bağlanmış şam sayı kifayət deyil.");
+const cl=closed.map(c=>c.close),price=cl.at(-1);
+const e20=ema(cl,20),e50=ema(cl,50),e200=cl.length>=200?ema(cl,200):null;
+const rv=rsi(cl),mv=macd(cl),bm=bollMid(cl),av=atr(closed),ax=adx(closed);
+const atrPips=av===null?null:av/pipSize(symbol);
+const atrPct=av===null?null:(av/price)100;
+const base={minutes,rsi:rv,adx:ax,atrPips,atrPct};
+if(ax!==null&&ax<18)return {...wait(minutes,"Yan bazar","ADX "+ax.toFixed(0)+" < 18"),...base};
+if(isCrypto(symbol)&&atrPct!==null&&atrPct<0.025)return {...wait(minutes,"Aşağı volatillik","ATR "+atrPct.toFixed(3)+"% çox aşağıdır"),...base};
+if(!isCrypto(symbol)&&atrPips!==null&&atrPips<0.7Math.sqrt(minutes))return {...wait(minutes,"Aşağı volatillik","ATR "+atrPips.toFixed(2)+" pip çox aşağıdır"),...base};
+let call=0,put=0;const rs=[];
+if(e20>e50){call+=2;rs.push("EMA20>50");}else if(e20<e50){put+=2;rs.push("EMA20<50");}
+if(e200!==null){price>e200?call++:put++;}
+if(rv!==null){
+if(rv>55&&rv<70){call+=2;rs.push("RSI+");}
+else if(rv<45&&rv>30){put+=2;rs.push("RSI-");}
+else if(rv>=70){put++;rs.push("RSI overbought");}
+else if(rv<=30){call++;rs.push("RSI oversold");}
 }
-
-/* ================= MULTI TIMEFRAME ================= */
-
-function trendAnalysis(candles,minutes,symbol){
-
- const c=aggregate(candles,minutes);
- const closed=c.slice(0,-1);
-
- if(closed.length<10){
-  return{
-   direction:"WAIT",
-   score:0,
-   reason:"Məlumat azdır",
-   stale:true
-  };
- }
-
- const cl=closed.map(x=>x.close);
-
- const fast=ema(cl,5);
- const slow=ema(cl,10);
- const rv=rsi(cl,7);
-
- let call=0,put=0;
-
- if(fast>slow)call+=2;
- else put+=2;
-
- if(cl.at(-1)>fast)call++;
- else put++;
-
- if(rv!==null){
-  if(rv>52&&rv<75)call++;
-  else if(rv<48&&rv>25)put++;
- }
-
- const diff=Math.abs(call-put);
-
- const age=Date.now()-closed.at(-1).time;
- const stale=age>minutes*60000*3;
-
- return{
-  direction:diff<2?"WAIT":call>put?"CALL":"PUT",
-  score:Math.min(90,50+diff*10),
-  stale,
-  reason:"EMA5/10 · RSI",
-  call,put
- };
+if(mv){
+if(mv.hist>0&&mv.line>mv.signal){call+=2;rs.push("MACD+");}
+else if(mv.hist<0&&mv.line<mv.signal){put+=2;rs.push("MACD-");}
+}
+if(bm!==null){price>bm?call++:put++;}
+if(cl.length>=6){const mo=cl.at(-1)-cl.at(-6);if(mo>0)call++;else if(mo<0)put++;}
+if(ax!==null)rs.push("ADX "+ax.toFixed(0));
+const diff=Math.abs(call-put);
+if(diff<3)return {...wait(minutes,"Təsdiq yoxdur",rs.join(" · ")),...base,call,put};
+let score=Math.min(85,Math.round(50+diff4));if(e200===null)score=Math.min(score,78);
+const stale=(Date.now()-closed.at(-1).time)>minutes60000*3;
+if(stale)score=Math.min(score,50);
+const quality=score>=80?"Yüksək texniki uyğunluq":score>=72?"Yaxşı":score>=65?"Orta":"Zəif";
+return {...base,direction:call>put?"CALL":"PUT",score,quality,reason:rs.join(" · "),call,put,stale,confirmed:false};
 }
 
 function runAnalysis(one,symbol){
-
- const t5=trendAnalysis(one,5,symbol);
- const t15=trendAnalysis(one,15,symbol);
- const t60=trendAnalysis(one,60,symbol);
-
- const trends=[t5,t15,t60];
-
- const results=[];
-
- for(let m=1;m<=10;m++){
-
-  const candles=m===1?one:aggregate(one,m);
-  const r=analyze(candles,m,symbol);
-
-  r.trend5=t5.direction;
-  r.trend15=t15.direction;
-  r.trend60=t60.direction;
-
-  const valid=trends.filter(t=>
-   t.direction!=="WAIT"&&
-   t.score>=60&&
-   !t.stale
-  );
-
-  const same=valid.filter(t=>t.direction===r.direction);
-  const opposite=valid.filter(t=>t.direction!==r.direction);
-
-  // 3 trenddən ən azı 2-si istiqaməti təsdiqləməlidir.
-  // Güclü əks trend varsa siqnal qəbul edilmir.
-  r.confirmed=
-   r.direction!=="WAIT"&&
-   r.score>=MIN_SIGNAL_SCORE&&
-   same.length>=2&&
-   opposite.length===0&&
-   !r.stale;
-
-  r.trendVotes=same.length;
-
-  if(r.direction!=="WAIT"&&!r.confirmed){
-   r.reason+=" · Trend təsdiqi: 5m "+
-   t5.direction+", 15m "+t15.direction+
-   ", 1h "+t60.direction;
-  }
-
-  results.push(r);
- }
-
- return{
-  results,
-  trends:{t5,t15,t60}
- };
-}
-
-/* ================= AUTO EXPIRY ================= */
-
-function wilson(w,n){
- if(!n)return null;
-
- const z=1.96;
- const p=w/n;
- const d=1+z*z/n;
-
- const c=(p+z*z/(2*n))/d;
- const h=z*Math.sqrt(
-  p*(1-p)/n+z*z/(4*n*n)
- )/d;
-
- return[
-  Math.max(0,c-h)*100,
-  Math.min(1,c+h)*100
- ];
+const h5=analyze(aggregate(one,5),5,symbol),h15=analyze(aggregate(one,15),15,symbol);
+const trend5=h5.direction,trend15=h15.direction;
+const trendReady=(r)=>r.direction!=="WAIT"&&r.score>=60&&!r.stale;
+const res=Array.from({length:10},(_,i)=>i+1).map(m=>[m,m===1?one:aggregate(one,m)]).map(([m,c])=>{
+const r=analyze(c,m,symbol);
+// Təsdiq üçün 5 və 15 dəqiqəlik istiqamət eyni olmalı və hər iki trend kifayət qədər güclü olmalıdır.
+r.trend5=trend5;r.trend15=trend15;
+r.confirmed=r.direction!=="WAIT"&&trendReady(h5)&&trendReady(h15)&&trend5===r.direction&&trend15===r.direction;
+if(r.direction!=="WAIT"&&!r.confirmed)r.reason+=" · 5/15 dəq trend təsdiqi yoxdur (5m: "+trend5+", 15m: "+trend15+")";
+return r;
+});
+return res;
 }
 
 function chooseBest(res,asset=$("asset").value){
-
- const valid=res.filter(r=>
-  r.direction!=="WAIT"&&
-  r.score>=MIN_SIGNAL_SCORE&&
-  !r.stale&&
-  r.confirmed
- );
-
- if(!valid.length)return null;
-
- const counts={CALL:0,PUT:0};
-
- valid.forEach(r=>counts[r.direction]++);
-
- let direction=null;
-
- if(counts.CALL>=2&&counts.CALL>counts.PUT){
-  direction="CALL";
- }
-
- if(counts.PUT>=2&&counts.PUT>counts.CALL){
-  direction="PUT";
- }
-
- if(!direction)return null;
-
- const same=valid.filter(r=>r.direction===direction);
-
- const ranked=same.map(r=>{
-
-  const rec=perf.filter(x=>
-   x.asset===asset&&
-   x.expiry===r.minutes&&
-   (x.result==="WIN"||x.result==="LOSS")
-  );
-
-  const n=rec.length;
-  const w=rec.filter(x=>x.result==="WIN").length;
-
-  const ci=n>=20?wilson(w,n):null;
-
-  const historyBonus=ci?
-   Math.max(-3,Math.min(3,(ci[0]-50)*0.08)):0;
-
-  const consensusBonus=Math.min(4,(same.length-2)*1.5);
-
-  return{
-   ...r,
-   selectionScore:r.score+historyBonus+consensusBonus,
-   historyN:n,
-   consensusCount:same.length
-  };
-
- }).sort((a,b)=>
-  b.selectionScore-a.selectionScore||
-  a.minutes-b.minutes
- );
-
- return ranked[0]||null;
+// 70+ bal, təzə məlumat, 5/15 dəq təsdiqi və ən azı iki müddətlik istiqamət konsensusu.
+const v=res.filter(r=>r.direction!=="WAIT"&&r.score>=MIN_SIGNAL_SCORE&&!r.stale&&r.confirmed);
+if(!v.length)return null;
+const counts={CALL:0,PUT:0};v.forEach(r=>counts[r.direction]++);
+const direction=counts.CALL>=2&&counts.CALL>counts.PUT?"CALL":counts.PUT>=2&&counts.PUT>counts.CALL?"PUT":null;
+if(!direction)return null;
+const same=v.filter(r=>r.direction===direction);
+const ranked=same.map(r=>{
+const rec=perf.filter(x=>x.asset===asset&&x.expiry===r.minutes&&(x.result==="WIN"||x.result==="LOSS"));
+const n=rec.length,w=rec.filter(x=>x.result==="WIN").length;
+const ci=n>=20?wilson(w,n):null;
+const historyBonus=ci?Math.max(-3,Math.min(3,(ci[0]-50)*0.08)):0;
+const consensusBonus=Math.min(4,(same.length-2)*1.5);
+return {...r,selectionScore:r.score+historyBonus+consensusBonus,historyN:n,historyBonus,consensusCount:same.length};
+}).sort((a,b)=>b.selectionScore-a.selectionScore||b.score-a.score);
+return ranked[0]||null;
 }
 
-/* ================= PERFORMANCE ================= */
+/* ---------- performance ---------- */
+const PKEY="POCKET_FX_V18_PERF"; // V18/V19 statistikası saxlanılır
+let perf=store.get(PKEY,[]);if(!Array.isArray(perf))perf=[];
+function savePerf(){perf=perf.slice(-2000);store.set(PKEY,perf);renderPerf();}
 
 function recordPerf(res,candles,asset){
-
- const closed=candles.slice(0,-1);
- const forming=candles.at(-1);
-
- if(!closed.length||!forming)return;
-
- const bucket=closed.at(-1).time;
-
- res.forEach(r=>{
-
-  if(
-   r.direction==="WAIT"||
-   r.score<MIN_SIGNAL_SCORE||
-   r.stale||
-   !r.confirmed
-  )return;
-
-  const id=[
-   asset,r.minutes,bucket,r.direction
-  ].join("_");
-
-  if(perf.some(x=>x.id===id))return;
-
-  perf.push({
-   id,
-   asset,
-   expiry:r.minutes,
-   direction:r.direction,
-   score:r.score,
-   entryTime:forming.time,
-   entryPrice:forming.open,
-   result:"PENDING",
-   method:"1m-candle-simulation"
-  });
-
- });
-
- savePerf();
+const closed=candles.slice(0,-1),forming=candles.at(-1);
+if(!closed.length||!forming)return;
+// Siqnal yalnız bağlanmış şamlarla hesablanır; simulyasiya giriş qiyməti cari şamın açılışıdır.
+const bucket=closed.at(-1).time;
+res.forEach(r=>{
+if(r.direction==="WAIT"||r.score<MIN_SIGNAL_SCORE||r.stale||!r.confirmed)return;
+const id=[asset,r.minutes,bucket,r.direction].join("_");
+if(perf.some(x=>x.id===id))return;
+perf.push({id,asset,expiry:r.minutes,direction:r.direction,score:r.score,entryTime:forming.time,entryPrice:forming.open,result:"PENDING",method:"1m-candle-simulation"});
+});
+savePerf();
 }
 
 function resolvePerf(candles,asset){
-
- const now=Date.now();
- let changed=false;
-
- perf.forEach(s=>{
-
-  if(s.result!=="PENDING")return;
-  if(s.asset!==asset)return;
-
-  const target=s.entryTime+s.expiry*60000;
-
-  if(now-target>24*3600000){
-   s.result="EXPIRED";
-   changed=true;
-   return;
-  }
-
-  const ex=candles.find(c=>
-   c.time+60000>=target&&
-   c.time+60000<=now
-  );
-
-  if(!ex)return;
-
-  s.exitPrice=ex.close;
-
-  s.result=ex.close===s.entryPrice?
-   "DRAW":
-   (s.direction==="CALL"?
-    ex.close>s.entryPrice:
-    ex.close<s.entryPrice)?"WIN":"LOSS";
-
-  changed=true;
- });
-
- if(changed)savePerf();
+const now=Date.now();let ch=false;
+perf.forEach(s=>{
+if(s.result!=="PENDING")return;
+const target=s.entryTime+s.expiry60000;
+if(now-target>243600000){s.result="EXPIRED";ch=true;return;}
+if(s.asset!==asset)return;
+const ex=candles.find(c=>c.time+60000>=target&&c.time+60000<=now);
+if(!ex){if(now-target>1060000){s.result="EXPIRED";ch=true;}return;}
+s.exitPrice=ex.close;
+s.result=ex.close===s.entryPrice?"DRAW":(s.direction==="CALL"?ex.close>s.entryPrice:ex.close<s.entryPrice)?"WIN":"LOSS";
+ch=true;
+});
+if(ch)savePerf();
 }
-
+function wilson(w,n){
+if(!n)return null;const z=1.96,p=w/n,d=1+zz/n,c=(p+zz/(2n))/d,h=zMath.sqrt(p(1-p)/n+zz/(4n*n))/d;
+return [Math.max(0,c-h)*100,Math.min(1,c+h)*100];
+}
 function renderPerf(){
-
- const asset=$("asset").value;
-
- $("performanceGrid").innerHTML=
- Array.from({length:10},(_,i)=>i+1).map(m=>{
-
-  const rec=perf.filter(x=>
-   x.asset===asset&&x.expiry===m
-  );
-
-  const count=k=>rec.filter(x=>x.result===k).length;
-
-  const w=count("WIN");
-  const l=count("LOSS");
-  const n=w+l;
-  const ci=wilson(w,n);
-
-  return`
-  <div class="card">
-  <h3>${m} DƏQ</h3>
-  <div class="score">${n?(w/n*100).toFixed(1)+"%":"--%"}</div>
-  <div class="small">
-  W ${w} · L ${l} · D ${count("DRAW")}
-  · ⏳ ${count("PENDING")}
-  ${ci?"<br>95% interval: "+ci[0].toFixed(0)+"–"+ci[1].toFixed(0)+"%":""}
-  </div>
-  </div>
-  `;
-
- }).join("");
+const asset=$("asset").value;
+const grid=$("performanceGrid");
+if(!grid)return;
+grid.innerHTML=Array.from({length:10},(_,i)=>i+1).map(m=>{
+const rec=perf.filter(x=>x.asset===asset&&x.expiry===m),c=k=>rec.filter(x=>x.result===k).length;
+const w=c("WIN"),l=c("LOSS"),n=w+l,ci=wilson(w,n);
+return <div class="card"><h3>${m} DƏQ</h3><div class="score">${n?(w/n*100).toFixed(1)+"%":"--%"}</div><div class="small">W ${w} · L ${l} · D ${c("DRAW")} · ⏳ ${c("PENDING")}${ci?"<br>n="+n+" · 95%: "+ci[0].toFixed(0)+"–"+ci[1].toFixed(0)+"%":""}</div></div>;
+}).join("");
 }
+$("clearPerf").onclick=()=>{if(confirm("Statistika silinsin?")){perf=[];savePerf();}};
 
-/* ================= RENDER ================= */
-
-const col=d=>
- d==="CALL"?"green":d==="PUT"?"red":"yellow";
-
+/* ---------- render ---------- /
+const col=d=>d==="CALL"?"green":d==="PUT"?"red":"yellow";
 function renderPrice(cs,asset){
-
- const v=cs.at(-1);
- const p=cs.at(-2);
-
- $("price").textContent=
- v.close.toLocaleString("en-US",{
-  maximumFractionDigits:
-   isCrypto(asset)?6:asset.includes("JPY")?3:5
- });
-
- if(p){
-  const ch=(v.close-p.close)/p.close*100;
-
-  $("change").textContent=
-   (ch>=0?"+":"")+ch.toFixed(4)+"%";
-
-  $("change").className=ch>=0?"green":"red";
- }
-
- const a=atr(cs.slice(0,-1));
-
- $("atrPips").textContent=a===null?"---":
-  isCrypto(asset)?
-  ((a/v.close)*100).toFixed(3)+"%":
-  (a/pipSize(asset)).toFixed(2)+" pip";
-
- const age=(Date.now()-v.time)/60000;
-
- $("dataStatus").textContent=
- "Mənbə: "+(isCrypto(asset)?"Binance Spot":"Twelve Data")+
- " · Şam sayı: "+cs.length+
- (age>3?" · ⚠️ Son şam köhnədir":"");
+const v=cs.at(-1),p=cs.at(-2);
+$("price").textContent=v.close.toLocaleString("en-US",{maximumFractionDigits:isCrypto(asset)?6:(asset.includes("JPY")?3:5)});
+if(p){const ch=(v.close-p.close)/p.close100;$("change").textContent=(ch>=0?"+":"")+ch.toFixed(4)+"%";$("change").className=ch>=0?"green":"red";}
+const a=atr(cs.slice(0,-1));$("atrPips").textContent=a===null?"---":(isCrypto(asset)?((a/v.close)*100).toFixed(3)+"%":(a/pipSize(asset)).toFixed(2)+" pip");
+const age=(Date.now()-v.time)/60000;
+$("dataStatus").textContent="Mənbə: "+(isCrypto(asset)?"Binance Spot":"Twelve Data")+" · Şam sayı: "+cs.length+((isCrypto(asset)||marketOpen())&&age>5?" · ⚠️ son şam "+Math.round(age)+" dəq. köhnədir":"");
 }
-
-function renderTrends(trends){
-
- const set=(id,t)=>{
-  $(id).textContent=t.direction;
-  $(id).className=col(t.direction);
- };
-
- set("trend5",trends.t5);
- set("trend15",trends.t15);
- set("trend60",trends.t60);
-}
-
 function renderSignal(res,block){
+const best=block?null:chooseBest(res);
+$("expiryCards").innerHTML=res.map(r=>{
+const sel=best&&best.minutes===r.minutes;
+return `<div class="card ${sel?"best":""}"><h3>${r.minutes} DƏQ ${sel?"🏆":""}</h3>
+<b class="${col(r.direction)}">${r.direction}</b><div class="score">${r.score}/100</div>
 
- const best=block?null:chooseBest(res);
-
- $("expiryCards").innerHTML=res.map(r=>{
-
-  const sel=best&&best.minutes===r.minutes;
-
-  return`
-  <div class="card ${sel?"best":""}">
-  <h3>${r.minutes} DƏQ ${sel?"🏆":""}</h3>
-  <b class="${col(r.direction)}">${r.direction}</b>
-  <div class="score">${r.score}/100</div>
-  <div class="bar">
-  <span style="width:${r.score}%"></span>
-  </div>
-  <div class="small">
-  ${r.quality}<br>
-  CALL ${r.call} · PUT ${r.put}<br>
-  Trend: ${r.trendVotes||0}/3<br>
-  ${r.reason||""}
-  </div>
-  </div>
-  `;
-
- }).join("");
-
- if(block){
-  $("bestExpiry").textContent="WAIT";
-  $("bestDirection").textContent="Siqnal bloklanıb";
-  $("bestReason").textContent=block;
-  return null;
- }
-
- if(!best){
-  $("bestExpiry").textContent="WAIT";
-  $("bestDirection").textContent="Uyğun müddət tapılmadı";
-  $("bestReason").textContent=
-   "70+ bal, iki müddət konsensusu və ən azı iki trend təsdiqi tələb olunur.";
-  return null;
- }
-
- $("bestExpiry").textContent="AUTO · "+best.minutes+" DƏQ";
-
- $("bestDirection").textContent=
-  best.direction+" · "+best.score+"/100";
-
- $("bestReason").textContent=
-  best.quality+
-  " · Trend təsdiqi: "+best.trendVotes+"/3"+
-  " · Konsensus: "+best.consensusCount+
-  " müddət.";
-
- return best;
-}
-
-/* ================= ENTRY TIMER ================= */
-
-function updateEntryTimer(){
-
- const now=Date.now();
- const remain=60000-(now%60000);
-
- const sec=Math.ceil(remain/1000);
-
- $("entryTimer").textContent=
-  "00:"+String(sec).padStart(2,"0");
-}
-
-setInterval(updateEntryTimer,1000);
-updateEntryTimer();
-
-/* ================= HISTORY ================= */
-
-function saveHistory(asset,best,block){
-
- const t=new Date().toLocaleTimeString();
-
- hist.unshift(
-  best?
-  `${t} | ${asset} | ${best.minutes} dəq. | ${best.direction} | ${best.score}/100`:
-  `${t} | ${asset} | WAIT`
- );
-
- hist=hist.slice(0,30);
-
- $("history").innerHTML=hist.map(x=>
-  `<div class="item">${x}</div>`
- ).join("");
-}
-
-/* ================= CHART ================= */
-
+  <div class="bar"><span style="width:${r.score}%"></span></div>  
+  <div class="small">${esc(r.quality)}<br>CALL ${r.call} · PUT ${r.put}<br>${esc(r.reason||"")}</div></div>`;  
+ }).join("");  
+ if(block){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Siqnal bloklanıb";$("bestReason").textContent=block;return;}  
+ if(!best){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Uyğun müddət tapılmadı";$("bestReason").textContent="70+ balı olan ən azı iki eyni istiqamətli müddət və güclü 5/15 dəq trend təsdiqi tapılmadı.";return;}  
+ $("bestExpiry").textContent="AUTO · "+best.minutes+" DƏQ";  
+ $("bestDirection").textContent=best.direction+" · "+best.score+"/100";  
+ $("bestReason").textContent=best.quality+". Konsensus: "+best.consensusCount+" müddət. Seçim texniki uyğunluğa əsaslanır; qazanc ehtimalı və ya zəmanət deyil."+(best.historyN>=20?" Tarixçə nümunəsi: "+best.historyN:" Tarixçə nümunəsi hələ azdır.");  
+ return best;  
+}  
+function saveHistory(asset,best,block){  
+ const t=new Date().toLocaleTimeString();  
+ hist.unshift(best?`${t} | ${asset} | ${best.minutes} dəq. | ${best.direction} | ${best.score}/100`:`${t} | ${asset} | WAIT${block?" ("+block+")":""}`);  
+ hist=hist.slice(0,30);  
+ $("history").innerHTML=hist.map(x=>`<div class="item">${esc(x)}</div>`).join("");  
+}  /* ---------- chart ---------- */
 function updateChart(){
-
- if(typeof TradingView==="undefined")return;
-
- $("tradingview_chart").innerHTML="";
-
- new TradingView.widget({
-  autosize:true,
-  symbol:$("marketType").value==="crypto"?
-   "BINANCE:"+$("asset").value:
-   "FX:"+$("asset").value.replace("/",""),
-  interval:"1",
-  timezone:"Etc/UTC",
-  theme:"dark",
-  style:"1",
-  locale:"en",
-  enable_publishing:false,
-  allow_symbol_change:true,
-  container_id:"tradingview_chart"
- });
+if(typeof TradingView==="undefined")return;
+$("tradingview_chart").innerHTML="";
+new TradingView.widget({autosize:true,symbol:$("marketType").value==="crypto"?"BINANCE:"+$("asset").value:"FX:"+$("asset").value.replace("/",""),interval:"1",timezone:"Etc/UTC",theme:"dark",
+style:"1",locale:"en",enable_publishing:false,allow_symbol_change:true,container_id:"tradingview_chart"});
 }
 
-/* ================= MAIN SCAN ================= */
-
-async function analyzeNow(){
-
- const asset=$("asset").value;
- const block=blockReason();
-
- if(block){
-  $("connectionStatus").textContent=block;
-  renderSignal([],block);
-  saveHistory(asset,null,block);
-  return;
- }
-
- const id=++runId;
-
- if(ctrl)ctrl.abort();
- ctrl=new AbortController();
-
- $("scanBtn").disabled=true;
- $("systemStatus").textContent="SCANNING";
- $("connectionStatus").textContent="Məlumat alınır...";
-
- try{
-
-  const one=await fetchMarket(asset,ctrl.signal);
-
-  if(id!==runId)return;
-
-  if(one.length<MIN_CANDLES+1){
-   throw new Error("Kifayət qədər şam yoxdur: "+one.length);
-  }
-
-  renderPrice(one,asset);
-
-  const analysis=runAnalysis(one,asset);
-
-  latest=analysis.results;
-
-  renderTrends(analysis.trends);
-
-  resolvePerf(one,asset);
-
-  recordPerf(analysis.results,one,asset);
-
-  renderPerf();
-
-  const best=renderSignal(analysis.results,null);
-
-  saveHistory(asset,best,null);
-
-  $("connectionStatus").textContent=
-   "Analiz tamamlandı. "+asset;
-
-  $("systemStatus").textContent="LIVE";
-
- }catch(e){
-
-  if(e.name==="AbortError")return;
-  if(id!==runId)return;
-
-  $("systemStatus").textContent="DATA ERROR";
-  $("connectionStatus").textContent=e.message;
-
- }finally{
-
-  if(id===runId)$("scanBtn").disabled=false;
-
- }
+/* ---------- main ---------- */
+async function analyzeNow(manual=true){
+const asset=$("asset").value;
+const block=blockReason();
+if(block){
+$("connectionStatus").textContent=block;
+$("systemStatus").textContent=$("marketType").value==="forex"&&!marketOpen()?"MARKET CLOSED":"WAIT";
+renderSignal([],block);
+saveHistory(asset,null,block);
+renderMarket();
+return; // Bloklanmış vaxtda API sorğusu sərf etmə.
 }
-
-/* ================= ALL PAIRS ================= */
+const id=++runId;
+if(ctrl)ctrl.abort();ctrl=new AbortController();
+$("scanBtn").disabled=true;$("systemStatus").textContent="SCANNING";
+$("connectionStatus").textContent="Məlumat alınır...";
+try{
+const one=await fetchMarket(asset,ctrl.signal);
+if(id!==runId)return;
+if(one.length<MIN_CANDLES+1)throw new Error("Kifayət qədər şam yoxdur ("+one.length+"). Məlumat mənbəyini və şam sayını yoxlayın.");
+renderPrice(one,asset);
+const res=runAnalysis(one,asset);
+latest=res;
+resolvePerf(one,asset);
+if(!block)recordPerf(res,one,asset);
+renderPerf();
+const best=renderSignal(res,block);
+saveHistory(asset,best,block);
+$("connectionStatus").textContent="Analiz tamamlandı. "+asset;
+$("systemStatus").textContent="LIVE";
+}catch(e){
+if(e.name==="AbortError")return;
+if(id!==runId)return;
+$("systemStatus").textContent="DATA ERROR";$("connectionStatus").textContent=e.message;
+}finally{
+if(id===runId)$("scanBtn").disabled=false;
+}
+}
 
 async function scanAll(){
-
- const market=$("marketType").value;
- const pairs=market==="crypto"?CRYPTO_PAIRS:FOREX_PAIRS;
-
- if(market==="forex"){
-  const block=blockReason();
-
-  if(block){
-   $("scanResults").textContent=block;
-   return;
-  }
-
-  if(usage().n+pairs.length>DAILY_LIMIT){
-   $("scanResults").textContent="Forex sorğu limiti kifayət etmir.";
-   return;
-  }
- }
-
- const id=++runId;
-
- if(ctrl)ctrl.abort();
- ctrl=new AbortController();
-
- const out=[];
-
- $("allBtn").disabled=true;
-
- try{
-
-  for(let i=0;i<pairs.length;i++){
-
-   $("scanResults").textContent=
-    "Skan: "+(i+1)+"/"+pairs.length+
-    " · "+pairs[i];
-
-   try{
-
-    const candles=await fetchMarket(pairs[i],ctrl.signal,market);
-
-    if(candles.length>=MIN_CANDLES+1){
-
-     const a=runAnalysis(candles,pairs[i]);
-     const best=chooseBest(a.results,pairs[i]);
-
-     if(best){
-      out.push({symbol:pairs[i],best});
-     }
-
-    }
-
-   }catch(e){
-
-    if(e.name==="AbortError")return;
-
-    out.push({symbol:pairs[i],error:e.message});
-
-   }
-
-   if(id!==runId)return;
-
-  }
-
-  out.sort((a,b)=>
-   (b.best?.score||0)-(a.best?.score||0)
-  );
-
-  $("scanResults").innerHTML=out.length?
-   out.map(x=>x.error?
-    `<div class="item">${x.symbol}: ${x.error}</div>`:
-    `<div class="item">
-    <b>${x.symbol}</b>
-    <span class="${col(x.best.direction)}">${x.best.direction}</span>
-    · ${x.best.minutes} dəq.
-    · ${x.best.score}/100
-    </div>`
-   ).join(""):
-   "Təsdiqlənmiş siqnal tapılmadı.";
-
- }finally{
-
-  $("allBtn").disabled=false;
-
- }
+const block=blockReason();
+if(block){$("scanResults").textContent=block+" Bütün cütlərin skanı dayandırıldı.";return;}
+const pairs=$("marketType").value==="crypto"?CRYPTO_PAIRS:FOREX_PAIRS;
+const need=pairs.length;
+if($("marketType").value==="forex"&&usage().n+need>DAILY_LIMIT){$("scanResults").textContent="Gündəlik Forex sorğu limiti çatmır.";return;}
+const id=++runId;if(ctrl)ctrl.abort();ctrl=new AbortController();
+$("allBtn").disabled=true;const out=[];
+try{
+for(let i=0;i<pairs.length;i++){
+$("scanResults").textContent="Skan: "+(i+1)+"/"+need+" · "+pairs[i];
+try{
+const one=await fetchMarket(pairs[i],ctrl.signal);
+if(one.length<MIN_CANDLES+1)throw new Error("Şam sayı kifayət deyil: "+one.length);
+const best=chooseBest(runAnalysis(one,pairs[i]),pairs[i]);
+if(best)out.push({p:pairs[i],b:best});
+}catch(e){
+if(e.name==="AbortError")return;
+out.push({p:pairs[i],error:e.message});
+}
+if(id!==runId)return;
+if($("marketType").value==="crypto"&&i<pairs.length-1)await new Promise(r=>setTimeout(r,250));
+}
+out.sort((a,b)=>(b.b?.score||0)-(a.b?.score||0));
+const blk=blockReason();
+$("scanResults").innerHTML=(blk?<div class="warn">${esc(blk)} — nəticələr məlumat üçündür.</div>:"")+
+(out.length?out.map(f=>f.error
+?<div class="item"><b>${esc(f.p)}</b> <span class="red">XƏTA:</span> ${esc(f.error)}</div>
+:<div class="item"><b>${esc(f.p)}</b> <span class="${col(f.b.direction)}">${f.b.direction}</span> · ${f.b.minutes} dəq. · ${f.b.score}/100</div>).join("")
+:"Təsdiqlənmiş siqnal yoxdur.");
+}finally{$("allBtn").disabled=false;}
 }
 
-/* ================= TOP 10 ================= */
-
+/* ---------- combined TOP 10 scanner ---------- */
 async function scanTop10(){
-
- const id=++runId;
-
- if(ctrl)ctrl.abort();
- ctrl=new AbortController();
-
- const signal=ctrl.signal;
- const candidates=[];
-
- const tasks=[];
-
- const forexAllowed=
-  marketOpen()&&
-  (!$("sessionOnly").checked||inSession());
-
- if(forexAllowed&&usage().n+FOREX_PAIRS.length<=DAILY_LIMIT){
-  FOREX_PAIRS.forEach(symbol=>
-   tasks.push({market:"forex",symbol})
-  );
- }
-
- CRYPTO_PAIRS.forEach(symbol=>
-  tasks.push({market:"crypto",symbol})
- );
-
- $("top10Btn").disabled=true;
- $("allBtn").disabled=true;
- $("scanBtn").disabled=true;
-
- try{
-
-  for(let i=0;i<tasks.length;i++){
-
-   if(signal.aborted||id!==runId)return;
-
-   const task=tasks[i];
-
-   $("top10Status").textContent=
-    "Yoxlanılır: "+task.symbol+
-    " · "+(i+1)+"/"+tasks.length;
-
-   try{
-
-    const candles=await fetchMarket(
-     task.symbol,signal,task.market
-    );
-
-    if(candles.length>=MIN_CANDLES+1){
-
-     const a=runAnalysis(candles,task.symbol);
-     const best=chooseBest(a.results,task.symbol);
-
-     if(best){
-      candidates.push({
-       market:task.market,
-       symbol:task.symbol,
-       ...best
-      });
-     }
-
-    }
-
-   }catch(e){
-
-    if(e.name==="AbortError")return;
-
-   }
-
-  }
-
-  const renderGroup=(title,arr)=>{
-
-   return`
-   <h3 style="margin:14px 0 6px">
-   ${title} · ${arr.length} siqnal
-   </h3>
-   `+(arr.length?arr.map((x,i)=>`
-   <div class="topitem">
-    <div class="rank">${i+1}.</div>
-    <div>
-     <b>${x.market==="crypto"?
-      x.symbol.replace("USDT","/USDT"):
-      x.symbol}</b>
-     <div class="small">
-      ${x.minutes} dəq. · ${x.quality}
-      · Trend ${x.trendVotes}/3
-     </div>
-    </div>
-    <div style="text-align:right">
-     <b class="${col(x.direction)}">${x.direction}</b>
-     <div class="small">${x.score}/100</div>
-    </div>
-   </div>
-   `).join(""):
-   `<div class="small">Təsdiqlənmiş siqnal tapılmadı.</div>`);
-  };
-
-  const forexTop=candidates.filter(x=>
-   x.market==="forex"
-  ).sort((a,b)=>b.score-a.score).slice(0,10);
-
-  const cryptoTop=candidates.filter(x=>
-   x.market==="crypto"
-  ).sort((a,b)=>b.score-a.score).slice(0,10);
-
-  $("top10Results").innerHTML=
-   renderGroup("💱 FOREX TOP 10",forexTop)+
-   renderGroup("₿ KRİPTO TOP 10",cryptoTop);
-
-  $("top10Status").textContent=
-   "Tamamlandı: "+tasks.length+
-   " aktiv yoxlanıldı · Forex "+
-   forexTop.length+" / Kripto "+
-   cryptoTop.length+" siqnal.";
-
- }finally{
-
-  $("top10Btn").disabled=false;
-  $("allBtn").disabled=false;
-  $("scanBtn").disabled=false;
-
- }
+const news=newsBlock();
+if(news){$("top10Status").textContent=news+" — TOP 10 skanı bloklandı.";return;}
+if(!marketOpen()||($("sessionOnly").checked&&!inSession())){
+$("top10Status").textContent="Forex hazırda bağlıdır və ya seçilmiş likvid sessiyadan kənardır. Forex hissəsi skan edilməyəcək; kripto yenə yoxlanacaq.";
+} else $("top10Status").textContent="Forex və kripto bazarları yoxlanılır...";
+if(usage().n>=DAILY_LIMIT){$("top10Status").textContent="Twelve Data üçün gündəlik təhlükəsiz sorğu limiti bitib. Kripto skanı ayrıca davam edə bilər.";}
+const id=++runId;if(ctrl)ctrl.abort();ctrl=new AbortController();
+const signal=ctrl.signal;const candidates=[];let done=0;
+const tasks=[];
+if(marketOpen()&&!($("sessionOnly").checked&&!inSession())&&usage().n+FOREX_PAIRS.length<=DAILY_LIMIT){
+FOREX_PAIRS.forEach(symbol=>tasks.push({market:"forex",symbol}));
+}
+CRYPTO_PAIRS.forEach(symbol=>tasks.push({market:"crypto",symbol}));
+$("top10Btn").disabled=true;$("allBtn").disabled=true;$("scanBtn").disabled=true;
+try{
+for(const task of tasks){
+if(signal.aborted||id!==runId)return;
+$("top10Status").textContent=Yoxlanılır: ${task.market.toUpperCase()} ${task.symbol} · ${done+1}/${tasks.length};
+try{
+const candles=await fetchMarket(task.symbol,signal,task.market);
+if(candles.length>=MIN_CANDLES+1){
+const best=chooseBest(runAnalysis(candles,task.symbol),task.symbol);
+if(best)candidates.push({market:task.market,symbol:task.symbol,...best});
+}
+}catch(e){
+if(e.name==="AbortError")return;
+// Bir aktivin məlumat xətası bütün TOP 10 skanını dayandırmır.
+}
+done++;
+if(task.market==="crypto"&&done<tasks.length)await new Promise(r=>setTimeout(r,180));
+}
+const forexTop=candidates.filter(x=>x.market==="forex").sort((a,b)=>b.score-a.score).slice(0,10);
+const cryptoTop=candidates.filter(x=>x.market==="crypto").sort((a,b)=>b.score-a.score).slice(0,10);
+const renderGroup=(title,arr)=><h3 style="margin:14px 0 6px">${title} · ${arr.length} siqnal</h3>+(arr.length?arr.map((x,i)=><div class="topitem"><div class="rank">${i+1}.</div><div><b>${x.market==="crypto"?esc(x.symbol.replace("USDT","/USDT")):esc(x.symbol)}</b><div class="small">${x.minutes} dəq. · ${esc(x.quality)} · 5m/15m təsdiqli</div></div><div style="text-align:right"><b class="${col(x.direction)}">${x.direction}</b><div class="small">${x.score}/100</div></div></div>).join(""):<div class="small">Təsdiqlənmiş siqnal tapılmadı.</div>);
+$("top10Results").innerHTML=renderGroup("💱 FOREX TOP 10",forexTop)+renderGroup("₿ KRİPTO TOP 10",cryptoTop);
+$("top10Status").textContent=Tamamlandı: ${done}/${tasks.length} aktiv yoxlanıldı · Forex ${forexTop.length} / Kripto ${cryptoTop.length} təsdiqlənmiş siqnal. Hər bazar ayrıca sıralanır.;
+}finally{
+$("top10Btn").disabled=false;$("allBtn").disabled=false;$("scanBtn").disabled=false;
+}
 }
 
-/* ================= AUTO REFRESH ================= */
-
-function stopTimer(){
-
- if(timer){
-  clearTimeout(timer);
-  timer=null;
- }
-
-}
-
+/* ---------- auto ---------- */
+function stopTimer(){if(timer){clearTimeout(timer);timer=null;}}
 function schedule(){
-
- stopTimer();
-
- if(!$("autoRefresh").checked||!running)return;
-
- timer=setTimeout(async()=>{
-
-  if(!running||!$("autoRefresh").checked)return;
-
-  await analyzeNow();
-  schedule();
-
- },Number($("autoSec").value)*1000);
-
+stopTimer();if(!$("autoRefresh").checked||!running)return;
+timer=setTimeout(async()=>{
+if(!running||!$("autoRefresh").checked)return;
+await analyzeNow(false);schedule();
+},Number($("autoSec").value)*1000);
 }
 
-/* ================= EVENTS ================= */
-
+/* ---------- events ---------- */
 function refreshAssets(){
-
- const crypto=$("marketType").value==="crypto";
- const list=crypto?CRYPTO_PAIRS:FOREX_PAIRS;
-
- const previous=$("asset").value;
-
- $("asset").innerHTML=list.map(x=>
-  `<option value="${x}">${
-   crypto?x.replace("USDT","/USDT"):x
-  }</option>`
- ).join("");
-
- if(list.includes(previous)){
-  $("asset").value=previous;
- }
-
- $("sessionOnly").disabled=crypto;
-
- $("sessionOnly").parentElement.style.opacity=
-  crypto?".45":"1";
-
- $("allBtn").textContent=
-  crypto?"🌐 BÜTÜN KRİPTOLAR":"🌐 BÜTÜN CÜTLƏR";
-
- updateChart();
- renderPerf();
-
+const crypto=$("marketType").value==="crypto";
+const list=crypto?CRYPTO_PAIRS:FOREX_PAIRS;
+const previous=$("asset").value;
+$("asset").innerHTML=list.map(x=><option value="${x}">${crypto?x.replace("USDT","/USDT"):x}</option>).join("");
+if(list.includes(previous))$("asset").value=previous;
+$("sessionOnly").disabled=crypto;
+$("sessionOnly").parentElement.style.opacity=crypto?".45":"1";
+$("allBtn").textContent=crypto?"🌐 BÜTÜN KRİPTOLAR":"🌐 BÜTÜN CÜTLƏR";
+$("usageStatus").textContent=crypto?"Kripto: Binance public API · 24/7 · Twelve Data limitindən ayrı":"";
+updateChart();renderPerf();
 }
-
-$("marketType").onchange=()=>{
- refreshAssets();
- $("scanResults").textContent="Yeni bazar seçildi.";
-};
-
-$("asset").onchange=()=>{
- updateChart();
- renderPerf();
-};
-
-$("scanBtn").onclick=()=>{
- running=true;
- analyzeNow();
-};
-
+$("marketType").onchange=()=>{refreshAssets();$("scanResults").textContent="Yeni bazar seçildi. Skan etməyə hazırsınız.";if($("autoRefresh").checked)analyzeNow(false);};
+$("asset").onchange=()=>{updateChart();renderPerf();if($("autoRefresh").checked)analyzeNow(false);};
+$("scanBtn").onclick=()=>{running=true;analyzeNow(true);};
 $("allBtn").onclick=scanAll;
 $("top10Btn").onclick=scanTop10;
-
 $("stopBtn").onclick=()=>{
-
- running=false;
- stopTimer();
- runId++;
-
- if(ctrl)ctrl.abort();
-
- $("autoRefresh").checked=false;
-
- $("scanBtn").disabled=false;
- $("allBtn").disabled=false;
- $("top10Btn").disabled=false;
-
- $("systemStatus").textContent="STOPPED";
- $("connectionStatus").textContent="Dayandırıldı.";
-
+running=false;stopTimer();runId++;if(ctrl)ctrl.abort();
+$("autoRefresh").checked=false;$("scanBtn").disabled=false;$("allBtn").disabled=false;
+$("systemStatus").textContent="STOPPED";$("connectionStatus").textContent="Dayandırıldı.";
 };
-
 $("autoRefresh").onchange=()=>{
-
- if($("autoRefresh").checked){
-
-  running=true;
-
-  analyzeNow().then(schedule);
-
- }else{
-
-  stopTimer();
-
- }
-
+if($("autoRefresh").checked){running=true;analyzeNow(false).then(schedule);}else stopTimer();
 };
-
-$("autoSec").onchange=()=>{
- if($("autoRefresh").checked)schedule();
-};
-
+$("autoSec").onchange=()=>{if($("autoRefresh").checked)schedule();};
 $("news").value=store.get("FX_NEWS","");
+$("news").onchange=()=>store.set("FX_NEWS",$("news").value);
 
-$("news").onchange=()=>{
- store.set("FX_NEWS",$("news").value);
-};
-
-$("clearPerf").onclick=()=>{
-
- if(confirm("Bütün statistika silinsin?")){
-
-  perf=[];
-  savePerf();
-
- }
-
-};
-
-/* ================= INIT ================= */
-
-refreshAssets();
-renderPerf();
-renderUsage();
-renderMarket();
-
-$("expiryCards").innerHTML=
- Array.from({length:10},(_,i)=>
-  `<div class="card">${i+1} DƏQ --</div>`
- ).join("");
-
+refreshAssets();renderPerf();renderUsage();renderMarket();
+$("expiryCards").innerHTML=Array.from({length:10},(_,i)=>i+1).map(m=><div class="card">${m} DƏQ --</div>).join("");
 </script>
-</body>
-</html>
+
+</body>  
+</html>  
