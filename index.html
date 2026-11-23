@@ -37,6 +37,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 .big{font-size:25px;font-weight:bold;margin:8px 0}
 .item{padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
 .chart{width:100%;height:360px}
+.toprow{display:flex;justify-content:space-between;gap:8px;align-items:center}.rank{font-size:18px;font-weight:bold;min-width:28px}.topitem{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .warn{background:#2b2111;border:1px solid #8a6a2a;border-radius:9px;padding:10px;font-size:11px;line-height:1.6;margin-top:10px}
 @media(max-width:480px){body{padding:8px}.chart{height:300px}}
 </style>
@@ -88,7 +89,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <section class="panel">
 <h2>🏆 SİQNAL</h2>
 <div class="rec">
-<div class="small">AI TÖVSİYƏSİ</div>
+<div class="small">AI AUTO EXPIRY · 1–10 DƏQİQƏ</div>
 <div class="big" id="bestExpiry">WAIT</div>
 <b id="bestDirection">Analiz gözlənilir</b>
 <div class="small" id="bestReason" style="margin-top:8px">Məlumat gözlənilir.</div>
@@ -100,12 +101,8 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <h2>📊 SİQNAL TEST STATİSTİKASI</h2>
 <div class="small">Bu, 1 dəqiqəlik şam məlumatı ilə aparılan simulyasiya testidir; Pocket Option-da faktiki açılmış əməliyyatların nəticəsi deyil. 85% ödənişdə nəzəri break-even təxminən 54%-dir; az nümunə etibarlı nəticə vermir.</div>
 <div style="height:10px"></div>
-<div class="grid">
-<div class="card"><h3>1 DƏQ</h3><div class="score" id="wr1">--%</div><div class="small" id="st1"></div></div>
-<div class="card"><h3>2 DƏQ</h3><div class="score" id="wr2">--%</div><div class="small" id="st2"></div></div>
-<div class="card"><h3>3 DƏQ</h3><div class="score" id="wr3">--%</div><div class="small" id="st3"></div></div>
-<div class="card"><h3>5 DƏQ</h3><div class="score" id="wr5">--%</div><div class="small" id="st5"></div></div>
-</div>
+<div class="small">Hər müddətin simulyasiya nəticəsi ayrıca hesablanır. Ən azı 20 tamamlanmış nümunə olduqda tarixçə müddət seçimində kiçik əlavə çəki alır.</div>
+<div class="grid" id="performanceGrid"></div>
 <div style="height:10px"></div>
 <button id="clearPerf">STATİSTİKANI SIFIRLA</button>
 </section>
@@ -113,6 +110,13 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <section class="panel">
 <h2>🌐 BÜTÜN CÜTLƏR SKANI</h2>
 <div id="scanResults" class="small">Skan 1 sorğu/cüt istifadə edir (cüt başına ~8 san. fasilə ilə).</div>
+</section>
+
+<section class="panel">
+<div class="toprow"><h2>🏆 FOREX + KRİPTO · TOP 10 SİQNAL</h2><button class="go" id="top10Btn" style="width:auto">TOP 10 SKAN ET</button></div>
+<div class="small">Hər iki bazarı yoxlayır. 1–10 dəqiqəlik avtomatik seçilən siqnallardan 5 və 15 dəqiqə trend təsdiqi alanları sıralayır. Nəticə zəmanət deyil.</div>
+<div id="top10Status" class="status">Skan başlamayıb.</div>
+<div id="top10Results" class="small">TOP 10 nəticələri burada görünəcək.</div>
 </section>
 
 <section class="panel">
@@ -234,8 +238,8 @@ async function fetchCrypto(symbol,signal){
   .filter(c=>[c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.close>0&&c.high>=c.low)
   .sort((a,b)=>a.time-b.time);
 }
-async function fetchMarket(symbol,signal){
- return $("marketType").value==="crypto"?fetchCrypto(symbol,signal):fetchFx(symbol,signal);
+async function fetchMarket(symbol,signal,market=$("marketType").value){
+ return market==="crypto"?fetchCrypto(symbol,signal):fetchFx(symbol,signal);
 }
 
 function aggregate(cs,min){
@@ -333,7 +337,7 @@ function analyze(candles,minutes,symbol){
 
 function runAnalysis(one,symbol){
  const h5=analyze(aggregate(one,5),5,symbol),h15=analyze(aggregate(one,15),15,symbol);
- const res=[[1,one],[2,aggregate(one,2)],[3,aggregate(one,3)],[5,aggregate(one,5)]].map(([m,c])=>{
+ const res=Array.from({length:10},(_,i)=>i+1).map(m=>[m,m===1?one:aggregate(one,m)]).map(([m,c])=>{
   const r=analyze(c,m,symbol);
   // Həm 5 dəq, həm də 15 dəq trend eyni istiqaməti təsdiqləməlidir.
   r.confirmed=r.direction!=="WAIT"&&h5.direction===r.direction&&h15.direction===r.direction&&!h5.stale&&!h15.stale;
@@ -343,10 +347,24 @@ function runAnalysis(one,symbol){
  return res;
 }
 
-function chooseBest(res){
- const v=res.filter(r=>r.direction!=="WAIT"&&r.score>=65&&!r.stale&&r.confirmed).sort((a,b)=>b.score-a.score);
+function chooseBest(res,asset=$("asset").value){
+ // Yalnız 5 və 15 dəqiqəlik trend təsdiqi olan, vaxtı köhnəlməmiş siqnallar.
+ const v=res.filter(r=>r.direction!=="WAIT"&&r.score>=65&&!r.stale&&r.confirmed);
  if(!v.length)return null;
- return v.filter(r=>r.direction===v[0].direction).length>=2?v[0]:null;
+ // Ən azı iki müddət eyni istiqaməti göstərməlidir; tək müddətli sıçrayış seçilmir.
+ const counts={CALL:0,PUT:0};v.forEach(r=>counts[r.direction]++);
+ const direction=counts.CALL>=2&&counts.CALL>=counts.PUT?"CALL":counts.PUT>=2&&counts.PUT>counts.CALL?"PUT":null;
+ if(!direction)return null;
+ const same=v.filter(r=>r.direction===direction);
+ const ranked=same.map(r=>{
+  const rec=perf.filter(x=>x.asset===asset&&x.expiry===r.minutes&&(x.result==="WIN"||x.result==="LOSS"));
+  const n=rec.length,w=rec.filter(x=>x.result==="WIN").length;
+  // Tarixçə azdırsa ona etibar etmirik; n>=20 olduqda Wilson aşağı həddi ilə cüzi bonus.
+  const ci=n>=20?wilson(w,n):null;
+  const historyBonus=ci?Math.max(-4,Math.min(4,(ci[0]-50)*0.12)):0;
+  return {...r,selectionScore:r.score+historyBonus,historyN:n,historyBonus};
+ }).sort((a,b)=>b.selectionScore-a.selectionScore||b.score-a.score);
+ return ranked[0]||null;
 }
 
 /* ---------- performance ---------- */
@@ -386,12 +404,13 @@ function wilson(w,n){
 }
 function renderPerf(){
  const asset=$("asset").value;
- [1,2,3,5].forEach(m=>{
+ const grid=$("performanceGrid");
+ if(!grid)return;
+ grid.innerHTML=Array.from({length:10},(_,i)=>i+1).map(m=>{
   const rec=perf.filter(x=>x.asset===asset&&x.expiry===m),c=k=>rec.filter(x=>x.result===k).length;
   const w=c("WIN"),l=c("LOSS"),n=w+l,ci=wilson(w,n);
-  $("wr"+m).textContent=n?(w/n*100).toFixed(1)+"%":"--%";
-  $("st"+m).textContent="W "+w+" | L "+l+" | D "+c("DRAW")+" | ⏳ "+c("PENDING")+(ci?" | n="+n+" | 95%: "+ci[0].toFixed(0)+"–"+ci[1].toFixed(0)+"%":"");
- });
+  return `<div class="card"><h3>${m} DƏQ</h3><div class="score">${n?(w/n*100).toFixed(1)+"%":"--%"}</div><div class="small">W ${w} · L ${l} · D ${c("DRAW")} · ⏳ ${c("PENDING")}${ci?"<br>n="+n+" · 95%: "+ci[0].toFixed(0)+"–"+ci[1].toFixed(0)+"%":""}</div></div>`;
+ }).join("");
 }
 $("clearPerf").onclick=()=>{if(confirm("Statistika silinsin?")){perf=[];savePerf();}};
 
@@ -415,10 +434,10 @@ function renderSignal(res,block){
   <div class="small">${esc(r.quality)}<br>CALL ${r.call} · PUT ${r.put}<br>${esc(r.reason||"")}</div></div>`;
  }).join("");
  if(block){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Siqnal bloklanıb";$("bestReason").textContent=block;return;}
- if(!best){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Təsdiq yoxdur";$("bestReason").textContent="Müddətlər və 5/15 dəq trend arasında uyğunluq yoxdur.";return;}
- $("bestExpiry").textContent=best.minutes+" DƏQİQƏ";
+ if(!best){$("bestExpiry").textContent="WAIT";$("bestDirection").textContent="Uyğun müddət tapılmadı";$("bestReason").textContent="1–10 dəqiqəlik variantlarda ən azı iki eyni istiqamətli siqnal və 5/15 dəq trend təsdiqi yoxdur.";return;}
+ $("bestExpiry").textContent="AUTO · "+best.minutes+" DƏQ";
  $("bestDirection").textContent=best.direction+" · "+best.score+"/100";
- $("bestReason").textContent=best.quality+". Texniki bal qazanma ehtimalı deyil.";
+ $("bestReason").textContent=best.quality+". Seçim texniki uyğunluğa əsaslanır; bu, qazanc ehtimalı və ya zəmanət deyil."+(best.historyN>=20?" Tarixçə nümunəsi: "+best.historyN:" Tarixçə nümunəsi hələ azdır.");
  return best;
 }
 function saveHistory(asset,best,block){
@@ -489,7 +508,7 @@ async function scanAll(){
    try{
     const one=await fetchMarket(pairs[i],ctrl.signal);
     if(one.length<MIN_CANDLES+1)throw new Error("Şam sayı kifayət deyil: "+one.length);
-    const best=chooseBest(runAnalysis(one,pairs[i]));
+    const best=chooseBest(runAnalysis(one,pairs[i]),pairs[i]);
     if(best)out.push({p:pairs[i],b:best});
    }catch(e){
     if(e.name==="AbortError")return;
@@ -506,6 +525,48 @@ async function scanAll(){
     :`<div class="item"><b>${esc(f.p)}</b> <span class="${col(f.b.direction)}">${f.b.direction}</span> · ${f.b.minutes} dəq. · ${f.b.score}/100</div>`).join("")
     :"Təsdiqlənmiş siqnal yoxdur.");
  }finally{$("allBtn").disabled=false;}
+}
+
+/* ---------- combined TOP 10 scanner ---------- */
+async function scanTop10(){
+ const news=newsBlock();
+ if(news){$("top10Status").textContent=news+" — TOP 10 skanı bloklandı.";return;}
+ if(!marketOpen()||($("sessionOnly").checked&&!inSession())){
+  $("top10Status").textContent="Forex hazırda bağlıdır və ya seçilmiş likvid sessiyadan kənardır. Forex hissəsi skan edilməyəcək; kripto yenə yoxlanacaq.";
+ } else $("top10Status").textContent="Forex və kripto bazarları yoxlanılır...";
+ if(usage().n>=DAILY_LIMIT){$("top10Status").textContent="Twelve Data üçün gündəlik təhlükəsiz sorğu limiti bitib. Kripto skanı ayrıca davam edə bilər.";}
+ const id=++runId;if(ctrl)ctrl.abort();ctrl=new AbortController();
+ const signal=ctrl.signal;const candidates=[];let done=0;
+ const tasks=[];
+ if(marketOpen()&&!($("sessionOnly").checked&&!inSession())&&usage().n+FOREX_PAIRS.length<=DAILY_LIMIT){
+  FOREX_PAIRS.forEach(symbol=>tasks.push({market:"forex",symbol}));
+ }
+ CRYPTO_PAIRS.forEach(symbol=>tasks.push({market:"crypto",symbol}));
+ $("top10Btn").disabled=true;$("allBtn").disabled=true;$("scanBtn").disabled=true;
+ try{
+  for(const task of tasks){
+   if(signal.aborted||id!==runId)return;
+   $("top10Status").textContent=`Yoxlanılır: ${task.market.toUpperCase()} ${task.symbol} · ${done+1}/${tasks.length}`;
+   try{
+    const candles=await fetchMarket(task.symbol,signal,task.market);
+    if(candles.length>=MIN_CANDLES+1){
+     const best=chooseBest(runAnalysis(candles,task.symbol),task.symbol);
+     if(best)candidates.push({market:task.market,symbol:task.symbol,...best});
+    }
+   }catch(e){
+    if(e.name==="AbortError")return;
+    // Bir aktivin məlumat xətası bütün TOP 10 skanını dayandırmır.
+   }
+   done++;
+   if(task.market==="crypto"&&done<tasks.length)await new Promise(r=>setTimeout(r,180));
+  }
+  candidates.sort((a,b)=>b.score-a.score);
+  const top=candidates.slice(0,10);
+  $("top10Results").innerHTML=top.length?top.map((x,i)=>`<div class="topitem"><div class="rank">${i+1}.</div><div><b>${x.market==="crypto"?esc(x.symbol.replace("USDT","/USDT")):esc(x.symbol)}</b><div class="small">${x.market.toUpperCase()} · ${x.minutes} dəq. · ${esc(x.quality)}</div></div><div style="text-align:right"><b class="${col(x.direction)}">${x.direction}</b><div class="small">${x.score}/100</div></div></div>`).join(""):`Təsdiqlənmiş uyğun siqnal tapılmadı. Bütün aktivlər WAIT ola bilər.`;
+  $("top10Status").textContent=`Tamamlandı: ${done}/${tasks.length} aktiv yoxlanıldı · ${candidates.length} təsdiqlənmiş siqnal tapıldı. Sıralama texniki bala əsaslanır.`;
+ }finally{
+  $("top10Btn").disabled=false;$("allBtn").disabled=false;$("scanBtn").disabled=false;
+ }
 }
 
 /* ---------- auto ---------- */
@@ -535,6 +596,7 @@ $("marketType").onchange=()=>{refreshAssets();$("scanResults").textContent="Yeni
 $("asset").onchange=()=>{updateChart();renderPerf();if($("autoRefresh").checked)analyzeNow(false);};
 $("scanBtn").onclick=()=>{running=true;analyzeNow(true);};
 $("allBtn").onclick=scanAll;
+$("top10Btn").onclick=scanTop10;
 $("stopBtn").onclick=()=>{
  running=false;stopTimer();runId++;if(ctrl)ctrl.abort();
  $("autoRefresh").checked=false;$("scanBtn").disabled=false;$("allBtn").disabled=false;
@@ -548,7 +610,7 @@ $("news").value=store.get("FX_NEWS","");
 $("news").onchange=()=>store.set("FX_NEWS",$("news").value);
 
 refreshAssets();renderPerf();renderUsage();renderMarket();
-$("expiryCards").innerHTML=[1,2,3,5].map(m=>`<div class="card">${m} DƏQ --</div>`).join("");
+$("expiryCards").innerHTML=Array.from({length:10},(_,i)=>i+1).map(m=>`<div class="card">${m} DƏQ --</div>`).join("");
 </script>
 </body>
 </html>
