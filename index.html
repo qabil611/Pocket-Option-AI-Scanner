@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101e">
 <link rel="manifest" href="./manifest.json">
-<title>POCKET FOREX AI V18</title>
+<title>POCKET FOREX + CRYPTO AI V18 PRO</title>
 <style>
 :root{--bg:#07101e;--p:#101d30;--p2:#0a1728;--line:#263950;--t:#edf4ff;--m:#91a4bd;--g:#00d69a;--r:#ff5573;--y:#ffcc66;--b:#55aaff}
 *{box-sizing:border-box}
@@ -45,14 +45,17 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <div class="app">
 
 <header>
-<div><h1>💱 POCKET FOREX AI V18</h1><div class="small">FOREX · TWELVE DATA BACKEND · TEXNİKİ ANALİZ</div></div>
+<div><h1>💱 POCKET FOREX + CRYPTO AI V18 PRO</h1><div class="small">FOREX + KRİPTO · ÇOXBAZARLI TEXNİKİ ANALİZ</div></div>
 <div class="badge" id="systemStatus">READY</div>
 </header>
 
 <section class="panel">
 <h2>⚙️ İDARƏETMƏ</h2>
 <div class="row">
-<div><label>Valyuta cütü</label><select id="asset"></select></div>
+<div><label>Bazar</label><select id="marketType"><option value="forex">FOREX</option><option value="crypto">KRİPTO</option></select></div>
+<div><label>Aktiv / valyuta cütü</label><select id="asset"></select></div>
+</div>
+<div class="row" style="margin-top:9px">
 <div><label>Avto-yeniləmə aralığı</label>
 <select id="autoSec"><option value="60">60 san.</option><option value="90" selected>90 san.</option><option value="120">120 san.</option></select></div>
 </div>
@@ -78,7 +81,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 <h2>📊 MONİTOR</h2>
 <div class="price" id="price">---</div>
 <div class="row"><div><div class="small">ŞAM DƏYİŞMƏSİ</div><b id="change">---</b></div>
-<div><div class="small">1 DƏQ ATR (PİP)</div><b id="atrPips">---</b></div></div>
+<div><div class="small">1 DƏQ ATR (FOREX: PİP / KRİPTO: %)</div><b id="atrPips">---</b></div></div>
 <div class="status" id="dataStatus">Məlumat gözlənilir.</div>
 </section>
 
@@ -123,7 +126,7 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 
 <section class="panel"><div class="small">
 • 0–100 texniki uyğunluq balıdır, qazanc ehtimalı deyil.<br>
-• Twelve Data qiyməti Pocket Option qiymətindən az da olsa fərqlənə bilər.<br>
+• Forex: Twelve Data; Kripto: Binance Spot public API.<br>• Mənbə qiymətləri Pocket Option qiymətindən fərqlənə bilər.<br>
 • Backend `outputsize` parametrini Twelve Data-ya ötürməlidir (1000 şam üçün).
 </div></section>
 
@@ -134,7 +137,8 @@ button{font-weight:bold;cursor:pointer}button.go{background:#15518b;border-color
 const BACKEND_URL="https://pocket-option-ai-v11.onrender.com";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const PAIRS=["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"];
+const FOREX_PAIRS=["EUR/USD","GBP/USD","USD/JPY","AUD/USD","USD/CAD","USD/CHF","NZD/USD","EUR/GBP","EUR/JPY"];
+const CRYPTO_PAIRS=["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","AVAXUSDT","LINKUSDT","DOTUSDT","LTCUSDT","TRXUSDT","TONUSDT","SUIUSDT","APTUSDT","OPUSDT","ARBUSDT","NEARUSDT","INJUSDT","FETUSDT"];
 const DAILY_LIMIT=780,MIN_CANDLES=60;
 let ctrl=null,timer=null,runId=0,running=true,latest=null,hist=[];
 let lastRequestAt=0;
@@ -170,14 +174,16 @@ function newsBlock(){
  return null;
 }
 function blockReason(){
- if(!marketOpen())return "Forex bazarı bağlıdır (həftəsonu).";
- if($("sessionOnly").checked&&!inSession())return "Likvid saatlardan kənardır (07–17 UTC).";
+ if($("marketType").value==="forex") {
+  if(!marketOpen())return "Forex bazarı bağlıdır (həftəsonu).";
+  if($("sessionOnly").checked&&!inSession())return "Likvid saatlardan kənardır (07–17 UTC).";
+ }
  return newsBlock();
 }
 function renderMarket(){
- const open=marketOpen();
+ const open=$("marketType").value==="crypto"?true:marketOpen();
  $("marketStatus").innerHTML=(open?'<span class="green">● Bazar açıqdır</span>':'<span class="red">● Bazar bağlıdır</span>')+
-  " · UTC "+new Date().toISOString().slice(11,16)+" · "+(inSession()?"likvid sessiya":"zəif likvidlik");
+  " · UTC "+new Date().toISOString().slice(11,16)+" · "+($("marketType").value==="crypto"?"24/7 aktiv bazar":(inSession()?"likvid sessiya":"zəif likvidlik"));
 }
 setInterval(renderMarket,30000);
 
@@ -210,11 +216,26 @@ async function fetchFx(symbol,signal){
   if(!Array.isArray(d.values))throw new Error(d.message||"Forex məlumatı gəlmədi.");
   const rows=d.values.map(c=>{
    const raw=String(c.datetime||""),n=raw.includes("T")?raw:raw.replace(" ","T");
-   return {time:Date.parse(/Z$|[+-]\\d\\d:\\d\\d$/.test(n)?n:n+"Z"),open:+c.open,high:+c.high,low:+c.low,close:+c.close};
+   return {time:Date.parse(/Z$|[+-]\d\d:\d\d$/.test(n)?n:n+"Z"),open:+c.open,high:+c.high,low:+c.low,close:+c.close};
   }).filter(c=>[c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.close>0&&c.high>=c.low);
   const unique=new Map(rows.map(c=>[c.time,c]));
   return [...unique.values()].sort((a,b)=>a.time-b.time);
  }finally{clearTimeout(slow);}
+}
+
+/* Binance spot public API: kripto 24/7, Twelve Data limitindən ayrı. */
+async function fetchCrypto(symbol,signal){
+ const url="https://api.binance.com/api/v3/klines?symbol="+encodeURIComponent(symbol)+"&interval=1m&limit=1000";
+ const r=await fetch(url,{cache:"no-store",signal});
+ if(!r.ok)throw new Error("Binance API xətası: HTTP "+r.status);
+ const rows=await r.json();
+ if(!Array.isArray(rows))throw new Error("Binance kripto məlumatı gəlmədi.");
+ return rows.map(k=>({time:Number(k[0]),open:+k[1],high:+k[2],low:+k[3],close:+k[4]}))
+  .filter(c=>[c.time,c.open,c.high,c.low,c.close].every(Number.isFinite)&&c.close>0&&c.high>=c.low)
+  .sort((a,b)=>a.time-b.time);
+}
+async function fetchMarket(symbol,signal){
+ return $("marketType").value==="crypto"?fetchCrypto(symbol,signal):fetchFx(symbol,signal);
 }
 
 function aggregate(cs,min){
@@ -269,7 +290,8 @@ function adx(c,p=14){
 }
 
 /* ---------- analysis ---------- */
-const pipSize=sym=>sym.includes("JPY")?0.01:0.0001;
+const isCrypto=sym=>/USDT$/.test(sym);
+const pipSize=sym=>isCrypto(sym)?1:(sym.includes("JPY")?0.01:0.0001);
 function wait(minutes,quality,reason,extra={}){return {minutes,direction:"WAIT",score:0,quality,reason,call:0,put:0,stale:true,confirmed:false,...extra};}
 
 function analyze(candles,minutes,symbol){
@@ -279,9 +301,11 @@ function analyze(candles,minutes,symbol){
  const e20=ema(cl,20),e50=ema(cl,50),e200=cl.length>=200?ema(cl,200):null;
  const rv=rsi(cl),mv=macd(cl),bm=bollMid(cl),av=atr(closed),ax=adx(closed);
  const atrPips=av===null?null:av/pipSize(symbol);
- const base={minutes,rsi:rv,adx:ax,atrPips};
- if(ax!==null&&ax<20)return {...wait(minutes,"Yan bazar","ADX "+ax.toFixed(0)+" < 20"),...base};
- if(atrPips!==null&&atrPips<0.7*Math.sqrt(minutes))return {...wait(minutes,"Aşağı volatillik","ATR "+atrPips.toFixed(2)+" pip çox aşağıdır"),...base};
+ const atrPct=av===null?null:(av/price)*100;
+ const base={minutes,rsi:rv,adx:ax,atrPips,atrPct};
+ if(ax!==null&&ax<18)return {...wait(minutes,"Yan bazar","ADX "+ax.toFixed(0)+" < 18"),...base};
+ if(isCrypto(symbol)&&atrPct!==null&&atrPct<0.025)return {...wait(minutes,"Aşağı volatillik","ATR "+atrPct.toFixed(3)+"% çox aşağıdır"),...base};
+ if(!isCrypto(symbol)&&atrPips!==null&&atrPips<0.7*Math.sqrt(minutes))return {...wait(minutes,"Aşağı volatillik","ATR "+atrPips.toFixed(2)+" pip çox aşağıdır"),...base};
  let call=0,put=0;const rs=[];
  if(e20>e50){call+=2;rs.push("EMA20>50");}else if(e20<e50){put+=2;rs.push("EMA20<50");}
  if(e200!==null){price>e200?call++:put++;}
@@ -375,11 +399,11 @@ $("clearPerf").onclick=()=>{if(confirm("Statistika silinsin?")){perf=[];savePerf
 const col=d=>d==="CALL"?"green":d==="PUT"?"red":"yellow";
 function renderPrice(cs,asset){
  const v=cs.at(-1),p=cs.at(-2);
- $("price").textContent=v.close.toFixed(asset.includes("JPY")?3:5);
+ $("price").textContent=v.close.toLocaleString("en-US",{maximumFractionDigits:isCrypto(asset)?6:(asset.includes("JPY")?3:5)});
  if(p){const ch=(v.close-p.close)/p.close*100;$("change").textContent=(ch>=0?"+":"")+ch.toFixed(4)+"%";$("change").className=ch>=0?"green":"red";}
- const a=atr(cs.slice(0,-1));$("atrPips").textContent=a===null?"---":(a/pipSize(asset)).toFixed(2);
+ const a=atr(cs.slice(0,-1));$("atrPips").textContent=a===null?"---":(isCrypto(asset)?((a/v.close)*100).toFixed(3)+"%":(a/pipSize(asset)).toFixed(2)+" pip");
  const age=(Date.now()-v.time)/60000;
- $("dataStatus").textContent="Şam sayı: "+cs.length+(marketOpen()&&age>5?" · ⚠️ son şam "+Math.round(age)+" dəq. köhnədir":"");
+ $("dataStatus").textContent="Mənbə: "+(isCrypto(asset)?"Binance Spot":"Twelve Data")+" · Şam sayı: "+cs.length+((isCrypto(asset)||marketOpen())&&age>5?" · ⚠️ son şam "+Math.round(age)+" dəq. köhnədir":"");
 }
 function renderSignal(res,block){
  const best=block?null:chooseBest(res);
@@ -408,7 +432,7 @@ function saveHistory(asset,best,block){
 function updateChart(){
  if(typeof TradingView==="undefined")return;
  $("tradingview_chart").innerHTML="";
- new TradingView.widget({autosize:true,symbol:"FX:"+$("asset").value.replace("/",""),interval:"1",timezone:"Etc/UTC",theme:"dark",
+ new TradingView.widget({autosize:true,symbol:$("marketType").value==="crypto"?"BINANCE:"+$("asset").value:"FX:"+$("asset").value.replace("/",""),interval:"1",timezone:"Etc/UTC",theme:"dark",
   style:"1",locale:"en",enable_publishing:false,allow_symbol_change:true,container_id:"tradingview_chart"});
 }
 
@@ -418,7 +442,7 @@ async function analyzeNow(manual=true){
  const block=blockReason();
  if(block){
   $("connectionStatus").textContent=block;
-  $("systemStatus").textContent=!marketOpen()?"MARKET CLOSED":"WAIT";
+  $("systemStatus").textContent=$("marketType").value==="forex"&&!marketOpen()?"MARKET CLOSED":"WAIT";
   renderSignal([],block);
   saveHistory(asset,null,block);
   renderMarket();
@@ -429,9 +453,9 @@ async function analyzeNow(manual=true){
  $("scanBtn").disabled=true;$("systemStatus").textContent="SCANNING";
  $("connectionStatus").textContent="Məlumat alınır...";
  try{
-  const one=await fetchFx(asset,ctrl.signal);
+  const one=await fetchMarket(asset,ctrl.signal);
   if(id!==runId)return;
-  if(one.length<MIN_CANDLES+1)throw new Error("Kifayət qədər şam yoxdur ("+one.length+"). Backend outputsize=1000 ötürməlidir.");
+  if(one.length<MIN_CANDLES+1)throw new Error("Kifayət qədər şam yoxdur ("+one.length+"). Məlumat mənbəyini və şam sayını yoxlayın.");
   renderPrice(one,asset);
   const res=runAnalysis(one,asset);
   latest=res;
@@ -454,25 +478,27 @@ async function analyzeNow(manual=true){
 async function scanAll(){
  const block=blockReason();
  if(block){$("scanResults").textContent=block+" Bütün cütlərin skanı dayandırıldı.";return;}
- const need=PAIRS.length;
- if(usage().n+need>DAILY_LIMIT){$("scanResults").textContent="Gündəlik limit çatmır.";return;}
+ const pairs=$("marketType").value==="crypto"?CRYPTO_PAIRS:FOREX_PAIRS;
+ const need=pairs.length;
+ if($("marketType").value==="forex"&&usage().n+need>DAILY_LIMIT){$("scanResults").textContent="Gündəlik Forex sorğu limiti çatmır.";return;}
  const id=++runId;if(ctrl)ctrl.abort();ctrl=new AbortController();
  $("allBtn").disabled=true;const out=[];
  try{
-  for(let i=0;i<PAIRS.length;i++){
-   $("scanResults").textContent="Skan: "+(i+1)+"/"+need+" · "+PAIRS[i];
+  for(let i=0;i<pairs.length;i++){
+   $("scanResults").textContent="Skan: "+(i+1)+"/"+need+" · "+pairs[i];
    try{
-    const one=await fetchFx(PAIRS[i],ctrl.signal);
+    const one=await fetchMarket(pairs[i],ctrl.signal);
     if(one.length<MIN_CANDLES+1)throw new Error("Şam sayı kifayət deyil: "+one.length);
-    const best=chooseBest(runAnalysis(one,PAIRS[i]));
-    if(best)out.push({p:PAIRS[i],b:best});
+    const best=chooseBest(runAnalysis(one,pairs[i]));
+    if(best)out.push({p:pairs[i],b:best});
    }catch(e){
     if(e.name==="AbortError")return;
-    out.push({p:PAIRS[i],error:e.message});
+    out.push({p:pairs[i],error:e.message});
    }
    if(id!==runId)return;
+   if($("marketType").value==="crypto"&&i<pairs.length-1)await new Promise(r=>setTimeout(r,250));
   }
-  out.sort((a,b)=>b.b.score-a.b.score);
+  out.sort((a,b)=>(b.b?.score||0)-(a.b?.score||0));
   const blk=blockReason();
   $("scanResults").innerHTML=(blk?`<div class="warn">${esc(blk)} — nəticələr məlumat üçündür.</div>`:"")+
    (out.length?out.map(f=>f.error
@@ -493,7 +519,19 @@ function schedule(){
 }
 
 /* ---------- events ---------- */
-$("asset").innerHTML=PAIRS.map(x=>`<option value="${x}">${x}</option>`).join("");
+function refreshAssets(){
+ const crypto=$("marketType").value==="crypto";
+ const list=crypto?CRYPTO_PAIRS:FOREX_PAIRS;
+ const previous=$("asset").value;
+ $("asset").innerHTML=list.map(x=>`<option value="${x}">${crypto?x.replace("USDT","/USDT"):x}</option>`).join("");
+ if(list.includes(previous))$("asset").value=previous;
+ $("sessionOnly").disabled=crypto;
+ $("sessionOnly").parentElement.style.opacity=crypto?".45":"1";
+ $("allBtn").textContent=crypto?"🌐 BÜTÜN KRİPTOLAR":"🌐 BÜTÜN CÜTLƏR";
+ $("usageStatus").textContent=crypto?"Kripto: Binance public API · 24/7 · Twelve Data limitindən ayrı":"";
+ updateChart();renderPerf();
+}
+$("marketType").onchange=()=>{refreshAssets();$("scanResults").textContent="Yeni bazar seçildi. Skan etməyə hazırsınız.";if($("autoRefresh").checked)analyzeNow(false);};
 $("asset").onchange=()=>{updateChart();renderPerf();if($("autoRefresh").checked)analyzeNow(false);};
 $("scanBtn").onclick=()=>{running=true;analyzeNow(true);};
 $("allBtn").onclick=scanAll;
@@ -509,7 +547,7 @@ $("autoSec").onchange=()=>{if($("autoRefresh").checked)schedule();};
 $("news").value=store.get("FX_NEWS","");
 $("news").onchange=()=>store.set("FX_NEWS",$("news").value);
 
-updateChart();renderPerf();renderUsage();renderMarket();
+refreshAssets();renderPerf();renderUsage();renderMarket();
 $("expiryCards").innerHTML=[1,2,3,5].map(m=>`<div class="card">${m} DƏQ --</div>`).join("");
 </script>
 </body>
